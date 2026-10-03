@@ -403,7 +403,8 @@ export function TemplateEngine({
     colorClasses[config.accentColor as keyof typeof colorClasses] ||
     colorClasses["zinc-900"];
 
-  const { personalInfo, summary } = data;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { personalInfo, summary, experience, education } = data;
 
   const sectionSpacing =
     config.spacing === "compact"

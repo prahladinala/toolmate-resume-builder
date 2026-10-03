@@ -16,15 +16,15 @@ if (!self.define) {
       })
   );
   self.define = (c, t) => {
-    const n =
+    const i =
       e ||
       ("document" in self ? document.currentScript.src : "") ||
       location.href;
-    if (a[n]) return;
-    let i = {};
-    const f = (e) => s(e, n),
-      r = { module: { uri: n }, exports: i, require: f };
-    a[n] = Promise.all(c.map((e) => r[e] || f(e))).then((e) => (t(...e), i));
+    if (a[i]) return;
+    let n = {};
+    const f = (e) => s(e, i),
+      r = { module: { uri: i }, exports: n, require: f };
+    a[i] = Promise.all(c.map((e) => r[e] || f(e))).then((e) => (t(...e), n));
   };
 }
 define(["./workbox-4754cb34"], function (e) {
@@ -36,15 +36,7 @@ define(["./workbox-4754cb34"], function (e) {
       [
         {
           url: "/_next/app-build-manifest.json",
-          revision: "826364f64182b8f0294b3b4a0407d8b1",
-        },
-        {
-          url: "/_next/static/QZzMZqwLvzkFDRa5-ny5M/_buildManifest.js",
-          revision: "7f1ad10814ee3868d06f00193a090e27",
-        },
-        {
-          url: "/_next/static/QZzMZqwLvzkFDRa5-ny5M/_ssgManifest.js",
-          revision: "b6652df95db52feb4daf4eca35380933",
+          revision: "0f05809816649fd58022fb565d784ee6",
         },
         {
           url: "/_next/static/chunks/139.7a5a8e93a21948c1.js",
@@ -55,16 +47,24 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "e08c5daad3d3ce6c",
         },
         {
-          url: "/_next/static/chunks/154.19bf7a4c9e6aced6.js",
-          revision: "19bf7a4c9e6aced6",
+          url: "/_next/static/chunks/154.81cc78ee5926f29c.js",
+          revision: "81cc78ee5926f29c",
         },
         {
           url: "/_next/static/chunks/255-98a0bdaa30757bda.js",
           revision: "98a0bdaa30757bda",
         },
         {
+          url: "/_next/static/chunks/3-7337de5b903a5bb0.js",
+          revision: "7337de5b903a5bb0",
+        },
+        {
           url: "/_next/static/chunks/4bd1b696-c023c6e3521b1417.js",
           revision: "c023c6e3521b1417",
+        },
+        {
+          url: "/_next/static/chunks/4e0084c3.dd2ae4b79f5b8eaa.js",
+          revision: "dd2ae4b79f5b8eaa",
         },
         {
           url: "/_next/static/chunks/644-b3be11ca99f6ba07.js",
@@ -79,16 +79,12 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "e077da836e6deae1",
         },
         {
-          url: "/_next/static/chunks/730-5cac104e423beac6.js",
-          revision: "5cac104e423beac6",
+          url: "/_next/static/chunks/818-25f1e93d4468dc48.js",
+          revision: "25f1e93d4468dc48",
         },
         {
-          url: "/_next/static/chunks/861-83b9c9f8991198f5.js",
-          revision: "83b9c9f8991198f5",
-        },
-        {
-          url: "/_next/static/chunks/881-e25437e60fe0a31d.js",
-          revision: "e25437e60fe0a31d",
+          url: "/_next/static/chunks/881-b7118d8ba18dfbe9.js",
+          revision: "b7118d8ba18dfbe9",
         },
         {
           url: "/_next/static/chunks/894-b33fa68fb9725947.js",
@@ -107,8 +103,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "cef7ae9cf721a85f",
         },
         {
-          url: "/_next/static/chunks/app/builder/page-5780309a4b9ce37a.js",
-          revision: "5780309a4b9ce37a",
+          url: "/_next/static/chunks/app/builder/page-5e71a4c25ea8052d.js",
+          revision: "5e71a4c25ea8052d",
         },
         {
           url: "/_next/static/chunks/app/error-f42e31ca8346e3ad.js",
@@ -127,8 +123,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "780a01ac391354dd",
         },
         {
-          url: "/_next/static/chunks/app/page-9fda9ca172e0b27b.js",
-          revision: "9fda9ca172e0b27b",
+          url: "/_next/static/chunks/app/page-f35ec1ecb12ae371.js",
+          revision: "f35ec1ecb12ae371",
         },
         {
           url: "/_next/static/chunks/app/robots.txt/route-cef7ae9cf721a85f.js",
@@ -143,8 +139,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "cef7ae9cf721a85f",
         },
         {
-          url: "/_next/static/chunks/app/templates/page-d8a20c467fc2a3d9.js",
-          revision: "d8a20c467fc2a3d9",
+          url: "/_next/static/chunks/app/templates/page-59cf4a8c43c12069.js",
+          revision: "59cf4a8c43c12069",
         },
         {
           url: "/_next/static/chunks/framework-acd67e14855de5a2.js",
@@ -171,12 +167,20 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "846118c33b2c0e922d7b3a7676f81f6f",
         },
         {
-          url: "/_next/static/chunks/webpack-18bf6718792841e9.js",
-          revision: "18bf6718792841e9",
+          url: "/_next/static/chunks/webpack-b65f8eb74eb0c13a.js",
+          revision: "b65f8eb74eb0c13a",
         },
         {
-          url: "/_next/static/css/74010905e74dd9a1.css",
-          revision: "74010905e74dd9a1",
+          url: "/_next/static/css/7e556f000dff8ac0.css",
+          revision: "7e556f000dff8ac0",
+        },
+        {
+          url: "/_next/static/dbhlDDxXOB-LzlMDPOoPJ/_buildManifest.js",
+          revision: "7f1ad10814ee3868d06f00193a090e27",
+        },
+        {
+          url: "/_next/static/dbhlDDxXOB-LzlMDPOoPJ/_ssgManifest.js",
+          revision: "b6652df95db52feb4daf4eca35380933",
         },
         {
           url: "/_next/static/media/013b72fa676f92e0-s.woff2",

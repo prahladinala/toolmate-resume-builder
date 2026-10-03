@@ -33,7 +33,6 @@ const formSchema = z.object({
   experiences: z.array(experienceSchema),
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function SortableExperienceItem({
   id,
   index,
@@ -41,6 +40,7 @@ function SortableExperienceItem({
   errors,
   remove,
   watch,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: any) {
   const {
     attributes,
