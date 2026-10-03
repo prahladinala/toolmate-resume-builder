@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
@@ -13,23 +13,54 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: {
-    template: '%s | Resume Builder 2026',
-    default: 'Resume Builder 2026 - Beautiful, ATS-Friendly Resumes',
+  metadataBase: new URL("https://resume.toolmate.co.in"),
+  alternates: {
+    canonical: "/",
   },
-  description: 'Create a stunning, ATS-compatible resume in under 10 minutes. A premium, developer-focused resume builder with entirely local privacy and real-time PDF generation.',
-  keywords: ['resume builder', 'ats friendly', 'developer resume', 'designer resume', 'free resume maker', 'pdf resume'],
-  authors: [{ name: 'Resume Builder 2026' }],
-  robots: 'index, follow',
+  title: {
+    template: "%s | Resume Builder 2026",
+    default: "Resume Builder 2026 - Beautiful, ATS-Friendly Resumes",
+  },
+  description:
+    "Build a beautiful, ATS-compatible resume in minutes. A premium, developer-focused resume builder with local privacy and real-time PDF generation.",
+  keywords: [
+    "resume builder",
+    "ats friendly",
+    "developer resume",
+    "designer resume",
+    "free resume maker",
+    "pdf resume",
+  ],
+  authors: [{ name: "Prahlad Inala" }],
+  robots: "index, follow",
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://resumebuilder2026.example.com',
-    title: 'Resume Builder 2026',
-    description: 'Create a beautiful, ATS-friendly resume locally in your browser.',
-    siteName: 'Resume Builder 2026'
-  }
+    type: "website",
+    locale: "en_US",
+    url: "https://resume.toolmate.co.in",
+    title: "Resume Builder 2026",
+    description:
+      "Create a beautiful, ATS-friendly resume locally in your browser.",
+    siteName: "Resume Builder 2026",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Resume Builder 2026 Preview",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Resume Builder 2026",
+    description:
+      "Create a beautiful, ATS-friendly resume locally in your browser.",
+    creator: "@prahladinala",
+  },
 };
+
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -38,10 +69,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster richColors position="top-center" />
+        </ThemeProvider>
       </body>
     </html>
   );

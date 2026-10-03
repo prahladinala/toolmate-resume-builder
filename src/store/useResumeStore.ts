@@ -1,14 +1,17 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { ResumeStore, Experience, Project, Education, Skill, CustomSection, ResumeTemplate, ResumeData } from '@/types/resume';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { ResumeStore, ResumeTemplate, ResumeData } from "@/types/resume";
 
 const initialData: ResumeData = {
   personalInfo: {
-    firstName: '',
-    lastName: '',
-    email: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    location: "",
+    title: "",
   },
-  summary: '',
+  summary: "",
   experience: [],
   projects: [],
   education: [],
@@ -20,7 +23,13 @@ export const useResumeStore = create<ResumeStore>()(
   persist(
     (set) => ({
       data: initialData,
-      activeTemplate: 'modern-developer' as ResumeTemplate,
+      activeTemplate: "dev-1" as ResumeTemplate,
+      themeConfig: {},
+
+      updateThemeConfig: (config) =>
+        set((state) => ({
+          themeConfig: { ...state.themeConfig, ...config },
+        })),
 
       updatePersonalInfo: (info) =>
         set((state) => ({
@@ -44,7 +53,9 @@ export const useResumeStore = create<ResumeStore>()(
         set((state) => ({
           data: {
             ...state.data,
-            experience: state.data.experience.map((e) => (e.id === id ? { ...e, ...exp } : e)),
+            experience: state.data.experience.map((e) =>
+              e.id === id ? { ...e, ...exp } : e,
+            ),
           },
         })),
 
@@ -73,7 +84,9 @@ export const useResumeStore = create<ResumeStore>()(
         set((state) => ({
           data: {
             ...state.data,
-            projects: state.data.projects.map((p) => (p.id === id ? { ...p, ...proj } : p)),
+            projects: state.data.projects.map((p) =>
+              p.id === id ? { ...p, ...proj } : p,
+            ),
           },
         })),
 
@@ -102,7 +115,9 @@ export const useResumeStore = create<ResumeStore>()(
         set((state) => ({
           data: {
             ...state.data,
-            education: state.data.education.map((e) => (e.id === id ? { ...e, ...edu } : e)),
+            education: state.data.education.map((e) =>
+              e.id === id ? { ...e, ...edu } : e,
+            ),
           },
         })),
 
@@ -129,7 +144,10 @@ export const useResumeStore = create<ResumeStore>()(
 
       addCustomSection: (section) =>
         set((state) => ({
-          data: { ...state.data, customSections: [...state.data.customSections, section] },
+          data: {
+            ...state.data,
+            customSections: [...state.data.customSections, section],
+          },
         })),
 
       updateCustomSection: (id, section) =>
@@ -137,7 +155,7 @@ export const useResumeStore = create<ResumeStore>()(
           data: {
             ...state.data,
             customSections: state.data.customSections.map((s) =>
-              s.id === id ? { ...s, ...section } : s
+              s.id === id ? { ...s, ...section } : s,
             ),
           },
         })),
@@ -146,7 +164,9 @@ export const useResumeStore = create<ResumeStore>()(
         set((state) => ({
           data: {
             ...state.data,
-            customSections: state.data.customSections.filter((s) => s.id !== id),
+            customSections: state.data.customSections.filter(
+              (s) => s.id !== id,
+            ),
           },
         })),
 
@@ -155,7 +175,7 @@ export const useResumeStore = create<ResumeStore>()(
       reset: () => set({ data: initialData }),
     }),
     {
-      name: 'resume-builder-storage', // key in local storage
-    }
-  )
+      name: "resume-builder-storage", // key in local storage
+    },
+  ),
 );

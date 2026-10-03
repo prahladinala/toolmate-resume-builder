@@ -24,7 +24,7 @@ export type Education = {
   startDate: string;
   endDate: string;
   current: boolean;
-  score?: string;
+  score: string;
 };
 
 export type Skill = {
@@ -49,12 +49,12 @@ export type ResumeData = {
     firstName: string;
     lastName: string;
     email: string;
-    phone?: string;
-    location?: string;
+    phone: string;
+    location: string;
     website?: string;
     github?: string;
     linkedin?: string;
-    title?: string;
+    title: string;
     photoBase64?: string;
   };
   summary: string;
@@ -67,12 +67,27 @@ export type ResumeData = {
 
 export type ResumeTemplate = string;
 
+export type ThemeConfig = {
+  accentColor?: string;
+  fontFamily?: "sans" | "serif" | "mono";
+  headerColor?: string;
+  backgroundColor?: string;
+  sectionStyle?: "minimal" | "badge" | "boxed" | "underline";
+  imageAlign?: "left" | "center" | "right" | "hidden";
+  showContactIcons?: boolean;
+  spacing?: "compact" | "normal" | "relaxed";
+  sectionOrder?: string[];
+  dateFormat?: "MM/YYYY" | "Month YYYY" | "YYYY";
+};
+
 export type ResumeStore = {
   data: ResumeData;
   activeTemplate: ResumeTemplate;
-  updatePersonalInfo: (info: Partial<ResumeData['personalInfo']>) => void;
+  themeConfig: ThemeConfig;
+  updateThemeConfig: (config: Partial<ThemeConfig>) => void;
+  updatePersonalInfo: (info: Partial<ResumeData["personalInfo"]>) => void;
   updateSummary: (summary: string) => void;
-  
+
   // Experience
   addExperience: (exp: Experience) => void;
   updateExperience: (id: string, exp: Partial<Experience>) => void;
