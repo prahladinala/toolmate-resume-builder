@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Toolmate Resume Builder
 
-## Getting Started
+An ATS-friendly, highly customizable, and open-source Resume Builder built with modern web technologies. Engineered for a **300% true native mobile experience**, Toolmate Resume Builder features a Tinder-style swipeable template gallery, dynamic interactive PDF previews with pinch-to-zoom, and a beautiful drag-and-drop dark-mode builder interface.
 
-First, run the development server:
+## ✨ Features
+
+- **Tinder-Style Swipeable Gallery (Mobile):** Immersive, full-screen swipeable template selection.
+- **Native Mobile Previews:** `react-zoom-pan-pinch` integration allows users to naturally pan and pinch-to-zoom on their resume preview exactly like a native iOS/Android PDF app.
+- **16 Professionally Designed Templates:** Spanning four categories (Developers, Executives, Creatives, and Minimalists), all heavily optimized for high ATS (Applicant Tracking System) parse rates.
+- **Advanced Customization Engine:** Adjust typography (Inter, Roboto, Playfair Display, etc.), layout density (Compact, Comfortable, Relaxed), accent colors, date formatting rules, and dynamic section spacing.
+- **Local-First & Secure:** Data is stored locally using `Zustand` with `persist`. No sign-up required, no data sent to external servers. Export and Import your JSON resume backups at any time.
+- **PWA (Progressive Web App):** Fully installable on iOS, Android, and Desktop with offline support (`next-pwa`).
+- **Drag & Drop Reordering:** Reorder your experience items effortlessly using `@dnd-kit`.
+- **Pixel-Perfect PDF Generation:** Uses raw DOM injection and `@media print` CSS configurations to generate completely flawless, high-resolution PDFs using the native browser print engine.
+
+## 🚀 Tech Stack
+
+- **Framework:** [Next.js 15](https://nextjs.org/) (App Router)
+- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/)
+- **State Management:** [Zustand](https://github.com/pmndrs/zustand)
+- **UI Components:** [shadcn/ui](https://ui.shadcn.com/) + Radix UI
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **Drag & Drop:** [@dnd-kit](https://docs.dndkit.com/)
+- **Mobile Gestures:** `react-zoom-pan-pinch`
+- **Animations:** [Framer Motion](https://www.framer.com/motion/)
+
+## 🛠️ Getting Started
+
+### Prerequisites
+
+Make sure you have Node.js 18+ installed.
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/prahladinala/toolmate-resume-builder.git
+cd toolmate-resume-builder
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📦 Build & Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The repository is configured with strong Husky hooks (`pre-commit` and `pre-push`) to ensure code quality using `eslint` and `prettier`.
 
-## Learn More
+To create a production build:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To start the production server:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run start
+```
 
-## Deploy on Vercel
+## 🤝 Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Contributions, issues, and feature requests are welcome!
+Feel free to check out the [issues page](https://github.com/prahladinala/toolmate-resume-builder/issues) if you want to contribute.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📝 License
+
+This project is licensed under the MIT License.
