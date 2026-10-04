@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Label } from "@/components/ui/label";
 import {
@@ -121,6 +122,7 @@ const DATE_FORMATS = [
 
 export function StyleForm() {
   const { themeConfig, updateThemeConfig } = useResumeStore();
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -255,9 +257,17 @@ export function StyleForm() {
       </div>
 
       <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
-        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
-          Typography Style
-        </Label>
+        <div className="flex items-center justify-between">
+          <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+            Typography Style
+          </Label>
+          <button 
+            onClick={() => setShowAdvanced(!showAdvanced)} 
+            className="text-xs font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-400 transition-colors underline-offset-4 hover:underline"
+          >
+            {showAdvanced ? "Hide Advanced Settings" : "Advanced Settings"}
+          </button>
+        </div>
         <div className="grid grid-cols-3 gap-3">
           {FONTS.map((font) => (
             <button
@@ -286,10 +296,12 @@ export function StyleForm() {
         </div>
       </div>
 
-      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
-        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
-          Section & Badge Layout
-        </Label>
+      {showAdvanced && (
+        <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500 pt-2">
+          <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+              Section & Badge Layout
+            </Label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {STYLES.map((style) => (
             <button
@@ -421,6 +433,7 @@ export function StyleForm() {
           </button>
         </div>
       </div>
+      )}
     </div>
   );
 }
