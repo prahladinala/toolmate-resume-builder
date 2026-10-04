@@ -403,8 +403,21 @@ export function TemplateEngine({
     colorClasses[config.accentColor as keyof typeof colorClasses] ||
     colorClasses["zinc-900"];
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { personalInfo, summary, experience, education } = data;
+
+  const parseDateForSort = (dateStr: string) => {
+    if (!dateStr || dateStr.toLowerCase() === "present") return Infinity;
+    const parsed = Date.parse(dateStr);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  const sortedExperience = [...(experience || [])].sort(
+    (a, b) => parseDateForSort(b.startDate) - parseDateForSort(a.startDate),
+  );
+  
+  const sortedEducation = [...(education || [])].sort(
+    (a, b) => parseDateForSort(b.startDate) - parseDateForSort(a.startDate),
+  );
 
   const sectionSpacing =
     config.spacing === "compact"
@@ -565,7 +578,7 @@ export function TemplateEngine({
       <section className={sectionSpacing}>
         {renderSectionHeader("Experience")}
         <div className={itemSpacing}>
-          {data.experience.map((exp) => (
+          {sortedExperience.map((exp) => (
             <div
               key={exp.id}
               className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? "bg-slate-50 p-4 rounded-xl" : ""}`}
@@ -596,7 +609,7 @@ export function TemplateEngine({
       <section className={sectionSpacing}>
         {renderSectionHeader("Education")}
         <div className={itemSpacing}>
-          {data.education.map((edu) => (
+          {sortedEducation.map((edu) => (
             <div
               key={edu.id}
               className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? "bg-slate-50 p-4 rounded-xl" : ""}`}
@@ -830,7 +843,7 @@ export function TemplateEngine({
                 <h3 className="text-xl font-bold mb-4 border-b border-white/20 pb-2">
                   Education
                 </h3>
-                {education.map((edu) => (
+                {sortedEducation.map((edu) => (
                   <div key={edu.id} className="mb-4">
                     <h4 className="font-bold text-sm">{edu.degree}</h4>
                     <p className="text-xs opacity-80">{edu.institution}</p>

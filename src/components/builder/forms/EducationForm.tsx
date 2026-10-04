@@ -23,6 +23,7 @@ export function EducationForm() {
     register,
     control,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
@@ -82,12 +83,12 @@ export function EducationForm() {
         {fields.map((field, index) => (
           <div
             key={field.id}
-            className="p-4 border rounded-xl space-y-4 bg-muted/20 relative group"
+            className="p-4 border border-[#27272a] rounded-xl space-y-4 bg-[#111113] relative group shadow-sm"
           >
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-2 right-2 text-muted-foreground hover:text-destructive opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+              className="absolute top-2 right-2 text-[#a1a1aa] hover:text-red-400 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
               onClick={() => remove(index)}
             >
               <Trash2 className="h-4 w-4" />
@@ -146,15 +147,14 @@ export function EducationForm() {
                   id={`current-edu-${index}`}
                   checked={watch(`educations.${index}.current`)}
                   onCheckedChange={(checked) => {
-                    const event = {
-                      target: {
-                        name: `educations.${index}.current`,
-                        value: checked,
-                      },
-                    };
-                    register(`educations.${index}.current`).onChange(
-                      event as unknown as React.ChangeEvent<HTMLInputElement>,
-                    );
+                    if (checked) {
+                      fields.forEach((_, i) => {
+                        if (i !== index) {
+                          setValue(`educations.${i}.current`, false, { shouldValidate: true });
+                        }
+                      });
+                    }
+                    setValue(`educations.${index}.current`, checked as boolean, { shouldValidate: true });
                   }}
                 />
                 <Label

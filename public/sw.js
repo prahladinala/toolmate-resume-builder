@@ -16,15 +16,15 @@ if (!self.define) {
       })
   );
   self.define = (c, t) => {
-    const n =
+    const i =
       e ||
       ("document" in self ? document.currentScript.src : "") ||
       location.href;
-    if (a[n]) return;
-    let i = {};
-    const f = (e) => s(e, n),
-      r = { module: { uri: n }, exports: i, require: f };
-    a[n] = Promise.all(c.map((e) => r[e] || f(e))).then((e) => (t(...e), i));
+    if (a[i]) return;
+    let n = {};
+    const f = (e) => s(e, i),
+      r = { module: { uri: i }, exports: n, require: f };
+    a[i] = Promise.all(c.map((e) => r[e] || f(e))).then((e) => (t(...e), n));
   };
 }
 define(["./workbox-4754cb34"], function (e) {
@@ -36,14 +36,14 @@ define(["./workbox-4754cb34"], function (e) {
       [
         {
           url: "/_next/app-build-manifest.json",
-          revision: "02d333b0f7cc1f87a705d9b3453d65f6",
+          revision: "a800530cb918aa9abb400aff1a135154",
         },
         {
-          url: "/_next/static/DkYgKEQwIOeCVztt_nFMt/_buildManifest.js",
+          url: "/_next/static/Lp2qIXlUvmXbCyyPN-iMU/_buildManifest.js",
           revision: "7f1ad10814ee3868d06f00193a090e27",
         },
         {
-          url: "/_next/static/DkYgKEQwIOeCVztt_nFMt/_ssgManifest.js",
+          url: "/_next/static/Lp2qIXlUvmXbCyyPN-iMU/_ssgManifest.js",
           revision: "b6652df95db52feb4daf4eca35380933",
         },
         {
@@ -79,16 +79,16 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "f342b7cffc01feb0",
         },
         {
-          url: "/_next/static/chunks/676-70443a2d8aae4f56.js",
-          revision: "70443a2d8aae4f56",
-        },
-        {
           url: "/_next/static/chunks/720-e077da836e6deae1.js",
           revision: "e077da836e6deae1",
         },
         {
-          url: "/_next/static/chunks/881-be28cee2295d47ee.js",
-          revision: "be28cee2295d47ee",
+          url: "/_next/static/chunks/881-6c00efe5bfd7711e.js",
+          revision: "6c00efe5bfd7711e",
+        },
+        {
+          url: "/_next/static/chunks/894-2a873fc2e7070ff2.js",
+          revision: "2a873fc2e7070ff2",
         },
         {
           url: "/_next/static/chunks/928-25237a0a43cb234b.js",
@@ -107,8 +107,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "cef7ae9cf721a85f",
         },
         {
-          url: "/_next/static/chunks/app/builder/page-9e26c934b330f63b.js",
-          revision: "9e26c934b330f63b",
+          url: "/_next/static/chunks/app/builder/page-2f39a400ed900df6.js",
+          revision: "2f39a400ed900df6",
         },
         {
           url: "/_next/static/chunks/app/error-f42e31ca8346e3ad.js",
@@ -127,8 +127,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "780a01ac391354dd",
         },
         {
-          url: "/_next/static/chunks/app/page-aacbab56dac79412.js",
-          revision: "aacbab56dac79412",
+          url: "/_next/static/chunks/app/page-664773264b99c2d2.js",
+          revision: "664773264b99c2d2",
         },
         {
           url: "/_next/static/chunks/app/robots.txt/route-cef7ae9cf721a85f.js",
@@ -143,8 +143,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "cef7ae9cf721a85f",
         },
         {
-          url: "/_next/static/chunks/app/templates/page-a2634646c48c03c9.js",
-          revision: "a2634646c48c03c9",
+          url: "/_next/static/chunks/app/templates/page-e37d77b47a9ca828.js",
+          revision: "e37d77b47a9ca828",
         },
         {
           url: "/_next/static/chunks/framework-acd67e14855de5a2.js",
@@ -171,12 +171,12 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "846118c33b2c0e922d7b3a7676f81f6f",
         },
         {
-          url: "/_next/static/chunks/webpack-d3c8a56299aced25.js",
-          revision: "d3c8a56299aced25",
+          url: "/_next/static/chunks/webpack-ddcde30075af9b57.js",
+          revision: "ddcde30075af9b57",
         },
         {
-          url: "/_next/static/css/d8b9d9727524007e.css",
-          revision: "d8b9d9727524007e",
+          url: "/_next/static/css/a749942043931145.css",
+          revision: "a749942043931145",
         },
         {
           url: "/_next/static/media/013b72fa676f92e0-s.woff2",

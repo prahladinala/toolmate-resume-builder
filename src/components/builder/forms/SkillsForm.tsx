@@ -5,95 +5,112 @@ import { useResumeStore } from "@/store/useResumeStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2, GripVertical } from "lucide-react";
+import { Plus, X } from "lucide-react";
 
 export function SkillsForm() {
   const { data, addSkill, removeSkill } = useResumeStore();
   const [newSkill, setNewSkill] = useState("");
-  const [newCategory, setNewCategory] = useState("");
+  const [newCategory, setNewCategory] = useState("Technical Skills");
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newSkill.trim()) return;
 
-    addSkill({
-      id: crypto.randomUUID(),
-      name: newSkill.trim(),
-      category: newCategory.trim() || "Technical Skills",
+    // Split by comma to allow multiple skills at once
+    const skills = newSkill.split(",").map((s) => s.trim()).filter(Boolean);
+
+    skills.forEach((skillName) => {
+      addSkill({
+        id: crypto.randomUUID(),
+        name: skillName,
+        category: newCategory.trim() || "Technical Skills",
+      });
     });
 
     setNewSkill("");
   };
 
+  // Group skills by category
+  const groupedSkills = data.skills.reduce(
+    (acc, skill) => {
+      if (!acc[skill.category]) {
+        acc[skill.category] = [];
+      }
+      acc[skill.category].push(skill);
+      return acc;
+    },
+    {} as Record<string, typeof data.skills>,
+  );
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
         <h2 className="text-2xl font-semibold tracking-tight">Skills</h2>
-        <p className="text-sm text-muted-foreground">
-          List your technical and professional skills.
+        <p className="text-sm text-[#a1a1aa] mt-1">
+          List your skills. You can paste multiple skills separated by commas.
         </p>
       </div>
 
       <form
         onSubmit={handleAdd}
-        className="flex gap-4 items-end bg-[#111113] p-4 rounded-xl border border-[#27272a]"
+        className="flex flex-col md:flex-row gap-4 items-end bg-[#111113] p-5 rounded-2xl border border-[#27272a] shadow-sm"
       >
-        <div className="space-y-2 flex-1">
-          <Label htmlFor="category">Category</Label>
+        <div className="space-y-2 w-full md:w-1/3">
+          <Label htmlFor="category" className="text-[#a1a1aa]">Category</Label>
           <Input
             id="category"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            placeholder="e.g. Languages"
+            placeholder="e.g. Languages, Frameworks"
+            className="bg-[#09090b] border-[#27272a] focus-visible:ring-[#a855f7]"
           />
         </div>
-        <div className="space-y-2 flex-[2]">
-          <Label htmlFor="skill">Skill *</Label>
-          <Input
-            id="skill"
-            value={newSkill}
-            onChange={(e) => setNewSkill(e.target.value)}
-            placeholder="e.g. JavaScript, React..."
-            required
-          />
+        <div className="space-y-2 w-full md:flex-1">
+          <Label htmlFor="skill" className="text-[#a1a1aa]">Skill(s) *</Label>
+          <div className="flex gap-3">
+            <Input
+              id="skill"
+              value={newSkill}
+              onChange={(e) => setNewSkill(e.target.value)}
+              placeholder="e.g. JavaScript, React..."
+              className="bg-[#09090b] border-[#27272a] focus-visible:ring-[#a855f7]"
+              required
+            />
+            <Button
+              type="submit"
+              className="px-6 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors"
+            >
+              <Plus className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">Add</span>
+            </Button>
+          </div>
         </div>
-        <Button
-          type="submit"
-          className="h-11 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium shrink-0"
-        >
-          <Plus className="w-4 h-4 mr-2" /> Add
-        </Button>
       </form>
 
-      <div className="space-y-2 mt-6">
-        {data.skills.map((skill) => (
-          <div
-            key={skill.id}
-            className="flex items-center justify-between p-3 rounded-xl border border-[#27272a] bg-[#111113]/50 group hover:border-[#3f3f46] transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="text-[#a1a1aa] cursor-grab active:cursor-grabbing opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                <GripVertical className="w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-[#fafafa]">
-                  {skill.name}
-                </p>
-                <p className="text-xs text-[#a1a1aa]">{skill.category}</p>
-              </div>
+      <div className="space-y-6 mt-8">
+        {Object.entries(groupedSkills).map(([category, skills]) => (
+          <div key={category} className="space-y-3">
+            <h3 className="text-sm font-semibold text-[#fafafa] uppercase tracking-wider">{category}</h3>
+            <div className="flex flex-wrap gap-2">
+              {skills.map((skill) => (
+                <div
+                  key={skill.id}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#27272a]/50 border border-[#27272a] text-sm text-[#fafafa] group hover:border-[#a855f7]/50 transition-colors"
+                >
+                  <span>{skill.name}</span>
+                  <button
+                    onClick={() => removeSkill(skill.id)}
+                    className="text-[#a1a1aa] hover:text-red-400 focus:outline-none"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => removeSkill(skill.id)}
-              className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-8 w-8 rounded-lg opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
           </div>
         ))}
         {data.skills.length === 0 && (
-          <div className="text-center p-8 border border-dashed border-[#27272a] rounded-xl text-[#a1a1aa] text-sm">
+          <div className="text-center p-12 border border-dashed border-[#27272a] rounded-2xl text-[#a1a1aa] text-sm bg-[#111113]/30">
             No skills added yet. Add some above!
           </div>
         )}

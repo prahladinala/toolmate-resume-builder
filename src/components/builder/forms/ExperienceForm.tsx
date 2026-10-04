@@ -40,6 +40,8 @@ function SortableExperienceItem({
   errors,
   remove,
   watch,
+  setValue,
+  fields,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: any) {
   const {
@@ -137,15 +139,15 @@ function SortableExperienceItem({
             id={`current-${index}`}
             checked={watch(`experiences.${index}.current`)}
             onCheckedChange={(checked) => {
-              const event = {
-                target: {
-                  name: `experiences.${index}.current`,
-                  value: checked,
-                },
-              };
-              register(`experiences.${index}.current`).onChange(
-                event as unknown as React.ChangeEvent<HTMLInputElement>,
-              );
+              if (checked) {
+                // Uncheck all other experiences
+                fields.forEach((_: unknown, i: number) => {
+                  if (i !== index) {
+                    setValue(`experiences.${i}.current`, false, { shouldValidate: true });
+                  }
+                });
+              }
+              setValue(`experiences.${index}.current`, checked, { shouldValidate: true });
             }}
           />
           <Label
@@ -176,6 +178,7 @@ export function ExperienceForm() {
     register,
     control,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
@@ -274,6 +277,8 @@ export function ExperienceForm() {
                 errors={errors}
                 remove={remove}
                 watch={watch}
+                setValue={setValue}
+                fields={fields}
               />
             ))}
             {fields.length === 0 && (
