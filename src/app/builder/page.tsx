@@ -128,7 +128,7 @@ export default function BuilderPage() {
   };
 
   return (
-    <div className="h-[100dvh] w-full flex font-sans overflow-hidden bg-stone-100 dark:bg-[#09090b] print:bg-transparent print:h-auto print:block">
+    <div className="h-[100dvh] w-full flex font-sans overflow-hidden bg-stone-100 dark:bg-[#09090b] print:!bg-transparent print:h-auto print:block">
       {/* EXTREME LEFT: Slim Toolbar (Desktop Only) */}
       <nav className="hidden md:flex flex-col w-[72px] h-full border-r border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b] text-zinc-900 dark:text-[#fafafa] z-30 shrink-0 py-4 items-center justify-between shadow-2xl print:hidden">
         <div className="flex flex-col gap-6 w-full items-center">
@@ -259,7 +259,7 @@ export default function BuilderPage() {
 
       {/* RIGHT: Live Preview Canvas */}
       <main
-        className={`flex-1 relative bg-stone-100 dark:bg-zinc-900 overflow-hidden print:block print:w-full print:h-full print:bg-transparent print:absolute print:inset-0 print:m-0 print:p-0 ${showPreviewMobile ? "block" : "hidden md:block"}`}
+        className={`flex-1 relative bg-stone-100 dark:bg-zinc-900 overflow-hidden print:block print:w-full print:h-full print:!bg-transparent print:absolute print:inset-0 print:m-0 print:p-0 ${showPreviewMobile ? "block" : "hidden md:block"}`}
       >
         {/* Mobile Preview Header */}
         <div className="md:hidden absolute top-0 left-0 right-0 h-16 bg-white dark:bg-[#09090b] text-white border-b border-zinc-200 dark:border-[#27272a] flex items-center justify-between px-4 z-50 print:hidden">
@@ -289,7 +289,7 @@ export default function BuilderPage() {
           </Button>
         </div>
 
-        <div className="h-full pt-16 md:pt-0">
+        <div className="h-full pt-16 md:pt-0 print:p-0 print:m-0">
           <Preview />
         </div>
       </main>

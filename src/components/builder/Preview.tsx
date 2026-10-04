@@ -21,7 +21,7 @@ export function Preview() {
   if (!mounted) return <div className="w-full h-full bg-muted/30" />;
 
   return (
-    <div className="w-full h-full bg-muted/30 overflow-y-auto flex justify-center @container print:bg-transparent print:p-0 print:overflow-visible print:block">
+    <div className="w-full h-full bg-muted/30 overflow-y-auto flex justify-center @container print:!bg-transparent print:p-0 print:overflow-visible print:block">
       {/* Mobile Interactive Zoom View */}
       <div className="md:hidden w-full h-[calc(100vh-64px)] overflow-hidden print:hidden">
         <TransformWrapper
