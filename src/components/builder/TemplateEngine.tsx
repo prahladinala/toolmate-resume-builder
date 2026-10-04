@@ -1,5 +1,6 @@
 import type { ResumeData, ThemeConfig } from "@/types/resume";
 import { Mail, Phone, MapPin, Globe, Briefcase, Terminal } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 type LayoutType =
   "left-sidebar" | "right-sidebar" | "single-column" | "split-header";
@@ -754,7 +755,7 @@ export function TemplateEngine({
         {summary && (
           <section className={`${sectionSpacing} print:break-inside-avoid`}>
             {renderSectionHeader("Summary")}
-            <p className="leading-relaxed text-sm">{summary}</p>
+            <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert"><ReactMarkdown>{summary}</ReactMarkdown></div>
           </section>
         )}
         {renderSkills()}
@@ -786,7 +787,7 @@ export function TemplateEngine({
           {summary && (
             <section className={`${sectionSpacing} print:break-inside-avoid`}>
               {renderSectionHeader("Summary")}
-              <p className="leading-relaxed text-sm">{summary}</p>
+              <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert"><ReactMarkdown>{summary}</ReactMarkdown></div>
             </section>
           )}
           <div className="grid grid-cols-[2fr_1fr] gap-8">
@@ -860,7 +861,7 @@ export function TemplateEngine({
           {summary && (
             <section className={`${sectionSpacing} print:break-inside-avoid`}>
               {renderSectionHeader("Profile")}
-              <p className="leading-relaxed text-sm">{summary}</p>
+              <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert"><ReactMarkdown>{summary}</ReactMarkdown></div>
             </section>
           )}
           {renderExperience()}
@@ -884,7 +885,7 @@ export function TemplateEngine({
           {summary && (
             <section className={`${sectionSpacing} print:break-inside-avoid`}>
               {renderSectionHeader("Summary")}
-              <p className="leading-relaxed text-sm">{summary}</p>
+              <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert"><ReactMarkdown>{summary}</ReactMarkdown></div>
             </section>
           )}
           {renderExperience()}
