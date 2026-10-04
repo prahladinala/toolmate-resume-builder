@@ -123,6 +123,11 @@ function SwipeCard({ template, dummyData, onSwipe, onClick }: any) {
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
       onDragEnd={handleDragEnd}
+      onClick={() => {
+        if (Math.abs(x.get()) < 5) {
+          onClick();
+        }
+      }}
       whileDrag={{ scale: 1.02 }}
       initial={{ scale: 1, y: 0, opacity: 1 }}
       animate={{ scale: 1, y: 0, opacity: 1 }}
@@ -158,15 +163,7 @@ function SwipeCard({ template, dummyData, onSwipe, onClick }: any) {
           </div>
         </div>
       </div>
-      <div
-        className="p-4 flex justify-between items-center bg-[#111113] active:bg-[#27272a] transition-colors"
-        onClick={() => {
-          // If we drag, it might trigger click. So we check if X didn't move much
-          if (Math.abs(x.get()) < 5) {
-            onClick();
-          }
-        }}
-      >
+      <div className="p-4 flex justify-between items-center bg-[#111113] transition-colors pointer-events-none">
         <div className="pointer-events-none">
           <h2 className="font-semibold text-sm text-[#fafafa]">
             {template.name}
