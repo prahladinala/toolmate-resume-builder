@@ -58,10 +58,12 @@ function SortableEducationItem({
     opacity: isDragging ? 0.5 : 1,
   };
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const reg = register as any;
   const err = errors as any;
   const w = watch as any;
   const setV = setValue as any;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   return (
     <div
@@ -83,7 +85,7 @@ function SortableEducationItem({
           variant="ghost"
           size="icon"
           className="h-8 w-8 text-[#a1a1aa] hover:text-red-400"
-          onClick={() => (remove as any)(index)}
+          onClick={() => (((remove as any)))(index)}
         >
           <Trash2 className="h-4 w-4" />
         </Button>
@@ -143,7 +145,7 @@ function SortableEducationItem({
             checked={w(`educations.${index}.current`)}
             onCheckedChange={(checked) => {
               if (checked) {
-                fields.forEach((_: unknown, i: number) => {
+                fields.forEach((/* eslint-disable-next-line @typescript-eslint/no-explicit-any */ _: any, i: number) => {
                   if (i !== index) {
                     setV(`educations.${i}.current`, false, { shouldValidate: true });
                   }
