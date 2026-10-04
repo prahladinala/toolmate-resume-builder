@@ -281,6 +281,9 @@ export function TemplateEngine({
     ...baseConfig,
     accentColor: themeConfig?.accentColor || baseConfig.accentColor,
     fontFamily: themeConfig?.fontFamily || baseConfig.fontFamily,
+    titleFont: themeConfig?.titleFont || themeConfig?.fontFamily || baseConfig.fontFamily,
+    headingFont: themeConfig?.headingFont || themeConfig?.fontFamily || baseConfig.fontFamily,
+    bodyFont: themeConfig?.bodyFont || themeConfig?.fontFamily || baseConfig.fontFamily,
     bgColor: themeConfig?.backgroundColor || baseConfig.bgColor,
     textColor: themeConfig?.headerColor || baseConfig.textColor,
     sectionStyle: themeConfig?.sectionStyle || baseConfig.sectionStyle,
@@ -533,15 +536,15 @@ export function TemplateEngine({
     );
   };
 
-  const renderSectionHeader = (title: string) => {
+  const renderSectionHeader = (title: string, customClasses?: string) => {
     switch (config.sectionStyle) {
       case "badge":
         return (
           <h3
-            className={`text-lg font-bold uppercase tracking-wider mb-4 flex items-center gap-3`}
+            className={`text-lg font-bold uppercase tracking-wider mb-4 flex items-center gap-3 ${fontClasses[config.headingFont]} ${customClasses || ""}`}
           >
             <span
-              className={`${accentClasses.bg} text-white px-3 py-1 rounded-full text-xs`}
+              className={`${accentClasses.bg} text-white px-3 py-1 rounded-full text-xs font-sans`}
             >
               ◆
             </span>
@@ -551,7 +554,7 @@ export function TemplateEngine({
       case "boxed":
         return (
           <h3
-            className={`text-xl font-bold uppercase mb-4 ${accentClasses.bg} text-white p-2 rounded`}
+            className={`text-xl font-bold uppercase mb-4 ${accentClasses.bg} text-white p-2 rounded ${fontClasses[config.headingFont]} ${customClasses || ""}`}
           >
             {title}
           </h3>
@@ -559,7 +562,7 @@ export function TemplateEngine({
       case "underline":
         return (
           <h3
-            className={`text-xl font-bold uppercase mb-4 border-b-2 ${accentClasses.border} pb-1`}
+            className={`text-xl font-bold uppercase mb-4 border-b-2 ${accentClasses.border} pb-1 ${fontClasses[config.headingFont]} ${customClasses || ""}`}
           >
             {title}
           </h3>
@@ -568,7 +571,7 @@ export function TemplateEngine({
       default:
         return (
           <h3
-            className={`text-xl font-bold tracking-widest uppercase mb-4 ${accentClasses.text}`}
+            className={`text-xl font-bold tracking-widest uppercase mb-4 ${accentClasses.text} ${fontClasses[config.headingFont]} ${customClasses || ""}`}
           >
             {title}
           </h3>
@@ -763,7 +766,7 @@ export function TemplateEngine({
                     : "w-full"
               }
             >
-              <h1 className="text-5xl font-black mb-2">
+              <h1 className={`text-5xl font-black mb-2 ${fontClasses[config.titleFont]}`}>
                 {personalInfo.firstName}{" "}
                 <span className={`${accentClasses.text}`}>
                   {personalInfo.lastName}
@@ -787,7 +790,7 @@ export function TemplateEngine({
         >
           {renderImage()}
           <div className="flex-1">
-            <h1 className="text-4xl font-bold mb-2">
+            <h1 className={`text-4xl font-bold mb-2 ${fontClasses[config.titleFont]}`}>
               {personalInfo.firstName} {personalInfo.lastName}
             </h1>
             <h2 className="text-xl opacity-90 mb-4">{personalInfo.title}</h2>
@@ -818,7 +821,7 @@ export function TemplateEngine({
             className={`flex flex-col mb-8 ${config.imageAlign === "left" ? "items-start text-left" : config.imageAlign === "right" ? "items-end text-right" : "items-center text-center"}`}
           >
             <div className="mb-6">{renderImage()}</div>
-            <h1 className="text-3xl font-bold mb-1">
+            <h1 className={`text-3xl font-bold mb-1 ${fontClasses[config.titleFont]}`}>
               {personalInfo.firstName} {personalInfo.lastName}
             </h1>
             <h2 className="text-lg opacity-90">{personalInfo.title}</h2>
@@ -878,7 +881,7 @@ export function TemplateEngine({
       <div className="flex h-full min-h-[297mm]">
         <main className="w-[65%] p-8 pb-24">
           <header className="mb-10">
-            <h1 className={`text-5xl font-black mb-2 ${accentClasses.text}`}>
+            <h1 className={`text-5xl font-black mb-2 ${accentClasses.text} ${fontClasses[config.titleFont]}`}>
               {personalInfo.firstName} {personalInfo.lastName}
             </h1>
             <h2 className="text-2xl font-medium opacity-80">
@@ -912,7 +915,7 @@ export function TemplateEngine({
 
   return (
     <div
-      className={`w-full h-full min-h-[297mm] relative ${fontClasses[config.fontFamily]} ${config.textColor}`}
+      className={`w-full h-full min-h-[297mm] relative ${fontClasses[config.bodyFont]} ${config.textColor}`}
       style={{ backgroundColor: config.bgColor }}
     >
       {layoutContainer}

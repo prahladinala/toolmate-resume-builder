@@ -300,6 +300,70 @@ export function StyleForm() {
 
       {showAdvanced && (
         <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500 pt-2">
+          <div className="space-y-5 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+              Advanced Typography
+            </Label>
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-1">
+              <div className="space-y-2">
+                <Label className="text-xs text-zinc-500 dark:text-[#a1a1aa]">Name & Main Title</Label>
+                <div className="flex flex-wrap gap-2">
+                  {FONTS.map((font) => (
+                    <button
+                      key={`title-${font.id}`}
+                      onClick={() => updateThemeConfig({ titleFont: font.id as "sans" | "serif" | "mono" })}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                        (themeConfig?.titleFont || themeConfig?.fontFamily || "sans") === font.id
+                          ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
+                          : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
+                      }`}
+                    >
+                      <span className={`font-${font.id}`}>{font.label.split(" ")[0]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs text-zinc-500 dark:text-[#a1a1aa]">Section Headings</Label>
+                <div className="flex flex-wrap gap-2">
+                  {FONTS.map((font) => (
+                    <button
+                      key={`heading-${font.id}`}
+                      onClick={() => updateThemeConfig({ headingFont: font.id as "sans" | "serif" | "mono" })}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                        (themeConfig?.headingFont || themeConfig?.fontFamily || "sans") === font.id
+                          ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
+                          : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
+                      }`}
+                    >
+                      <span className={`font-${font.id}`}>{font.label.split(" ")[0]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs text-zinc-500 dark:text-[#a1a1aa]">Body Content</Label>
+                <div className="flex flex-wrap gap-2">
+                  {FONTS.map((font) => (
+                    <button
+                      key={`body-${font.id}`}
+                      onClick={() => updateThemeConfig({ bodyFont: font.id as "sans" | "serif" | "mono" })}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                        (themeConfig?.bodyFont || themeConfig?.fontFamily || "sans") === font.id
+                          ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
+                          : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
+                      }`}
+                    >
+                      <span className={`font-${font.id}`}>{font.label.split(" ")[0]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
             <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
               Section & Badge Layout

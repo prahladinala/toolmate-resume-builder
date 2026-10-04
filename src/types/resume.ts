@@ -78,6 +78,9 @@ export type ThemeConfig = {
   spacing?: "compact" | "normal" | "relaxed";
   sectionOrder?: string[];
   dateFormat?: "MM/YYYY" | "Month YYYY" | "YYYY";
+  titleFont?: "sans" | "serif" | "mono";
+  headingFont?: "sans" | "serif" | "mono";
+  bodyFont?: "sans" | "serif" | "mono";
 };
 
 export type ResumeStore = {
