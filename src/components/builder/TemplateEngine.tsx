@@ -301,6 +301,13 @@ export function TemplateEngine({
       "skills",
     ],
     dateFormat: themeConfig?.dateFormat || "Month YYYY",
+    hidePhoto: themeConfig?.hidePhoto || false,
+    hidePhone: themeConfig?.hidePhone || false,
+    hideEmail: themeConfig?.hideEmail || false,
+    hideLocation: themeConfig?.hideLocation || false,
+    hideLinks: themeConfig?.hideLinks || false,
+    hideDates: themeConfig?.hideDates || false,
+    pageMargin: themeConfig?.pageMargin !== undefined ? themeConfig.pageMargin : 32, // Default 32px padding/margin
   };
 
   const colorClasses = {
@@ -474,7 +481,7 @@ export function TemplateEngine({
   // -- Component Renderers based on Config --
 
   const renderImage = () => {
-    if (!personalInfo.photoBase64 || config.imageAlign === "hidden")
+    if (!personalInfo.photoBase64 || config.imageAlign === "hidden" || config.hidePhoto)
       return null;
     return (
       // eslint-disable-next-line @next/next/no-img-element
@@ -496,37 +503,37 @@ export function TemplateEngine({
       <div
         className={`flex flex-wrap gap-x-4 gap-y-2 mt-4 text-sm ${config.headerAlign === "center" ? "justify-center" : ""}`}
       >
-        {personalInfo.email && (
+        {personalInfo.email && !config.hideEmail && (
           <div className="flex items-center gap-1.5">
             {config.showContactIcons && getIcon("email", iconClass)}
             {personalInfo.email}
           </div>
         )}
-        {personalInfo.phone && (
+        {personalInfo.phone && !config.hidePhone && (
           <div className="flex items-center gap-1.5">
             {config.showContactIcons && getIcon("phone", iconClass)}
             {personalInfo.phone}
           </div>
         )}
-        {personalInfo.location && (
+        {personalInfo.location && !config.hideLocation && (
           <div className="flex items-center gap-1.5">
             {config.showContactIcons && getIcon("location", iconClass)}
             {personalInfo.location}
           </div>
         )}
-        {personalInfo.linkedin && (
+        {personalInfo.linkedin && !config.hideLinks && (
           <div className="flex items-center gap-1.5">
             {config.showContactIcons && getIcon("linkedin", iconClass)}
             {formatUrl(personalInfo.linkedin)}
           </div>
         )}
-        {personalInfo.github && (
+        {personalInfo.github && !config.hideLinks && (
           <div className="flex items-center gap-1.5">
             {config.showContactIcons && getIcon("github", iconClass)}
             {formatUrl(personalInfo.github)}
           </div>
         )}
-        {personalInfo.website && (
+        {personalInfo.website && !config.hideLinks && (
           <div className="flex items-center gap-1.5">
             {config.showContactIcons && getIcon("website", iconClass)}
             {formatUrl(personalInfo.website)}
@@ -581,6 +588,37 @@ export function TemplateEngine({
 
 
   const getSection = (name: string) => {
+    if (name.startsWith('custom-')) {
+      const sectionId = name.replace('custom-', '');
+      const section = data.customSections?.find(s => s.id === sectionId);
+      if (!section || !section.items || section.items.length === 0) return null;
+      return (
+        <section key={name} className={`${sectionSpacing} print:break-inside-avoid`}>
+          {renderSectionHeader(section.title)}
+          <div className={itemSpacing}>
+            {section.items.map((item) => (
+              <div
+                key={item.id}
+                className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? "bg-slate-50 dark:bg-[#111113] p-4 rounded-xl" : ""}`}
+              >
+                <div className="flex justify-between items-baseline mb-1">
+                  <h4 className="font-bold text-lg">{item.name}</h4>
+                  {item.date && (
+                    <span className="text-sm font-semibold opacity-70">
+                      {item.date}
+                    </span>
+                  )}
+                </div>
+                {item.description && (
+                  <p className="text-sm leading-relaxed mb-2 whitespace-pre-wrap">{item.description}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
     switch (name) {
       case 'summary': return summary ? (
         <section key='summary' className={`${sectionSpacing} print:break-inside-avoid`}>
@@ -596,8 +634,17 @@ export function TemplateEngine({
     }
   };
 
-  const mainColOrder = config.sectionOrder.filter(s => ['summary', 'experience', 'projects'].includes(s));
-  const sideColOrder = config.sectionOrder.filter(s => ['skills', 'education'].includes(s));
+  const fullSectionOrder = [...config.sectionOrder];
+  if (data.customSections) {
+    data.customSections.forEach(cs => {
+      if (!fullSectionOrder.includes(`custom-${cs.id}`)) {
+        fullSectionOrder.push(`custom-${cs.id}`);
+      }
+    });
+  }
+
+  const mainColOrder = fullSectionOrder.filter(s => !['skills', 'education'].includes(s));
+  const sideColOrder = fullSectionOrder.filter(s => ['skills', 'education'].includes(s));
 
   const renderExperience = () => {
 
@@ -618,10 +665,12 @@ export function TemplateEngine({
                     @ {exp.company}
                   </span>
                 </h4>
-                <span className="text-sm font-semibold opacity-70">
-                  {formatDate(exp.startDate)} -{" "}
-                  {exp.current ? "Present" : formatDate(exp.endDate)}
-                </span>
+                {!config.hideDates && (
+                  <span className="text-sm font-semibold opacity-70">
+                    {formatDate(exp.startDate)} -{" "}
+                    {exp.current ? "Present" : formatDate(exp.endDate)}
+                  </span>
+                )}
               </div>
               {parseMarkdown(exp.description)}
             </div>
@@ -647,10 +696,12 @@ export function TemplateEngine({
                 <span className={`${accentClasses.text} font-medium`}>
                   {edu.institution}
                 </span>
-                <span className="opacity-70">
-                  {formatDate(edu.startDate)} -{" "}
-                  {edu.current ? "Present" : formatDate(edu.endDate)}
-                </span>
+                {!config.hideDates && (
+                  <span className="opacity-70">
+                    {formatDate(edu.startDate)} -{" "}
+                    {edu.current ? "Present" : formatDate(edu.endDate)}
+                  </span>
+                )}
               </div>
             </div>
           ))}
@@ -745,7 +796,10 @@ export function TemplateEngine({
 
   if (config.layout === "single-column") {
     layoutContainer = (
-      <div className="p-10 pb-24 max-w-4xl mx-auto">
+      <div 
+        className="pb-24 max-w-4xl mx-auto"
+        style={{ padding: `${config.pageMargin}px` }}
+      >
         <header
           className={`mb-10 flex flex-col ${config.headerAlign === "center" ? "items-center text-center" : config.headerAlign === "right" ? "items-end text-right" : "items-start text-left"}`}
         >
@@ -779,14 +833,15 @@ export function TemplateEngine({
             </div>
           </div>
         </header>
-        {config.sectionOrder.map(getSection)}
+        {fullSectionOrder.map(getSection)}
       </div>
     );
   } else if (config.layout === "split-header") {
     layoutContainer = (
       <div>
         <header
-          className={`${accentClasses.bg} text-white p-10 flex gap-8 items-center ${config.imageAlign === "right" ? "flex-row-reverse text-right" : config.imageAlign === "center" ? "flex-col text-center" : "flex-row text-left"}`}
+          className={`${accentClasses.bg} text-white flex gap-8 items-center ${config.imageAlign === "right" ? "flex-row-reverse text-right" : config.imageAlign === "center" ? "flex-col text-center" : "flex-row text-left"}`}
+          style={{ padding: `${config.pageMargin}px` }}
         >
           {renderImage()}
           <div className="flex-1">
@@ -801,7 +856,7 @@ export function TemplateEngine({
             </div>
           </div>
         </header>
-        <div className="p-10 pb-24">
+        <div className="pb-24" style={{ padding: `${config.pageMargin}px` }}>
           <div className="grid grid-cols-[2fr_1fr] gap-8">
             <div>
               {mainColOrder.map(getSection)}
@@ -815,8 +870,8 @@ export function TemplateEngine({
     );
   } else if (config.layout === "left-sidebar") {
     layoutContainer = (
-      <div className="flex h-full min-h-[297mm]">
-        <aside className={`w-[35%] ${accentClasses.bg} text-white p-8 pb-24`}>
+      <div className="flex min-h-[297mm] h-auto">
+        <aside className={`w-[35%] ${accentClasses.bg} text-white pb-24`} style={{ padding: `${config.pageMargin}px` }}>
           <div
             className={`flex flex-col mb-8 ${config.imageAlign === "left" ? "items-start text-left" : config.imageAlign === "right" ? "items-end text-right" : "items-center text-center"}`}
           >
@@ -859,9 +914,11 @@ export function TemplateEngine({
                     <div key={edu.id} className="mb-4">
                       <h4 className="font-bold text-sm">{edu.degree}</h4>
                       <p className="text-xs opacity-80">{edu.institution}</p>
-                      <p className="text-xs opacity-80">
-                        {edu.startDate} - {edu.current ? "Present" : edu.endDate}
-                      </p>
+                      {!config.hideDates && (
+                        <p className="text-xs opacity-80">
+                          {edu.startDate} - {edu.current ? "Present" : edu.endDate}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -870,7 +927,7 @@ export function TemplateEngine({
             })}
           </div>
         </aside>
-        <main className="w-[65%] p-8 pb-24">
+        <main className="w-[65%] pb-24" style={{ padding: `${config.pageMargin}px` }}>
           {mainColOrder.map(getSection)}
         </main>
       </div>
@@ -878,8 +935,8 @@ export function TemplateEngine({
   } else {
     // Right sidebar
     layoutContainer = (
-      <div className="flex h-full min-h-[297mm]">
-        <main className="w-[65%] p-8 pb-24">
+      <div className="flex min-h-[297mm] h-auto">
+        <main className="w-[65%] pb-24" style={{ padding: `${config.pageMargin}px` }}>
           <header className="mb-10">
             <h1 className={`text-5xl font-black mb-2 ${accentClasses.text} ${fontClasses[config.titleFont]}`}>
               {personalInfo.firstName} {personalInfo.lastName}
@@ -890,7 +947,7 @@ export function TemplateEngine({
           </header>
           {mainColOrder.map(getSection)}
         </main>
-        <aside className="w-[35%] bg-slate-100 p-8 pb-24 border-l border-slate-200">
+        <aside className="w-[35%] bg-slate-100 pb-24 border-l border-slate-200" style={{ padding: `${config.pageMargin}px` }}>
           <div
             className={`mb-8 flex flex-col ${config.imageAlign === "left" ? "items-start text-left" : config.imageAlign === "center" ? "items-center text-center" : "items-end text-right"}`}
           >
@@ -915,7 +972,7 @@ export function TemplateEngine({
 
   return (
     <div
-      className={`w-full h-full min-h-[297mm] relative ${fontClasses[config.bodyFont]} ${config.textColor}`}
+      className={`w-full min-h-[297mm] h-auto relative ${fontClasses[config.bodyFont]} ${config.textColor}`}
       style={{ backgroundColor: config.bgColor }}
     >
       {layoutContainer}

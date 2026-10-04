@@ -466,6 +466,57 @@ export function StyleForm() {
         </div>
       </div>
 
+      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+        <div className="flex items-center justify-between">
+          <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+            Page Margin
+          </Label>
+          <span className="text-xs font-medium text-emerald-500">{themeConfig?.pageMargin !== undefined ? themeConfig.pageMargin : 32}px</span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="64"
+          step="4"
+          value={themeConfig?.pageMargin !== undefined ? themeConfig.pageMargin : 32}
+          onChange={(e) => updateThemeConfig({ pageMargin: parseInt(e.target.value) })}
+          className="w-full h-2 bg-zinc-200 dark:bg-[#27272a] rounded-lg appearance-none cursor-pointer accent-emerald-500"
+        />
+        <div className="flex justify-between text-[10px] text-zinc-500 dark:text-[#a1a1aa] font-medium uppercase tracking-wider">
+          <span>Edge-to-Edge</span>
+          <span>Spacious</span>
+        </div>
+      </div>
+
+      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+          Field Visibility
+        </Label>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { id: 'hidePhoto', label: 'Profile Photo' },
+            { id: 'hidePhone', label: 'Phone Number' },
+            { id: 'hideEmail', label: 'Email Address' },
+            { id: 'hideLocation', label: 'Location' },
+            { id: 'hideLinks', label: 'Social Links' },
+            { id: 'hideDates', label: 'Experience Dates' }
+          ].map(field => (
+            <button
+              key={field.id}
+              onClick={() => updateThemeConfig({ [field.id]: !themeConfig?.[field.id as keyof typeof themeConfig] })}
+              className={`p-3 rounded-xl border text-left transition-all text-sm font-medium flex items-center justify-between ${
+                !themeConfig?.[field.id as keyof typeof themeConfig]
+                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
+                  : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46] line-through opacity-70"
+              }`}
+            >
+              <span>{field.label}</span>
+              <div className={`w-2 h-2 rounded-full ${!themeConfig?.[field.id as keyof typeof themeConfig] ? "bg-emerald-500" : "bg-zinc-300 dark:bg-zinc-600"}`} />
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="pt-6 border-t border-zinc-200 dark:border-[#27272a]">
         <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113]">
           <div className="space-y-0.5">

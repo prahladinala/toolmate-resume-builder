@@ -10,6 +10,7 @@ import { SkillsForm } from "@/components/builder/forms/SkillsForm";
 import { ProjectsForm } from "@/components/builder/forms/ProjectsForm";
 import { EducationForm } from "@/components/builder/forms/EducationForm";
 import { StyleForm } from "@/components/builder/forms/StyleForm";
+import { CustomSectionForm } from "@/components/builder/forms/CustomSectionForm";
 import dynamic from "next/dynamic";
 const Preview = dynamic(
   () => import("@/components/builder/Preview").then((mod) => mod.Preview),
@@ -48,6 +49,7 @@ const STEPS = [
   { id: "education", label: "Education", icon: GraduationCap },
   { id: "skills", label: "Skills", icon: Cpu },
   { id: "projects", label: "Projects", icon: Code },
+  { id: "custom", label: "Custom", icon: FileText }, // using FileText for Custom Sections for now
   { id: "style", label: "Style", icon: Palette },
 ];
 
@@ -121,6 +123,8 @@ export default function BuilderPage() {
       case 5:
         return <ProjectsForm />;
       case 6:
+        return <CustomSectionForm />;
+      case 7:
         return <StyleForm />;
       default:
         return null;

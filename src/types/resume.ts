@@ -81,6 +81,13 @@ export type ThemeConfig = {
   titleFont?: "sans" | "serif" | "mono";
   headingFont?: "sans" | "serif" | "mono";
   bodyFont?: "sans" | "serif" | "mono";
+  pageMargin?: number; // 0 to 48 (px)
+  hidePhoto?: boolean;
+  hidePhone?: boolean;
+  hideEmail?: boolean;
+  hideLocation?: boolean;
+  hideLinks?: boolean;
+  hideDates?: boolean;
 };
 
 export type ResumeStore = {
