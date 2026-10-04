@@ -36,7 +36,15 @@ define(["./workbox-4754cb34"], function (e) {
       [
         {
           url: "/_next/app-build-manifest.json",
-          revision: "865011013762935159c0a9226c18ef3e",
+          revision: "088d68cf7beca359508fa86f01ef6d2d",
+        },
+        {
+          url: "/_next/static/RC72qGso_FEqlAr3vyD3m/_buildManifest.js",
+          revision: "7f1ad10814ee3868d06f00193a090e27",
+        },
+        {
+          url: "/_next/static/RC72qGso_FEqlAr3vyD3m/_ssgManifest.js",
+          revision: "b6652df95db52feb4daf4eca35380933",
         },
         {
           url: "/_next/static/chunks/139.7a5a8e93a21948c1.js",
@@ -135,8 +143,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "cef7ae9cf721a85f",
         },
         {
-          url: "/_next/static/chunks/app/templates/page-2722449c2af35adb.js",
-          revision: "2722449c2af35adb",
+          url: "/_next/static/chunks/app/templates/page-a2634646c48c03c9.js",
+          revision: "a2634646c48c03c9",
         },
         {
           url: "/_next/static/chunks/framework-acd67e14855de5a2.js",
@@ -221,14 +229,6 @@ define(["./workbox-4754cb34"], function (e) {
         {
           url: "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
           revision: "65850a373e258f1c897a2b3d75eb74de",
-        },
-        {
-          url: "/_next/static/xFq5AZxRiX1tE9gjEKWH7/_buildManifest.js",
-          revision: "7f1ad10814ee3868d06f00193a090e27",
-        },
-        {
-          url: "/_next/static/xFq5AZxRiX1tE9gjEKWH7/_ssgManifest.js",
-          revision: "b6652df95db52feb4daf4eca35380933",
         },
         { url: "/file.svg", revision: "d09f95206c3fa0bb9bd9fefabfd0ea71" },
         { url: "/globe.svg", revision: "2aaafa6a49b6563925fe440891e32717" },

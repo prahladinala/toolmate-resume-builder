@@ -146,7 +146,7 @@ export function TemplateEngine({
     "des-2": {
       layout: "left-sidebar",
       headerAlign: "left",
-      imageAlign: "hidden",
+      imageAlign: "left",
       fontFamily: "sans",
       accentColor: "purple-600",
       bgColor: "#FFFFFF",
@@ -203,7 +203,7 @@ export function TemplateEngine({
     "corp-3": {
       layout: "right-sidebar",
       headerAlign: "left",
-      imageAlign: "hidden",
+      imageAlign: "left",
       fontFamily: "serif",
       accentColor: "stone-700",
       bgColor: "#FFFFFF",

@@ -55,8 +55,6 @@ export default function BuilderPage() {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const [showPreviewMobile, setShowPreviewMobile] = useState(false);
-  const data = useResumeStore((state) => state.data);
-
   const handleDownload = () => {
     window.print();
   };
@@ -72,6 +70,7 @@ export default function BuilderPage() {
   };
 
   const exportJSON = () => {
+    const data = useResumeStore.getState().data;
     const dataStr =
       "data:text/json;charset=utf-8," +
       encodeURIComponent(JSON.stringify(data, null, 2));
@@ -107,7 +106,7 @@ export default function BuilderPage() {
     }
   };
 
-  const ActiveForm = () => {
+  const renderForm = () => {
     switch (activeStep) {
       case 0:
         return <PersonalInfoForm />;
@@ -252,7 +251,7 @@ export default function BuilderPage() {
               transition={{ duration: 0.2 }}
               className="pb-24 md:pb-0"
             >
-              <ActiveForm />
+              {renderForm()}
             </motion.div>
           </AnimatePresence>
         </div>
