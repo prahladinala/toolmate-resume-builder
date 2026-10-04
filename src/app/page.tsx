@@ -115,7 +115,7 @@ export default function Home() {
               <span className="w-2 h-2 rounded-full bg-[#a855f7] animate-pulse" />
               <span className="text-sm font-medium text-slate-600 dark:text-[#a1a1aa] group-hover:text-slate-900 dark:text-[#fafafa] transition-colors">
                 Discover more developer tools at{" "}
-                <strong className="text-white">ToolMate.co.in</strong>
+                <strong className="text-slate-900 dark:text-white">ToolMate.co.in</strong>
               </span>
               <ArrowRight className="w-4 h-4 text-slate-600 dark:text-[#a1a1aa] group-hover:text-slate-900 dark:text-[#fafafa] transition-colors group-hover:translate-x-1" />
             </a>
@@ -377,20 +377,20 @@ export default function Home() {
           <div className="flex gap-6">
             <Link
               href="/builder"
-              className="hover:text-white transition-colors"
+              className="hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               Builder
             </Link>
             <Link
               href="/templates"
-              className="hover:text-white transition-colors"
+              className="hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               Templates
             </Link>
             <Link
               href="/contact"
               target="_blank"
-              className="hover:text-white transition-colors"
+              className="hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               Contact
             </Link>
@@ -398,7 +398,7 @@ export default function Home() {
               href="https://github.com"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-white transition-colors"
+              className="hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               GitHub
             </a>
