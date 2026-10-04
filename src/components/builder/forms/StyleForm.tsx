@@ -433,6 +433,7 @@ export function StyleForm() {
           </button>
         </div>
       </div>
+        </div>
       )}
     </div>
   );
