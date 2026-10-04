@@ -104,6 +104,7 @@ export type ResumeStore = {
   addEducation: (edu: Education) => void;
   updateEducation: (id: string, edu: Partial<Education>) => void;
   removeEducation: (id: string) => void;
+  reorderEducation: (startIndex: number, endIndex: number) => void;
 
   // Skills
   addSkill: (skill: Skill) => void;
