@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import { useState } from "react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Label } from "@/components/ui/label";

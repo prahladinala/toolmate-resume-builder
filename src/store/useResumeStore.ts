@@ -129,6 +129,14 @@ export const useResumeStore = create<ResumeStore>()(
           },
         })),
 
+      reorderEducation: (startIndex, endIndex) =>
+        set((state) => {
+          const result = Array.from(state.data.education);
+          const [removed] = result.splice(startIndex, 1);
+          result.splice(endIndex, 0, removed);
+          return { data: { ...state.data, education: result } };
+        }),
+
       addSkill: (skill) =>
         set((state) => ({
           data: { ...state.data, skills: [...state.data.skills, skill] },
@@ -141,6 +149,14 @@ export const useResumeStore = create<ResumeStore>()(
             skills: state.data.skills.filter((s) => s.id !== id),
           },
         })),
+
+      reorderSkills: (startIndex, endIndex) =>
+        set((state) => {
+          const result = Array.from(state.data.skills);
+          const [removed] = result.splice(startIndex, 1);
+          result.splice(endIndex, 0, removed);
+          return { data: { ...state.data, skills: result } };
+        }),
 
       addCustomSection: (section) =>
         set((state) => ({

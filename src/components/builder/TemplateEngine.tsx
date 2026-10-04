@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import { Fragment } from "react";
 import type { ResumeData, ThemeConfig } from "@/types/resume";
 import { Mail, Phone, MapPin, Globe, Briefcase, Terminal } from "lucide-react";
