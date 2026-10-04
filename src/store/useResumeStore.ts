@@ -12,6 +12,7 @@ const initialData: ResumeData = {
     title: "",
   },
   summary: "",
+  coverLetter: `**Date:** October 4, 2026\n\n**To Hiring Manager,**\n\nI am writing to express my strong interest in the open position at your company. With a solid foundation in engineering and a passion for building scalable, user-centric solutions, I am confident in my ability to make an immediate impact on your team.\n\nThroughout my career, I have consistently delivered high-quality results by collaborating cross-functionally, optimizing processes, and adapting quickly to new technologies. I thrive in dynamic environments and am eager to bring my unique blend of technical expertise and problem-solving skills to help achieve your organization's goals.\n\nI would welcome the opportunity to discuss how my background, skills, and enthusiasm align with the needs of your team. Please find my resume attached for your review.\n\nThank you for your time and consideration.\n\nSincerely,\n\n**[Your Name]**`,
   experience: [],
   projects: [],
   education: [],

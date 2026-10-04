@@ -102,7 +102,7 @@ export function BuilderClient() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#fafafa] dark:bg-[#111113] overflow-hidden font-sans">
+    <div className="flex h-screen w-full bg-[#fafafa] dark:bg-[#111113] overflow-hidden font-sans print:h-auto print:overflow-visible">
       <BuilderSidebar
         steps={STEPS}
         activeStep={activeStep}
@@ -138,7 +138,7 @@ export function BuilderClient() {
 
       {/* RIGHT: Live Preview Panel */}
       <div
-        className={`flex-1 h-full relative bg-zinc-100 dark:bg-[#111113] print:bg-white print:!m-0 print:!p-0 print:absolute print:inset-0 print:z-50 ${
+        className={`flex-1 h-full relative bg-zinc-100 dark:bg-[#111113] print:bg-white print:!m-0 print:!p-0 print:absolute print:inset-0 print:z-50 print:!block ${
           !showPreviewMobile ? "hidden md:block" : "block"
         }`}
       >

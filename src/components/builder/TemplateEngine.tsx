@@ -628,13 +628,19 @@ export function TemplateEngine({
     }
 
     switch (name) {
-      case 'cover-letter': return data.coverLetter ? (
+      case 'cover-letter': return (
         <section key='cover-letter' className={`${sectionSpacing}`}>
           <div className='leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert'>
-            <ReactMarkdown>{data.coverLetter}</ReactMarkdown>
+            {data.coverLetter ? (
+              <ReactMarkdown>{data.coverLetter}</ReactMarkdown>
+            ) : (
+              <p className="text-muted-foreground italic">
+                Your cover letter is empty. Go to the Cover Letter step to write one!
+              </p>
+            )}
           </div>
         </section>
-      ) : null;
+      );
       case 'summary': return summary ? (
         <section key='summary' className={`${sectionSpacing} print:break-inside-avoid`}>
           {renderSectionHeader('Summary')}
