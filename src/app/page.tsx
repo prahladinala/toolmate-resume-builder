@@ -1,11 +1,14 @@
 "use client";
 
-import { ArrowRight, Shield, FileText, Zap } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Shield, FileText, Zap, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { HeroAnimatedText } from "@/components/HeroAnimatedText";
 
 export default function Home() {
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -224,50 +227,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* FAQ Section */}
-        <section className="border-t border-[#27272a] bg-[#09090b] py-32 px-4">
-          <div className="container mx-auto max-w-3xl">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                Frequently Asked Questions
-              </h2>
-            </div>
-
-            <div className="flex flex-col gap-6">
-              {[
-                {
-                  q: "Is this completely free?",
-                  a: "Yes. There are no premium tiers, hidden fees, or watermarks. It is 100% free forever.",
-                },
-                {
-                  q: "Do I need to create an account?",
-                  a: "No. We believe in zero friction. You don't need an account to build or download your resume.",
-                },
-                {
-                  q: "Where is my data stored?",
-                  a: "Everything is stored locally in your browser's LocalStorage. Your personal data never touches our servers, ensuring complete privacy.",
-                },
-                {
-                  q: "Are the templates ATS-friendly?",
-                  a: "Absolutely. Our templates are constructed using semantic HTML to ensure applicant tracking systems can easily parse your text.",
-                },
-              ].map((faq, i) => (
-                <div
-                  key={i}
-                  className="group border border-[#27272a] bg-[#111113]/50 rounded-2xl p-8 hover:bg-[#111113] transition-colors"
-                >
-                  <h3 className="text-lg font-semibold text-[#fafafa] mb-3">
-                    {faq.q}
-                  </h3>
-                  <p className="text-[#a1a1aa] leading-relaxed text-sm md:text-base">
-                    {faq.a}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Meet the Developer Section */}
         <section className="border-t border-[#27272a] bg-[#09090b] py-24 px-4 flex flex-col items-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#27272a] bg-[#09090b]/80 backdrop-blur-sm text-xs font-medium mb-12">
@@ -348,6 +307,64 @@ export default function Home() {
                   Portfolio
                 </a>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="border-t border-[#27272a] bg-[#09090b] py-32 px-4">
+          <div className="container mx-auto max-w-3xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                Frequently Asked Questions
+              </h2>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              {[
+                {
+                  q: "Is this completely free?",
+                  a: "Yes. There are no premium tiers, hidden fees, or watermarks. It is 100% free forever.",
+                },
+                {
+                  q: "Do I need to create an account?",
+                  a: "No. We believe in zero friction. You don't need an account to build or download your resume.",
+                },
+                {
+                  q: "Where is my data stored?",
+                  a: "Everything is stored locally in your browser's LocalStorage. Your personal data never touches our servers, ensuring complete privacy.",
+                },
+                {
+                  q: "Are the templates ATS-friendly?",
+                  a: "Absolutely. Our templates are constructed using semantic HTML to ensure applicant tracking systems can easily parse your text.",
+                },
+              ].map((faq, i) => (
+                <div
+                  key={i}
+                  className="group border border-[#27272a] bg-[#111113]/50 rounded-2xl overflow-hidden hover:bg-[#111113] transition-colors"
+                >
+                  <button
+                    onClick={() => setActiveFaq(activeFaq === i ? null : i)}
+                    className="w-full text-left p-6 flex items-center justify-between focus:outline-none"
+                  >
+                    <h3 className="text-lg font-semibold text-[#fafafa]">
+                      {faq.q}
+                    </h3>
+                    <ChevronDown
+                      className={`w-5 h-5 text-[#a1a1aa] transition-transform duration-300 ${activeFaq === i ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  <div
+                    className={`grid transition-all duration-300 ease-in-out ${activeFaq === i ? "grid-rows-[1fr] opacity-100 pb-6" : "grid-rows-[0fr] opacity-0"}`}
+                  >
+                    <div className="overflow-hidden px-6">
+                      <p className="text-[#a1a1aa] leading-relaxed text-sm md:text-base">
+                        {faq.a}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>

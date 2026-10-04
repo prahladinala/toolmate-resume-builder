@@ -16,15 +16,15 @@ if (!self.define) {
       })
   );
   self.define = (c, t) => {
-    const i =
+    const n =
       e ||
       ("document" in self ? document.currentScript.src : "") ||
       location.href;
-    if (a[i]) return;
-    let n = {};
-    const f = (e) => s(e, i),
-      r = { module: { uri: i }, exports: n, require: f };
-    a[i] = Promise.all(c.map((e) => r[e] || f(e))).then((e) => (t(...e), n));
+    if (a[n]) return;
+    let i = {};
+    const f = (e) => s(e, n),
+      r = { module: { uri: n }, exports: i, require: f };
+    a[n] = Promise.all(c.map((e) => r[e] || f(e))).then((e) => (t(...e), i));
   };
 }
 define(["./workbox-4754cb34"], function (e) {
@@ -36,7 +36,15 @@ define(["./workbox-4754cb34"], function (e) {
       [
         {
           url: "/_next/app-build-manifest.json",
-          revision: "2d901dc044958d18a911c74a8096a5dc",
+          revision: "02d333b0f7cc1f87a705d9b3453d65f6",
+        },
+        {
+          url: "/_next/static/DkYgKEQwIOeCVztt_nFMt/_buildManifest.js",
+          revision: "7f1ad10814ee3868d06f00193a090e27",
+        },
+        {
+          url: "/_next/static/DkYgKEQwIOeCVztt_nFMt/_ssgManifest.js",
+          revision: "b6652df95db52feb4daf4eca35380933",
         },
         {
           url: "/_next/static/chunks/139.7a5a8e93a21948c1.js",
@@ -79,8 +87,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "e077da836e6deae1",
         },
         {
-          url: "/_next/static/chunks/881-ad82692480996968.js",
-          revision: "ad82692480996968",
+          url: "/_next/static/chunks/881-be28cee2295d47ee.js",
+          revision: "be28cee2295d47ee",
         },
         {
           url: "/_next/static/chunks/928-25237a0a43cb234b.js",
@@ -163,8 +171,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "846118c33b2c0e922d7b3a7676f81f6f",
         },
         {
-          url: "/_next/static/chunks/webpack-deb139c9d8b04037.js",
-          revision: "deb139c9d8b04037",
+          url: "/_next/static/chunks/webpack-d3c8a56299aced25.js",
+          revision: "d3c8a56299aced25",
         },
         {
           url: "/_next/static/css/d8b9d9727524007e.css",
@@ -221,14 +229,6 @@ define(["./workbox-4754cb34"], function (e) {
         {
           url: "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
           revision: "65850a373e258f1c897a2b3d75eb74de",
-        },
-        {
-          url: "/_next/static/zZUoFCzjzVQ9A6bOLj6KH/_buildManifest.js",
-          revision: "7f1ad10814ee3868d06f00193a090e27",
-        },
-        {
-          url: "/_next/static/zZUoFCzjzVQ9A6bOLj6KH/_ssgManifest.js",
-          revision: "b6652df95db52feb4daf4eca35380933",
         },
         { url: "/file.svg", revision: "d09f95206c3fa0bb9bd9fefabfd0ea71" },
         { url: "/globe.svg", revision: "2aaafa6a49b6563925fe440891e32717" },
