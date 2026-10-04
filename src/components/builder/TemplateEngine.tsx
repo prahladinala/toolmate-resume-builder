@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { ResumeData, ThemeConfig } from "@/types/resume";
 import { Mail, Phone, MapPin, Globe, Briefcase, Terminal } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -573,7 +574,28 @@ export function TemplateEngine({
     }
   };
 
+
+  const getSection = (name) => {
+    switch (name) {
+      case 'summary': return summary ? (
+        <section key='summary' className={`${sectionSpacing} print:break-inside-avoid`}>
+          {renderSectionHeader('Summary')}
+          <div className='leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert'><ReactMarkdown>{summary}</ReactMarkdown></div>
+        </section>
+      ) : null;
+      case 'experience': return <Fragment key='experience'>{renderExperience()}</Fragment>;
+      case 'projects': return <Fragment key='projects'>{renderProjects()}</Fragment>;
+      case 'education': return <Fragment key='education'>{renderEducation()}</Fragment>;
+      case 'skills': return <Fragment key='skills'>{renderSkills()}</Fragment>;
+      default: return null;
+    }
+  };
+
+  const mainColOrder = config.sectionOrder.filter(s => ['summary', 'experience', 'projects'].includes(s));
+  const sideColOrder = config.sectionOrder.filter(s => ['skills', 'education'].includes(s));
+
   const renderExperience = () => {
+
     if (!data.experience || data.experience.length === 0) return null;
     return (
       <section className={sectionSpacing}>
@@ -752,16 +774,7 @@ export function TemplateEngine({
             </div>
           </div>
         </header>
-        {summary && (
-          <section className={`${sectionSpacing} print:break-inside-avoid`}>
-            {renderSectionHeader("Summary")}
-            <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert"><ReactMarkdown>{summary}</ReactMarkdown></div>
-          </section>
-        )}
-        {renderSkills()}
-        {renderExperience()}
-        {renderProjects()}
-        {renderEducation()}
+        {config.sectionOrder.map(getSection)}
       </div>
     );
   } else if (config.layout === "split-header") {
@@ -784,20 +797,12 @@ export function TemplateEngine({
           </div>
         </header>
         <div className="p-10 pb-24">
-          {summary && (
-            <section className={`${sectionSpacing} print:break-inside-avoid`}>
-              {renderSectionHeader("Summary")}
-              <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert"><ReactMarkdown>{summary}</ReactMarkdown></div>
-            </section>
-          )}
           <div className="grid grid-cols-[2fr_1fr] gap-8">
             <div>
-              {renderExperience()}
-              {renderProjects()}
+              {mainColOrder.map(getSection)}
             </div>
             <div>
-              {renderSkills()}
-              {renderEducation()}
+              {sideColOrder.map(getSection)}
             </div>
           </div>
         </div>

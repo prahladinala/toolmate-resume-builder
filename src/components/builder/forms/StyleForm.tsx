@@ -1,6 +1,53 @@
 import { useResumeStore } from "@/store/useResumeStore";
 import { Label } from "@/components/ui/label";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { GripVertical } from "lucide-react";
 
+function SortableSectionItem({ id, label }: { id: string; label: string }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 1 : 0,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-3 p-3 bg-white dark:bg-[#111113] border border-zinc-200 dark:border-[#27272a] rounded-xl shadow-sm"
+    >
+      <button
+        type="button"
+        className="cursor-move text-zinc-400 hover:text-zinc-900 dark:hover:text-[#fafafa] transition-colors"
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical className="w-5 h-5" />
+      </button>
+      <span className="font-medium text-sm text-zinc-700 dark:text-[#e4e4e7] capitalize">{label}</span>
+    </div>
+  );
+}
 const COLORS = [
   { id: "zinc-900", label: "Zinc", class: "bg-zinc-900" },
   { id: "slate-800", label: "Slate", class: "bg-slate-800" },
@@ -75,6 +122,32 @@ const DATE_FORMATS = [
 export function StyleForm() {
   const { themeConfig, updateThemeConfig } = useResumeStore();
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  const sectionOrder = themeConfig?.sectionOrder || [
+    "summary",
+    "experience",
+    "projects",
+    "education",
+    "skills",
+  ];
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = sectionOrder.indexOf(active.id as string);
+      const newIndex = sectionOrder.indexOf(over?.id as string);
+      updateThemeConfig({
+        sectionOrder: arrayMove(sectionOrder, oldIndex, newIndex),
+      });
+    }
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
       <div className="space-y-1">
@@ -82,8 +155,37 @@ export function StyleForm() {
           Advanced Style Customization
         </h3>
         <p className="text-sm text-muted-foreground">
-          Fine-tune your resume&apos;s colors, typography, and section styling.
+          Fine-tune your resume&apos;s colors, typography, layout, and section ordering.
         </p>
+      </div>
+
+      <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-[#27272a]">
+        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+          Section Order
+        </Label>
+        <p className="text-xs text-zinc-500 dark:text-[#a1a1aa] mb-2">
+          Drag and drop to reorder the sections on your resume. This affects the main content flow.
+        </p>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={sectionOrder}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="space-y-2 flex flex-col">
+              {sectionOrder.map((sectionId) => (
+                <SortableSectionItem
+                  key={sectionId}
+                  id={sectionId}
+                  label={sectionId}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       </div>
 
       <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-[#27272a]">
