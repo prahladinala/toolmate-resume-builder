@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useResumeStore } from "@/store/useResumeStore";
 import type { ResumeTemplate, ResumeData } from "@/types/resume";
 import { TemplateEngine } from "@/components/builder/TemplateEngine";
-
+import { TinderSwipeGallery } from "./TinderSwipeGallery";
 const dummyData: ResumeData = {
   personalInfo: {
     firstName: "John",
@@ -137,7 +137,15 @@ export function TemplateGallery({
           value={category.id}
           className="mt-0 outline-none"
         >
-          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 overflow-x-auto snap-x snap-mandatory pb-8 md:pb-0 md:overflow-visible [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="md:hidden">
+            <TinderSwipeGallery
+              templates={templates.filter((t) => t.category === category.id)}
+              onSelect={handleSelect}
+              dummyData={dummyData}
+            />
+          </div>
+
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 overflow-visible">
             {templates
               .filter((t) => t.category === category.id)
               .map((template, i) => (
