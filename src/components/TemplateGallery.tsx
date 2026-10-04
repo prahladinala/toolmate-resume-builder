@@ -123,7 +123,7 @@ export function TemplateGallery({
             <TabsTrigger
               key={c.id}
               value={c.id}
-              className="rounded-full text-xs font-medium data-[state=active]:bg-[#27272a] data-[state=active]:text-zinc-900 dark:text-[#fafafa] text-zinc-500 dark:text-[#a1a1aa]"
+              className="rounded-full text-xs font-medium data-[state=active]:bg-zinc-200 dark:data-[state=active]:bg-[#27272a] data-[state=active]:text-[#09090b] dark:data-[state=active]:text-[#fafafa] text-zinc-500 dark:text-[#a1a1aa] transition-all"
             >
               {c.label}
             </TabsTrigger>

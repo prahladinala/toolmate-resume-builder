@@ -138,14 +138,14 @@ export default function BuilderPage() {
         <div className="flex flex-col gap-6 w-full items-center">
           <button
             onClick={handleBack}
-            className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-[#111113] border border-zinc-200 dark:border-[#27272a] flex items-center justify-center hover:bg-[#27272a] transition-all hover:scale-105"
+            className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-[#111113] border border-zinc-200 dark:border-[#27272a] flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-[#27272a] transition-all hover:scale-105"
             aria-label="Go back"
             title="Back to Templates"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
 
-          <div className="w-10 h-[1px] bg-[#27272a] rounded-full" />
+          <div className="w-10 h-[1px] bg-zinc-200 dark:bg-[#27272a] rounded-full" />
 
           <div className="flex flex-col gap-3 w-full px-3">
             {STEPS.map((step, idx) => (
@@ -154,8 +154,8 @@ export default function BuilderPage() {
                 onClick={() => setActiveStep(idx)}
                 className={`group relative flex items-center justify-center h-12 w-full rounded-xl transition-all duration-200 ${
                   activeStep === idx
-                    ? "bg-[#fafafa] text-[#09090b] shadow-sm"
-                    : "text-zinc-500 dark:text-[#a1a1aa] hover:bg-[#27272a] hover:text-zinc-900 dark:text-[#fafafa]"
+                    ? "bg-zinc-200 dark:bg-[#fafafa] text-[#09090b] shadow-sm"
+                    : "text-zinc-500 dark:text-[#a1a1aa] hover:bg-zinc-100 dark:hover:bg-[#27272a] hover:text-zinc-900 dark:hover:text-[#fafafa]"
                 }`}
                 title={step.label}
               >
@@ -163,7 +163,7 @@ export default function BuilderPage() {
                   className={`h-5 w-5 transition-transform ${activeStep === idx ? "scale-110" : "group-hover:scale-110"}`}
                 />
                 {/* Tooltip for desktop */}
-                <span className="absolute left-14 bg-[#27272a] text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap transition-opacity z-50">
+                <span className="absolute left-14 bg-zinc-800 dark:bg-[#27272a] text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap transition-opacity z-50">
                   {step.label}
                 </span>
               </button>
@@ -180,18 +180,18 @@ export default function BuilderPage() {
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               title="Import JSON Backup"
             />
-            <button className="h-10 w-10 rounded-full border border-zinc-200 dark:border-[#27272a] flex items-center justify-center hover:bg-[#27272a] transition-colors text-zinc-500 dark:text-[#a1a1aa] hover:text-zinc-900 dark:text-[#fafafa]">
+            <button className="h-10 w-10 rounded-full border border-zinc-200 dark:border-[#27272a] flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-[#27272a] transition-colors text-zinc-500 dark:text-[#a1a1aa] hover:text-zinc-900 dark:hover:text-[#fafafa]">
               <Upload className="h-4 w-4" />
             </button>
           </div>
           <button
             onClick={exportJSON}
-            className="h-10 w-10 rounded-full border border-zinc-200 dark:border-[#27272a] flex items-center justify-center hover:bg-[#27272a] transition-colors text-zinc-500 dark:text-[#a1a1aa] hover:text-zinc-900 dark:text-[#fafafa]"
+            className="h-10 w-10 rounded-full border border-zinc-200 dark:border-[#27272a] flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-[#27272a] transition-colors text-zinc-500 dark:text-[#a1a1aa] hover:text-zinc-900 dark:hover:text-[#fafafa]"
             title="Export JSON Backup"
           >
             <Save className="h-4 w-4" />
           </button>
-          <div className="w-10 h-[1px] bg-[#27272a] rounded-full my-1" />
+          <div className="w-10 h-[1px] bg-zinc-200 dark:bg-[#27272a] rounded-full my-1" />
           <ThemeToggle />
         </div>
       </nav>
@@ -233,7 +233,7 @@ export default function BuilderPage() {
                 onClick={() => setActiveStep(idx)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-colors ${
                   activeStep === idx
-                    ? "bg-[#27272a] text-zinc-900 dark:text-[#fafafa]"
+                    ? "bg-zinc-200 dark:bg-[#27272a] text-[#09090b] dark:text-[#fafafa]"
                     : "bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] border border-zinc-200 dark:border-[#27272a]"
                 }`}
               >

@@ -182,13 +182,13 @@ export default function TemplatesPage() {
           <div className="flex gap-6">
             <Link
               href="/builder"
-              className="hover:text-white transition-colors"
+              className="hover:text-zinc-900 dark:hover:text-white transition-colors"
             >
               Builder
             </Link>
             <Link
               href="/templates"
-              className="hover:text-white transition-colors"
+              className="hover:text-zinc-900 dark:hover:text-white transition-colors"
             >
               Templates
             </Link>
@@ -196,7 +196,7 @@ export default function TemplatesPage() {
               href="https://github.com"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-white transition-colors"
+              className="hover:text-zinc-900 dark:hover:text-white transition-colors"
             >
               GitHub
             </a>
