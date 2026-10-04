@@ -466,6 +466,10 @@ export function TemplateEngine({
     );
   };
 
+  const formatUrl = (url: string) => {
+    return url.replace(/^(https?:\/\/)?(www\.)?/, "").replace(/\/$/, "");
+  };
+
   const renderContactInfo = (iconColorClass?: string) => {
     const iconClass = iconColorClass || accentClasses.text;
     return (
@@ -493,19 +497,19 @@ export function TemplateEngine({
         {personalInfo.linkedin && (
           <div className="flex items-center gap-1.5">
             {config.showContactIcons && getIcon("linkedin", iconClass)}
-            {personalInfo.linkedin.replace("https://", "")}
+            {formatUrl(personalInfo.linkedin)}
           </div>
         )}
         {personalInfo.github && (
           <div className="flex items-center gap-1.5">
             {config.showContactIcons && getIcon("github", iconClass)}
-            {personalInfo.github.replace("https://", "")}
+            {formatUrl(personalInfo.github)}
           </div>
         )}
         {personalInfo.website && (
           <div className="flex items-center gap-1.5">
             {config.showContactIcons && getIcon("website", iconClass)}
-            {personalInfo.website.replace("https://", "")}
+            {formatUrl(personalInfo.website)}
           </div>
         )}
       </div>
