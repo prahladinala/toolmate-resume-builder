@@ -143,7 +143,7 @@ function SortableEducationItem({
             checked={w(`educations.${index}.current`)}
             onCheckedChange={(checked) => {
               if (checked) {
-                fields.forEach((/* eslint-disable-next-line @typescript-eslint/no-explicit-any */ _: any, i: number) => {
+                fields.forEach((_: unknown, i: number) => {
                   if (i !== index) {
                     setV(`educations.${i}.current`, false, { shouldValidate: true });
                   }
