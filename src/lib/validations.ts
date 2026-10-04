@@ -45,7 +45,7 @@ export const experienceSchema = z.object({
 export const projectSchema = z.object({
   id: z.string(),
   name: z.string().min(1, "Project name is required"),
-  description: z.string().min(10, "Project description is required"),
+  description: z.string().min(1, "Project description is required"),
   technologies: z.array(z.string()).min(1, "Add at least one technology"),
   url: z.string().url("Invalid URL").optional().or(z.literal("")),
   github: z.string().url("Invalid URL").optional().or(z.literal("")),
