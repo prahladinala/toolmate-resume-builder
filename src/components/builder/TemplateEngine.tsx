@@ -575,7 +575,7 @@ export function TemplateEngine({
   };
 
 
-  const getSection = (name) => {
+  const getSection = (name: string) => {
     switch (name) {
       case 'summary': return summary ? (
         <section key='summary' className={`${sectionSpacing} print:break-inside-avoid`}>
