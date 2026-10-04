@@ -22,6 +22,12 @@ interface EngineConfig {
   showContactIcons: boolean;
 }
 
+const fontClasses = {
+  sans: "font-sans",
+  serif: "font-serif",
+  mono: "font-mono",
+};
+
 function parseMarkdown(text: string) {
   if (!text) return null;
   // Handle basic markdown: **bold**, *italic*, - bullet points
@@ -964,11 +970,7 @@ export function TemplateEngine({
     );
   }
 
-  const fontClasses = {
-    sans: "font-sans",
-    serif: "font-serif",
-    mono: "font-mono",
-  };
+
 
   return (
     <div
