@@ -58,12 +58,10 @@ function SortableEducationItem({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  const reg = register as any;
-  const err = errors as any;
-  const w = watch as any;
-  const setV = setValue as any;
-  /* eslint-enable @typescript-eslint/no-explicit-any */
+  const reg = register as unknown as (name: string) => object;
+  const err = errors as Record<string, unknown>;
+  const w = watch as unknown as (name: string) => unknown;
+  const setV = setValue as unknown as (name: string, value: unknown) => void;
 
   return (
     <div
@@ -85,7 +83,7 @@ function SortableEducationItem({
           variant="ghost"
           size="icon"
           className="h-8 w-8 text-zinc-500 dark:text-[#a1a1aa] hover:text-red-400"
-          onClick={() => (((remove as any)))(index)}
+          onClick={() => (remove as (index: number) => void)(index)}
         >
           <Trash2 className="h-4 w-4" />
         </Button>
