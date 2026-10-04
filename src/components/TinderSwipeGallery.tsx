@@ -46,12 +46,12 @@ export function TinderSwipeGallery({
         {/* Next Card (Background) */}
         <motion.div
           key={nextTemplate.id + "-next"}
-          className="absolute inset-0 w-full h-full rounded-[24px] border border-[#27272a] bg-[#111113] overflow-hidden flex flex-col pointer-events-none"
+          className="absolute inset-0 w-full h-full rounded-[24px] border border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] overflow-hidden flex flex-col pointer-events-none"
           initial={{ scale: 0.95, y: 10, opacity: 0.5 }}
           animate={{ scale: 0.95, y: 10, opacity: 0.5 }}
           exit={{ opacity: 0 }}
         >
-          <div className="flex-1 w-full bg-white flex items-center justify-center relative border-b border-[#27272a] @container">
+          <div className="flex-1 w-full bg-white flex items-center justify-center relative border-b border-zinc-200 dark:border-[#27272a] @container">
             <div className="absolute inset-0 overflow-hidden bg-white select-none flex items-center justify-center">
               <div
                 className="w-[794px] h-[1123px] bg-white origin-center"
@@ -63,12 +63,12 @@ export function TinderSwipeGallery({
               </div>
             </div>
           </div>
-          <div className="p-4 flex justify-between items-center bg-[#111113]">
+          <div className="p-4 flex justify-between items-center bg-zinc-50 dark:bg-[#111113]">
             <div>
-              <h2 className="font-semibold text-sm text-[#fafafa]">
+              <h2 className="font-semibold text-sm text-zinc-900 dark:text-[#fafafa]">
                 {nextTemplate.name}
               </h2>
-              <p className="text-[10px] text-[#a1a1aa] capitalize mt-0.5">
+              <p className="text-[10px] text-zinc-500 dark:text-[#a1a1aa] capitalize mt-0.5">
                 {nextTemplate.category}
               </p>
             </div>
@@ -118,7 +118,7 @@ function SwipeCard({ template, dummyData, onSwipe, onClick }: any) {
 
   return (
     <motion.div
-      className="absolute inset-0 w-full h-full rounded-[24px] border border-[#27272a] bg-[#111113] overflow-hidden flex flex-col shadow-2xl cursor-grab active:cursor-grabbing origin-bottom"
+      className="absolute inset-0 w-full h-full rounded-[24px] border border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] overflow-hidden flex flex-col shadow-2xl cursor-grab active:cursor-grabbing origin-bottom"
       style={{ x, rotate, opacity }}
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
@@ -137,7 +137,7 @@ function SwipeCard({ template, dummyData, onSwipe, onClick }: any) {
         transition: { duration: 0.2 },
       }}
     >
-      <div className="flex-1 w-full bg-white flex items-center justify-center relative border-b border-[#27272a] @container pointer-events-none">
+      <div className="flex-1 w-full bg-white flex items-center justify-center relative border-b border-zinc-200 dark:border-[#27272a] @container pointer-events-none">
         {/* Swipe Overlays */}
         <motion.div
           style={{ opacity: nopeOpacity }}
@@ -163,12 +163,12 @@ function SwipeCard({ template, dummyData, onSwipe, onClick }: any) {
           </div>
         </div>
       </div>
-      <div className="p-4 flex justify-between items-center bg-[#111113] transition-colors pointer-events-none">
+      <div className="p-4 flex justify-between items-center bg-zinc-50 dark:bg-[#111113] transition-colors pointer-events-none">
         <div className="pointer-events-none">
-          <h2 className="font-semibold text-sm text-[#fafafa]">
+          <h2 className="font-semibold text-sm text-zinc-900 dark:text-[#fafafa]">
             {template.name}
           </h2>
-          <p className="text-[10px] text-[#a1a1aa] capitalize mt-0.5">
+          <p className="text-[10px] text-zinc-500 dark:text-[#a1a1aa] capitalize mt-0.5">
             {template.category}
           </p>
         </div>

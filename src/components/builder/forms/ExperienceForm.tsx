@@ -64,13 +64,13 @@ function SortableExperienceItem({
     <div
       ref={setNodeRef}
       style={style}
-      className="p-4 border border-[#27272a] rounded-xl space-y-4 bg-[#111113] relative group shadow-sm"
+      className="p-4 border border-zinc-200 dark:border-[#27272a] rounded-xl space-y-4 bg-zinc-50 dark:bg-[#111113] relative group shadow-sm"
     >
       <div className="absolute top-2 right-2 flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 cursor-move text-[#a1a1aa] hover:text-[#fafafa]"
+          className="h-8 w-8 cursor-move text-zinc-500 dark:text-[#a1a1aa] hover:text-zinc-900 dark:text-[#fafafa]"
           {...attributes}
           {...listeners}
         >
@@ -79,7 +79,7 @@ function SortableExperienceItem({
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-[#a1a1aa] hover:text-red-400"
+          className="h-8 w-8 text-zinc-500 dark:text-[#a1a1aa] hover:text-red-400"
           onClick={() => remove(index)}
         >
           <Trash2 className="h-4 w-4" />
@@ -282,7 +282,7 @@ export function ExperienceForm() {
               />
             ))}
             {fields.length === 0 && (
-              <div className="text-center py-12 border border-dashed border-[#27272a] rounded-xl text-[#a1a1aa]">
+              <div className="text-center py-12 border border-dashed border-zinc-200 dark:border-[#27272a] rounded-xl text-zinc-500 dark:text-[#a1a1aa]">
                 No experience added yet. Click the Add button above.
               </div>
             )}

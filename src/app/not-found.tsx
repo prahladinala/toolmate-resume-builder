@@ -5,7 +5,7 @@ import { ArrowLeft, AlertCircle } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-[#09090b] text-[#fafafa] selection:bg-[#a855f7]/30 dark">
+    <div className="min-h-screen flex flex-col font-sans bg-white dark:bg-[#09090b] text-zinc-900 dark:text-[#fafafa] selection:bg-[#a855f7]/30 dark">
       {/* Minimal Navbar */}
       <nav className="flex items-center justify-between px-6 py-6 max-w-7xl mx-auto w-full z-50">
         <Link href="/">
@@ -20,20 +20,20 @@ export default function NotFound() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#a855f7]/5 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="relative z-10 flex flex-col items-center max-w-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-[#111113] border border-[#27272a] flex items-center justify-center mb-8 shadow-2xl relative">
+          <div className="w-16 h-16 rounded-2xl bg-zinc-50 dark:bg-[#111113] border border-zinc-200 dark:border-[#27272a] flex items-center justify-center mb-8 shadow-2xl relative">
             <div className="absolute inset-0 rounded-2xl bg-red-500/10 animate-pulse" />
             <AlertCircle className="w-8 h-8 text-red-500 relative z-10" />
           </div>
 
-          <div className="text-[10px] font-bold tracking-widest text-[#a1a1aa] uppercase mb-4">
+          <div className="text-[10px] font-bold tracking-widest text-zinc-500 dark:text-[#a1a1aa] uppercase mb-4">
             Error 404
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-[#fafafa]">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-zinc-900 dark:text-[#fafafa]">
             Page not found
           </h1>
 
-          <p className="text-[#a1a1aa] text-lg md:text-xl leading-relaxed mb-10 max-w-lg">
+          <p className="text-zinc-500 dark:text-[#a1a1aa] text-lg md:text-xl leading-relaxed mb-10 max-w-lg">
             We couldn&apos;t find the page you were looking for. It might have
             been moved or doesn&apos;t exist.
           </p>

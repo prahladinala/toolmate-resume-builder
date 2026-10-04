@@ -86,8 +86,8 @@ export function StyleForm() {
         </p>
       </div>
 
-      <div className="space-y-4 pt-4 border-t border-[#27272a]">
-        <Label className="text-sm font-semibold text-[#fafafa]">
+      <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-[#27272a]">
+        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
           Accent Color (Primary Elements)
         </Label>
         <div className="grid grid-cols-5 sm:grid-cols-7 gap-3">
@@ -110,8 +110,8 @@ export function StyleForm() {
         </div>
       </div>
 
-      <div className="space-y-4 pt-6 border-t border-[#27272a]">
-        <Label className="text-sm font-semibold text-[#fafafa]">
+      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
           Background Paper Color
         </Label>
         <div className="flex flex-wrap gap-3">
@@ -131,8 +131,8 @@ export function StyleForm() {
         </div>
       </div>
 
-      <div className="space-y-4 pt-6 border-t border-[#27272a]">
-        <Label className="text-sm font-semibold text-[#fafafa]">
+      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
           Primary Text / Header Color
         </Label>
         <div className="flex flex-wrap gap-3">
@@ -152,8 +152,8 @@ export function StyleForm() {
         </div>
       </div>
 
-      <div className="space-y-4 pt-6 border-t border-[#27272a]">
-        <Label className="text-sm font-semibold text-[#fafafa]">
+      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
           Typography Style
         </Label>
         <div className="grid grid-cols-3 gap-3">
@@ -168,11 +168,11 @@ export function StyleForm() {
               className={`p-3 sm:p-4 rounded-xl border text-left transition-all ${
                 themeConfig?.fontFamily === font.id
                   ? "border-emerald-500 bg-emerald-500/10 text-white shadow-sm"
-                  : "border-[#27272a] bg-[#111113] text-[#a1a1aa] hover:border-[#3f3f46]"
+                  : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
               }`}
             >
               <span
-                className={`block text-lg mb-1 font-${font.id} text-[#fafafa]`}
+                className={`block text-lg mb-1 font-${font.id} text-zinc-900 dark:text-[#fafafa]`}
               >
                 Aa
               </span>
@@ -184,8 +184,8 @@ export function StyleForm() {
         </div>
       </div>
 
-      <div className="space-y-4 pt-6 border-t border-[#27272a]">
-        <Label className="text-sm font-semibold text-[#fafafa]">
+      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
           Section & Badge Layout
         </Label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -201,7 +201,7 @@ export function StyleForm() {
               className={`p-3 rounded-xl border transition-all text-sm font-medium ${
                 themeConfig?.sectionStyle === style.id
                   ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
-                  : "border-[#27272a] bg-[#111113] text-[#a1a1aa] hover:border-[#3f3f46]"
+                  : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
               }`}
             >
               {style.label.split(" ")[0]}
@@ -210,8 +210,8 @@ export function StyleForm() {
         </div>
       </div>
 
-      <div className="space-y-4 pt-6 border-t border-[#27272a]">
-        <Label className="text-sm font-semibold text-[#fafafa]">
+      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
           Profile Photo Layout
         </Label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -227,7 +227,7 @@ export function StyleForm() {
               className={`p-3 rounded-xl border transition-all text-sm font-medium ${
                 themeConfig?.imageAlign === align.id
                   ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
-                  : "border-[#27272a] bg-[#111113] text-[#a1a1aa] hover:border-[#3f3f46]"
+                  : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
               }`}
             >
               {align.label.split(" ")[0]}
@@ -236,8 +236,8 @@ export function StyleForm() {
         </div>
       </div>
 
-      <div className="space-y-4 pt-6 border-t border-[#27272a]">
-        <Label className="text-sm font-semibold text-[#fafafa]">
+      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
           Layout Spacing
         </Label>
         <div className="grid grid-cols-3 gap-3">
@@ -252,7 +252,7 @@ export function StyleForm() {
               className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
                 (themeConfig?.spacing || "normal") === spacing.id
                   ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
-                  : "border-[#27272a] bg-[#111113] text-[#a1a1aa] hover:border-[#3f3f46]"
+                  : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
               }`}
             >
               {spacing.label}
@@ -261,8 +261,8 @@ export function StyleForm() {
         </div>
       </div>
 
-      <div className="space-y-4 pt-6 border-t border-[#27272a]">
-        <Label className="text-sm font-semibold text-[#fafafa]">
+      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
           Date Formatting
         </Label>
         <div className="grid grid-cols-3 gap-3">
@@ -277,7 +277,7 @@ export function StyleForm() {
               className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
                 (themeConfig?.dateFormat || "Month YYYY") === format.id
                   ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
-                  : "border-[#27272a] bg-[#111113] text-[#a1a1aa] hover:border-[#3f3f46]"
+                  : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
               }`}
             >
               {format.label}
@@ -286,13 +286,13 @@ export function StyleForm() {
         </div>
       </div>
 
-      <div className="pt-6 border-t border-[#27272a]">
-        <div className="flex items-center justify-between p-4 rounded-xl border border-[#27272a] bg-[#111113]">
+      <div className="pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+        <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113]">
           <div className="space-y-0.5">
-            <Label className="text-sm font-semibold text-[#fafafa]">
+            <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
               Show Contact Icons
             </Label>
-            <p className="text-xs text-[#a1a1aa]">
+            <p className="text-xs text-zinc-500 dark:text-[#a1a1aa]">
               Display icons next to email, phone, and links
             </p>
           </div>

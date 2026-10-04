@@ -135,7 +135,7 @@ const templates = [
 
 export default function TemplatesPage() {
   return (
-    <div className="dark min-h-screen flex flex-col font-sans bg-[#09090b] text-[#fafafa] selection:bg-[#a855f7]/30">
+    <div className="dark min-h-screen flex flex-col font-sans bg-white dark:bg-[#09090b] text-zinc-900 dark:text-[#fafafa] selection:bg-[#a855f7]/30">
       {/* Minimal Navbar */}
       <nav className="flex items-center justify-between px-6 py-6 max-w-7xl mx-auto w-full z-50">
         <Link href="/">
@@ -146,13 +146,13 @@ export default function TemplatesPage() {
         <div className="flex items-center gap-6 text-sm font-medium">
           <Link
             href="/templates"
-            className="text-[#fafafa] transition-colors hidden sm:block"
+            className="text-zinc-900 dark:text-[#fafafa] transition-colors hidden sm:block"
           >
             Templates
           </Link>
           <Link
             href="/builder"
-            className="text-[#a1a1aa] hover:text-[#fafafa] transition-colors hidden sm:block"
+            className="text-zinc-500 dark:text-[#a1a1aa] hover:text-zinc-900 dark:text-[#fafafa] transition-colors hidden sm:block"
           >
             Builder
           </Link>
@@ -168,7 +168,7 @@ export default function TemplatesPage() {
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
             Choose Your Canvas
           </h1>
-          <p className="text-[#a1a1aa] text-lg max-w-2xl mx-auto">
+          <p className="text-zinc-500 dark:text-[#a1a1aa] text-lg max-w-2xl mx-auto">
             Expertly designed, purely semantic HTML, and completely free. Select
             a starting point.
           </p>
@@ -178,8 +178,8 @@ export default function TemplatesPage() {
       </main>
 
       {/* Minimal Footer */}
-      <footer className="border-t border-[#27272a] py-8 mt-auto z-10 bg-[#09090b]">
-        <div className="container mx-auto px-6 max-w-7xl flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-[#a1a1aa]">
+      <footer className="border-t border-zinc-200 dark:border-[#27272a] py-8 mt-auto z-10 bg-white dark:bg-[#09090b]">
+        <div className="container mx-auto px-6 max-w-7xl flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-zinc-500 dark:text-[#a1a1aa]">
           <div>© {new Date().getFullYear()} ResumeBuilder.</div>
           <div className="flex gap-6">
             <Link

@@ -118,12 +118,12 @@ export function TemplateGallery({
   return (
     <Tabs defaultValue="developers" className="w-full relative z-10">
       <div className="flex justify-center mb-12">
-        <TabsList className="grid w-full max-w-md grid-cols-3 bg-[#111113] border border-[#27272a] rounded-full p-1 h-12">
+        <TabsList className="grid w-full max-w-md grid-cols-3 bg-zinc-50 dark:bg-[#111113] border border-zinc-200 dark:border-[#27272a] rounded-full p-1 h-12">
           {categories.map((c) => (
             <TabsTrigger
               key={c.id}
               value={c.id}
-              className="rounded-full text-xs font-medium data-[state=active]:bg-[#27272a] data-[state=active]:text-[#fafafa] text-[#a1a1aa]"
+              className="rounded-full text-xs font-medium data-[state=active]:bg-[#27272a] data-[state=active]:text-zinc-900 dark:text-[#fafafa] text-zinc-500 dark:text-[#a1a1aa]"
             >
               {c.label}
             </TabsTrigger>
@@ -154,14 +154,14 @@ export function TemplateGallery({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="w-[90vw] h-[75vh] md:h-auto md:w-auto shrink-0 snap-center group relative rounded-[24px] border border-[#27272a] bg-[#111113] overflow-hidden hover:border-[#3f3f46] transition-all duration-300 flex flex-col cursor-pointer"
+                  className="w-[90vw] h-[75vh] md:h-auto md:w-auto shrink-0 snap-center group relative rounded-[24px] border border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] overflow-hidden hover:border-[#3f3f46] transition-all duration-300 flex flex-col cursor-pointer"
                   onMouseEnter={() => setHoveredId(template.id)}
                   onMouseLeave={() => setHoveredId(null)}
                   onClick={() => {
                     if (window.innerWidth < 768) handleSelect(template.id);
                   }}
                 >
-                  <div className="flex-1 md:aspect-[210/297] md:h-auto w-full bg-white flex items-center justify-center relative border-b border-[#27272a] @container">
+                  <div className="flex-1 md:aspect-[210/297] md:h-auto w-full bg-white flex items-center justify-center relative border-b border-zinc-200 dark:border-[#27272a] @container">
                     {/* Real Template Preview Scaled Down */}
                     <div className="absolute inset-0 overflow-hidden bg-white pointer-events-none select-none flex items-center justify-center">
                       <div
@@ -184,7 +184,7 @@ export function TemplateGallery({
                         <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="absolute inset-0 bg-[#09090b]/80 backdrop-blur-sm flex items-center justify-center p-6"
+                          className="absolute inset-0 bg-white dark:bg-[#09090b]/80 backdrop-blur-sm flex items-center justify-center p-6"
                         >
                           <Button
                             size="lg"
@@ -200,12 +200,12 @@ export function TemplateGallery({
                       )}
                     </div>
                   </div>
-                  <div className="p-4 md:p-6 flex justify-between items-center bg-[#111113] flex-1">
+                  <div className="p-4 md:p-6 flex justify-between items-center bg-zinc-50 dark:bg-[#111113] flex-1">
                     <div>
-                      <h2 className="font-semibold text-sm md:text-base text-[#fafafa]">
+                      <h2 className="font-semibold text-sm md:text-base text-zinc-900 dark:text-[#fafafa]">
                         {template.name}
                       </h2>
-                      <p className="text-[10px] md:text-xs text-[#a1a1aa] capitalize mt-0.5 md:mt-1">
+                      <p className="text-[10px] md:text-xs text-zinc-500 dark:text-[#a1a1aa] capitalize mt-0.5 md:mt-1">
                         {template.category}
                       </p>
                     </div>

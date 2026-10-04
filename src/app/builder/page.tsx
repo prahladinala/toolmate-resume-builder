@@ -128,13 +128,13 @@ export default function BuilderPage() {
   };
 
   return (
-    <div className="h-[100dvh] w-full flex font-sans overflow-hidden bg-stone-100 dark:bg-[#09090b] print:bg-transparent print:h-auto print:block">
+    <div className="h-[100dvh] w-full flex font-sans overflow-hidden bg-stone-100 dark:bg-white dark:bg-[#09090b] print:bg-transparent print:h-auto print:block">
       {/* EXTREME LEFT: Slim Toolbar (Desktop Only) */}
-      <nav className="hidden md:flex flex-col w-[72px] h-full border-r border-[#27272a] bg-[#09090b] text-[#fafafa] z-30 shrink-0 py-4 items-center justify-between shadow-2xl">
+      <nav className="hidden md:flex flex-col w-[72px] h-full border-r border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b] text-zinc-900 dark:text-[#fafafa] z-30 shrink-0 py-4 items-center justify-between shadow-2xl">
         <div className="flex flex-col gap-6 w-full items-center">
           <button
             onClick={handleBack}
-            className="h-10 w-10 rounded-xl bg-[#111113] border border-[#27272a] flex items-center justify-center hover:bg-[#27272a] transition-all hover:scale-105"
+            className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-[#111113] border border-zinc-200 dark:border-[#27272a] flex items-center justify-center hover:bg-[#27272a] transition-all hover:scale-105"
             aria-label="Go back"
             title="Back to Templates"
           >
@@ -151,7 +151,7 @@ export default function BuilderPage() {
                 className={`group relative flex items-center justify-center h-12 w-full rounded-xl transition-all duration-200 ${
                   activeStep === idx
                     ? "bg-[#fafafa] text-[#09090b] shadow-sm"
-                    : "text-[#a1a1aa] hover:bg-[#27272a] hover:text-[#fafafa]"
+                    : "text-zinc-500 dark:text-[#a1a1aa] hover:bg-[#27272a] hover:text-zinc-900 dark:text-[#fafafa]"
                 }`}
                 title={step.label}
               >
@@ -176,13 +176,13 @@ export default function BuilderPage() {
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               title="Import JSON Backup"
             />
-            <button className="h-10 w-10 rounded-full border border-[#27272a] flex items-center justify-center hover:bg-[#27272a] transition-colors text-[#a1a1aa] hover:text-[#fafafa]">
+            <button className="h-10 w-10 rounded-full border border-zinc-200 dark:border-[#27272a] flex items-center justify-center hover:bg-[#27272a] transition-colors text-zinc-500 dark:text-[#a1a1aa] hover:text-zinc-900 dark:text-[#fafafa]">
               <Upload className="h-4 w-4" />
             </button>
           </div>
           <button
             onClick={exportJSON}
-            className="h-10 w-10 rounded-full border border-[#27272a] flex items-center justify-center hover:bg-[#27272a] transition-colors text-[#a1a1aa] hover:text-[#fafafa]"
+            className="h-10 w-10 rounded-full border border-zinc-200 dark:border-[#27272a] flex items-center justify-center hover:bg-[#27272a] transition-colors text-zinc-500 dark:text-[#a1a1aa] hover:text-zinc-900 dark:text-[#fafafa]"
             title="Export JSON Backup"
           >
             <Save className="h-4 w-4" />
@@ -194,10 +194,10 @@ export default function BuilderPage() {
 
       {/* MIDDLE: Form Panel (Desktop & Mobile) */}
       <div
-        className={`dark w-full md:w-[450px] lg:w-[480px] h-full flex flex-col border-r border-[#27272a] bg-[#111113] text-[#fafafa] shrink-0 transition-all z-20 print:hidden shadow-2xl ${showPreviewMobile ? "hidden md:flex" : "flex"}`}
+        className={`dark w-full md:w-[450px] lg:w-[480px] h-full flex flex-col border-r border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-900 dark:text-[#fafafa] shrink-0 transition-all z-20 print:hidden shadow-2xl ${showPreviewMobile ? "hidden md:flex" : "flex"}`}
       >
         {/* Mobile Header (Hidden on Desktop) */}
-        <header className="md:hidden flex h-14 items-center justify-between border-b border-[#27272a] px-4 shrink-0 bg-[#09090b]">
+        <header className="md:hidden flex h-14 items-center justify-between border-b border-zinc-200 dark:border-[#27272a] px-4 shrink-0 bg-white dark:bg-[#09090b]">
           <button
             onClick={handleBack}
             className="h-8 w-8 flex items-center justify-center"
@@ -214,14 +214,14 @@ export default function BuilderPage() {
         </header>
 
         {/* Desktop Header for the Form Panel */}
-        <div className="hidden md:flex h-[72px] items-center px-8 border-b border-[#27272a] shrink-0 bg-[#09090b]">
+        <div className="hidden md:flex h-[72px] items-center px-8 border-b border-zinc-200 dark:border-[#27272a] shrink-0 bg-white dark:bg-[#09090b]">
           <h2 className="text-xl font-bold tracking-tight">
             {STEPS[activeStep].label}
           </h2>
         </div>
 
         {/* Mobile Horizontal Step Nav */}
-        <div className="md:hidden px-4 py-3 border-b border-[#27272a] overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] bg-[#09090b]">
+        <div className="md:hidden px-4 py-3 border-b border-zinc-200 dark:border-[#27272a] overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] bg-white dark:bg-[#09090b]">
           <div className="flex gap-2 min-w-max">
             {STEPS.map((step, idx) => (
               <button
@@ -229,8 +229,8 @@ export default function BuilderPage() {
                 onClick={() => setActiveStep(idx)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-colors ${
                   activeStep === idx
-                    ? "bg-[#27272a] text-[#fafafa]"
-                    : "bg-[#111113] text-[#a1a1aa] border border-[#27272a]"
+                    ? "bg-[#27272a] text-zinc-900 dark:text-[#fafafa]"
+                    : "bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] border border-zinc-200 dark:border-[#27272a]"
                 }`}
               >
                 <step.icon className="h-3.5 w-3.5" />
@@ -262,7 +262,7 @@ export default function BuilderPage() {
         className={`flex-1 relative bg-stone-100 dark:bg-zinc-900 overflow-hidden print:block print:w-full print:h-full print:bg-transparent print:absolute print:inset-0 print:m-0 print:p-0 ${showPreviewMobile ? "block" : "hidden md:block"}`}
       >
         {/* Mobile Preview Header */}
-        <div className="md:hidden absolute top-0 left-0 right-0 h-16 bg-[#09090b] text-white border-b border-[#27272a] flex items-center justify-between px-4 z-50 print:hidden">
+        <div className="md:hidden absolute top-0 left-0 right-0 h-16 bg-white dark:bg-[#09090b] text-white border-b border-zinc-200 dark:border-[#27272a] flex items-center justify-between px-4 z-50 print:hidden">
           <button
             onClick={() => setShowPreviewMobile(false)}
             className="text-sm font-medium flex items-center gap-1"
