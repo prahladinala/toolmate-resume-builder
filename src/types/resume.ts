@@ -108,6 +108,7 @@ export type ResumeStore = {
   // Skills
   addSkill: (skill: Skill) => void;
   removeSkill: (id: string) => void;
+  reorderSkills: (startIndex: number, endIndex: number) => void;
 
   // Custom Sections
   addCustomSection: (section: CustomSection) => void;
