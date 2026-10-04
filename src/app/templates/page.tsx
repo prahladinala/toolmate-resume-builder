@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { TemplateGallery } from "@/components/TemplateGallery";
