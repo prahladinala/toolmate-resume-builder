@@ -130,7 +130,7 @@ export default function BuilderPage() {
   return (
     <div className="h-[100dvh] w-full flex font-sans overflow-hidden bg-stone-100 dark:bg-white dark:bg-[#09090b] print:bg-transparent print:h-auto print:block">
       {/* EXTREME LEFT: Slim Toolbar (Desktop Only) */}
-      <nav className="hidden md:flex flex-col w-[72px] h-full border-r border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b] text-zinc-900 dark:text-[#fafafa] z-30 shrink-0 py-4 items-center justify-between shadow-2xl">
+      <nav className="hidden md:flex flex-col w-[72px] h-full border-r border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b] text-zinc-900 dark:text-[#fafafa] z-30 shrink-0 py-4 items-center justify-between shadow-2xl print:hidden">
         <div className="flex flex-col gap-6 w-full items-center">
           <button
             onClick={handleBack}
