@@ -30,6 +30,10 @@ export const summarySchema = z.object({
     .min(10, "Please write a brief professional summary (min 10 characters)"),
 });
 
+export const coverLetterSchema = z.object({
+  coverLetter: z.string().optional(),
+});
+
 export const experienceSchema = z.object({
   id: z.string(),
   company: z.string().min(1, "Company is required"),

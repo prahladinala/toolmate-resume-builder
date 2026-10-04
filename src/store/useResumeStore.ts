@@ -44,6 +44,11 @@ export const useResumeStore = create<ResumeStore>()(
           data: { ...state.data, summary },
         })),
 
+      updateCoverLetter: (coverLetter) =>
+        set((state) => ({
+          data: { ...state.data, coverLetter },
+        })),
+
       addExperience: (exp) =>
         set((state) => ({
           data: { ...state.data, experience: [...state.data.experience, exp] },

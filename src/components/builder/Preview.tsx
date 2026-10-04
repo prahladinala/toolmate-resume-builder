@@ -9,20 +9,35 @@ import { AtsAnalyzer } from "./AtsAnalyzer";
 export function Preview() {
   const { data, activeTemplate, themeConfig } = useResumeStore();
   const [mounted, setMounted] = useState(false);
-  const [mobileScale, setMobileScale] = useState(1); // 100% by default as user requested!
+  const [mobileScale, setMobileScale] = useState(1);
+  const [mode, setMode] = useState<"resume" | "cover-letter">("resume");
 
   useEffect(() => {
     setMounted(true);
-    // User requested: "We need to show in 100% and user can pinch to zoom same like a mobile app expeirnce"
-    // Native mobile app experience for PDF is usually Fit to Width OR 100%.
-    // Since they specifically said "show in 100%", let's set initialScale to 1.
     setMobileScale(1);
   }, []);
 
   if (!mounted) return <div className="w-full h-full bg-muted/30" />;
 
   return (
-    <div className="w-full h-full bg-muted/30 overflow-y-auto flex justify-center @container print:!bg-transparent print:p-0 print:overflow-visible print:block">
+    <div className="w-full h-full bg-muted/30 overflow-y-auto flex justify-center @container print:!bg-transparent print:p-0 print:overflow-visible print:block relative">
+      
+      {/* Mode Toggle */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 print:hidden bg-white dark:bg-zinc-900 rounded-full shadow-lg p-1 border border-zinc-200 dark:border-zinc-800 flex items-center">
+        <button
+          onClick={() => setMode("resume")}
+          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${mode === "resume" ? "bg-indigo-600 text-white" : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"}`}
+        >
+          Resume
+        </button>
+        <button
+          onClick={() => setMode("cover-letter")}
+          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${mode === "cover-letter" ? "bg-indigo-600 text-white" : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"}`}
+        >
+          Cover Letter
+        </button>
+      </div>
+
       <AtsAnalyzer />
       {/* Mobile Interactive Zoom View */}
       <div className="md:hidden w-full h-[calc(100vh-64px)] overflow-hidden print:hidden">
@@ -41,6 +56,7 @@ export function Preview() {
                 data={data}
                 templateId={activeTemplate || "dev-1"}
                 themeConfig={themeConfig}
+                mode={mode}
               />
             </div>
           </TransformComponent>
@@ -67,6 +83,7 @@ export function Preview() {
               data={data}
               templateId={activeTemplate || "dev-1"}
               themeConfig={themeConfig}
+              mode={mode}
             />
           </div>
         </div>
@@ -78,6 +95,7 @@ export function Preview() {
           data={data}
           templateId={activeTemplate || "dev-1"}
           themeConfig={themeConfig}
+          mode={mode}
         />
       </div>
     </div>

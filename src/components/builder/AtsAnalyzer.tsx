@@ -2,7 +2,7 @@
 
 import { useResumeStore } from "@/store/useResumeStore";
 import { useState, useEffect } from "react";
-import { Activity, AlertTriangle, CheckCircle2, ChevronRight, XCircle, Info } from "lucide-react";
+import { Activity, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function AtsAnalyzer() {

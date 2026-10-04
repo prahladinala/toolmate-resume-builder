@@ -88,10 +88,12 @@ export function TemplateEngine({
   data,
   templateId,
   themeConfig,
+  mode = "resume",
 }: {
   data: ResumeData;
   templateId: string;
   themeConfig?: ThemeConfig;
+  mode?: "resume" | "cover-letter";
 }) {
   // Explicit configurations to guarantee zero repetition and high contrast between choices
   const configs: Record<string, EngineConfig> = {
@@ -626,6 +628,13 @@ export function TemplateEngine({
     }
 
     switch (name) {
+      case 'cover-letter': return data.coverLetter ? (
+        <section key='cover-letter' className={`${sectionSpacing}`}>
+          <div className='leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert'>
+            <ReactMarkdown>{data.coverLetter}</ReactMarkdown>
+          </div>
+        </section>
+      ) : null;
       case 'summary': return summary ? (
         <section key='summary' className={`${sectionSpacing} print:break-inside-avoid`}>
           {renderSectionHeader('Summary')}
@@ -640,8 +649,10 @@ export function TemplateEngine({
     }
   };
 
-  const fullSectionOrder = [...config.sectionOrder];
-  if (data.customSections) {
+  let fullSectionOrder = [...config.sectionOrder];
+  if (mode === "cover-letter") {
+    fullSectionOrder = ["cover-letter"];
+  } else if (data.customSections) {
     data.customSections.forEach(cs => {
       if (!fullSectionOrder.includes(`custom-${cs.id}`)) {
         fullSectionOrder.push(`custom-${cs.id}`);
@@ -650,7 +661,7 @@ export function TemplateEngine({
   }
 
   const mainColOrder = fullSectionOrder.filter(s => !['skills', 'education'].includes(s));
-  const sideColOrder = fullSectionOrder.filter(s => ['skills', 'education'].includes(s));
+  const sideColOrder = mode === "cover-letter" ? [] : fullSectionOrder.filter(s => ['skills', 'education'].includes(s));
 
   const renderExperience = () => {
     if (!data.experience || data.experience.length === 0) return null;

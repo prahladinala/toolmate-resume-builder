@@ -16,11 +16,11 @@ const VERB_CATEGORIES = {
 export function PowerVerbs({ onSelect }: { onSelect: (verb: string) => void }) {
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-7 text-xs flex items-center gap-1.5 border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-800 dark:border-indigo-900 dark:bg-indigo-950/30 dark:text-indigo-400">
+      <PopoverTrigger>
+        <div className="h-7 px-2 text-xs flex items-center gap-1.5 border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-800 rounded-md cursor-pointer dark:border-indigo-900 dark:bg-indigo-950/30 dark:text-indigo-400">
           <Sparkles className="w-3 h-3" />
           Power Verbs
-        </Button>
+        </div>
       </PopoverTrigger>
       <PopoverContent className="w-72 p-0" align="start">
         <div className="p-3 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">

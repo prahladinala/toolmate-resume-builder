@@ -9,6 +9,7 @@ import { ProjectsForm } from "@/components/builder/forms/ProjectsForm";
 import { EducationForm } from "@/components/builder/forms/EducationForm";
 import { StyleForm } from "@/components/builder/forms/StyleForm";
 import { CustomSectionForm } from "@/components/builder/forms/CustomSectionForm";
+import { CoverLetterForm } from "@/components/builder/forms/CoverLetterForm";
 
 interface BuilderFormContainerProps {
   activeStep: number;
@@ -33,7 +34,8 @@ export function BuilderFormContainer({ activeStep }: BuilderFormContainerProps) 
           {activeStep === 4 && <SkillsForm />}
           {activeStep === 5 && <ProjectsForm />}
           {activeStep === 6 && <CustomSectionForm />}
-          {activeStep === 7 && <StyleForm />}
+          {activeStep === 7 && <CoverLetterForm />}
+          {activeStep === 8 && <StyleForm />}
         </motion.div>
       </AnimatePresence>
     </div>

@@ -42,6 +42,7 @@ const STEPS = [
   { id: "skills", label: "Skills", icon: Cpu },
   { id: "projects", label: "Projects", icon: Code },
   { id: "custom", label: "Custom", icon: FileText },
+  { id: "cover-letter", label: "Cover Letter", icon: FileText },
   { id: "style", label: "Style", icon: Palette },
 ];
 

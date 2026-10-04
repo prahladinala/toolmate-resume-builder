@@ -58,6 +58,7 @@ export type ResumeData = {
     photoBase64?: string;
   };
   summary: string;
+  coverLetter?: string;
   experience: Experience[];
   projects: Project[];
   education: Education[];
@@ -97,6 +98,7 @@ export type ResumeStore = {
   updateThemeConfig: (config: Partial<ThemeConfig>) => void;
   updatePersonalInfo: (info: Partial<ResumeData["personalInfo"]>) => void;
   updateSummary: (summary: string) => void;
+  updateCoverLetter: (letter: string) => void;
 
   // Experience
   addExperience: (exp: Experience) => void;
