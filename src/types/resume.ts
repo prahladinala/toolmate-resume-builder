@@ -72,7 +72,7 @@ export type ThemeConfig = {
   fontFamily?: "sans" | "serif" | "mono";
   headerColor?: string;
   backgroundColor?: string;
-  sectionStyle?: "minimal" | "badge" | "boxed" | "underline";
+  sectionStyle?: "minimal" | "badge" | "boxed" | "underline" | "timeline";
   imageAlign?: "left" | "center" | "right" | "hidden";
   showContactIcons?: boolean;
   spacing?: "compact" | "normal" | "relaxed";

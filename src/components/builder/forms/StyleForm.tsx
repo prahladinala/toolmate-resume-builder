@@ -108,6 +108,7 @@ const STYLES = [
   { id: "badge", label: "Badge (Modern)" },
   { id: "boxed", label: "Boxed (Card)" },
   { id: "underline", label: "Underline (Classic)" },
+  { id: "timeline", label: "Timeline (Journey)" },
 ];
 
 const SPACINGS = [

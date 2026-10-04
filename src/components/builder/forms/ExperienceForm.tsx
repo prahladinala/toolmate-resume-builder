@@ -12,8 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Trash2, GripVertical } from "lucide-react";
+import { GripVertical, Plus, Trash2 } from "lucide-react";
 import { useEffect } from "react";
+import { PowerVerbs } from "../PowerVerbs";
 import {
   DndContext,
   closestCenter,
@@ -161,7 +162,13 @@ function SortableExperienceItem({
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <Label>Description (Markdown supported)</Label>
+          <div className="flex justify-between items-center">
+            <Label>Description (Markdown supported)</Label>
+            <PowerVerbs onSelect={(verb) => {
+              const currentDesc = watch(`experiences.${index}.description`) || "";
+              setValue(`experiences.${index}.description`, currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + verb);
+            }} />
+          </div>
           <Textarea
             placeholder="- Developed new features&#10;- Improved performance by **20%**"
             className="min-h-[100px]"

@@ -7,6 +7,7 @@ import { useResumeStore } from "@/store/useResumeStore";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect } from "react";
+import { PowerVerbs } from "../PowerVerbs";
 
 export function SummaryForm() {
   const { data, updateSummary } = useResumeStore();
@@ -14,6 +15,7 @@ export function SummaryForm() {
   const {
     register,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(summarySchema),
@@ -46,7 +48,13 @@ export function SummaryForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="summary">Summary</Label>
+        <div className="flex justify-between items-center">
+          <Label htmlFor="summary">Summary</Label>
+          <PowerVerbs onSelect={(verb) => {
+            const currentDesc = watch("summary") || "";
+            setValue("summary", currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + verb);
+          }} />
+        </div>
         <Textarea
           id="summary"
           placeholder="Experienced software engineer with a passion for building scalable web applications..."

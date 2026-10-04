@@ -4,6 +4,7 @@ import { useResumeStore } from "@/store/useResumeStore";
 import { TemplateEngine } from "./TemplateEngine";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useEffect, useState } from "react";
+import { AtsAnalyzer } from "./AtsAnalyzer";
 
 export function Preview() {
   const { data, activeTemplate, themeConfig } = useResumeStore();
@@ -22,6 +23,7 @@ export function Preview() {
 
   return (
     <div className="w-full h-full bg-muted/30 overflow-y-auto flex justify-center @container print:!bg-transparent print:p-0 print:overflow-visible print:block">
+      <AtsAnalyzer />
       {/* Mobile Interactive Zoom View */}
       <div className="md:hidden w-full h-[calc(100vh-64px)] overflow-hidden print:hidden">
         <TransformWrapper

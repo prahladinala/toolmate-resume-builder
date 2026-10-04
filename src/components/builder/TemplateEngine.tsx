@@ -6,7 +6,7 @@ import { Mail, Phone, MapPin, Globe, Briefcase, Terminal } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 type LayoutType =
-  "left-sidebar" | "right-sidebar" | "single-column" | "split-header";
+  "left-sidebar" | "right-sidebar" | "single-column" | "split-header" | "executive";
 type AlignType = "left" | "center" | "right";
 type FontType = "sans" | "serif" | "mono";
 
@@ -132,13 +132,13 @@ export function TemplateEngine({
     "dev-4": {
       layout: "single-column",
       headerAlign: "left",
-      imageAlign: "left",
+      imageAlign: "hidden",
       fontFamily: "mono",
       accentColor: "indigo-500",
       bgColor: "#FFFFFF",
       textColor: "text-slate-800",
-      sectionStyle: "underline",
-      showContactIcons: true,
+      sectionStyle: "timeline",
+      showContactIcons: false,
     },
 
     // Designers: Vibrant, asymmetric, centered, heavily styled
@@ -222,7 +222,7 @@ export function TemplateEngine({
       showContactIcons: true,
     },
     "corp-4": {
-      layout: "split-header",
+      layout: "executive",
       headerAlign: "center",
       imageAlign: "left",
       fontFamily: "serif",
@@ -653,8 +653,38 @@ export function TemplateEngine({
   const sideColOrder = fullSectionOrder.filter(s => ['skills', 'education'].includes(s));
 
   const renderExperience = () => {
-
     if (!data.experience || data.experience.length === 0) return null;
+    
+    if (config.sectionStyle === "timeline") {
+      return (
+        <section className={sectionSpacing}>
+          {renderSectionHeader("Experience")}
+          <div className="relative border-l-2 ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-8">
+            {sortedExperience.map((exp) => (
+              <div key={exp.id} className="relative pl-6 print:break-inside-avoid">
+                <div className={`absolute w-3 h-3 rounded-full -left-[7px] top-1.5 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`} />
+                <div className="flex flex-col mb-2">
+                  <h4 className="font-bold text-lg">
+                    {exp.role}{" "}
+                    <span className={`${accentClasses.text}`}>
+                      @ {exp.company}
+                    </span>
+                  </h4>
+                  {!config.hideDates && (
+                    <span className="text-sm font-semibold opacity-70">
+                      {formatDate(exp.startDate)} -{" "}
+                      {exp.current ? "Present" : formatDate(exp.endDate)}
+                    </span>
+                  )}
+                </div>
+                {parseMarkdown(exp.description)}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
     return (
       <section className={sectionSpacing}>
         {renderSectionHeader("Experience")}
@@ -662,7 +692,7 @@ export function TemplateEngine({
           {sortedExperience.map((exp) => (
             <div
               key={exp.id}
-              className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? "bg-slate-50 p-4 rounded-xl" : ""}`}
+              className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? "bg-slate-50 dark:bg-[#111113] p-4 rounded-xl" : ""}`}
             >
               <div className="flex justify-between items-baseline mb-1">
                 <h4 className="font-bold text-lg">
@@ -688,6 +718,36 @@ export function TemplateEngine({
 
   const renderEducation = () => {
     if (!data.education || data.education.length === 0) return null;
+
+    if (config.sectionStyle === "timeline") {
+      return (
+        <section className={sectionSpacing}>
+          {renderSectionHeader("Education")}
+          <div className="relative border-l-2 ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-6">
+            {sortedEducation.map((edu) => (
+              <div key={edu.id} className="relative pl-6 print:break-inside-avoid">
+                <div className={`absolute w-3 h-3 rounded-full -left-[7px] top-1.5 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`} />
+                <div className="flex flex-col mb-1">
+                  <h4 className="font-bold text-lg">{edu.degree}</h4>
+                  <div className="flex justify-between text-sm mt-0.5">
+                    <span className={`${accentClasses.text} font-medium`}>
+                      {edu.institution}
+                    </span>
+                    {!config.hideDates && (
+                      <span className="opacity-70 font-semibold">
+                        {formatDate(edu.startDate)} -{" "}
+                        {edu.current ? "Present" : formatDate(edu.endDate)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
     return (
       <section className={sectionSpacing}>
         {renderSectionHeader("Education")}
@@ -695,7 +755,7 @@ export function TemplateEngine({
           {sortedEducation.map((edu) => (
             <div
               key={edu.id}
-              className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? "bg-slate-50 p-4 rounded-xl" : ""}`}
+              className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? "bg-slate-50 dark:bg-[#111113] p-4 rounded-xl" : ""}`}
             >
               <h4 className="font-bold">{edu.degree}</h4>
               <div className="flex justify-between text-sm mt-1">
