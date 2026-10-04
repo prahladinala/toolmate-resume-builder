@@ -135,7 +135,7 @@ const templates = [
 
 export default function TemplatesPage() {
   return (
-    <div className="dark min-h-screen flex flex-col font-sans bg-white dark:bg-[#09090b] text-zinc-900 dark:text-[#fafafa] selection:bg-[#a855f7]/30">
+    <div className="min-h-screen flex flex-col font-sans bg-white dark:bg-[#09090b] text-zinc-900 dark:text-[#fafafa] selection:bg-[#a855f7]/30">
       {/* Minimal Navbar */}
       <nav className="flex items-center justify-between px-6 py-6 max-w-7xl mx-auto w-full z-50">
         <Link href="/">

@@ -829,50 +829,46 @@ export function TemplateEngine({
             {renderContactInfo("text-white")}
           </div>
           <div className="mt-12 text-white">
-            {data.skills && data.skills.length > 0 && (
-              <div className="mb-12 print:break-inside-avoid">
-                <h3 className="text-xl font-bold mb-4 border-b border-white/20 pb-2">
-                  Skills
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {data.skills.map((s) => (
-                    <span
-                      key={s.id}
-                      className="bg-white/20 px-2 py-1 rounded text-xs"
-                    >
-                      {s.name}
-                    </span>
+            {sideColOrder.map(s => {
+              if (s === 'skills' && data.skills && data.skills.length > 0) return (
+                <div key="skills" className="mb-12 print:break-inside-avoid">
+                  <h3 className="text-xl font-bold mb-4 border-b border-white/20 pb-2">
+                    Skills
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {data.skills.map((s) => (
+                      <span
+                        key={s.id}
+                        className="bg-white/20 px-2 py-1 rounded text-xs"
+                      >
+                        {s.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+              if (s === 'education' && education.length > 0) return (
+                <div key="education" className="print:break-inside-avoid">
+                  <h3 className="text-xl font-bold mb-4 border-b border-white/20 pb-2">
+                    Education
+                  </h3>
+                  {sortedEducation.map((edu) => (
+                    <div key={edu.id} className="mb-4">
+                      <h4 className="font-bold text-sm">{edu.degree}</h4>
+                      <p className="text-xs opacity-80">{edu.institution}</p>
+                      <p className="text-xs opacity-80">
+                        {edu.startDate} - {edu.current ? "Present" : edu.endDate}
+                      </p>
+                    </div>
                   ))}
                 </div>
-              </div>
-            )}
-            {education.length > 0 && (
-              <div className="print:break-inside-avoid">
-                <h3 className="text-xl font-bold mb-4 border-b border-white/20 pb-2">
-                  Education
-                </h3>
-                {sortedEducation.map((edu) => (
-                  <div key={edu.id} className="mb-4">
-                    <h4 className="font-bold text-sm">{edu.degree}</h4>
-                    <p className="text-xs opacity-80">{edu.institution}</p>
-                    <p className="text-xs opacity-80">
-                      {edu.startDate} - {edu.current ? "Present" : edu.endDate}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
+              );
+              return null;
+            })}
           </div>
         </aside>
         <main className="w-[65%] p-8 pb-24">
-          {summary && (
-            <section className={`${sectionSpacing} print:break-inside-avoid`}>
-              {renderSectionHeader("Profile")}
-              <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert"><ReactMarkdown>{summary}</ReactMarkdown></div>
-            </section>
-          )}
-          {renderExperience()}
-          {renderProjects()}
+          {mainColOrder.map(getSection)}
         </main>
       </div>
     );
@@ -889,14 +885,7 @@ export function TemplateEngine({
               {personalInfo.title}
             </h2>
           </header>
-          {summary && (
-            <section className={`${sectionSpacing} print:break-inside-avoid`}>
-              {renderSectionHeader("Summary")}
-              <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert"><ReactMarkdown>{summary}</ReactMarkdown></div>
-            </section>
-          )}
-          {renderExperience()}
-          {renderProjects()}
+          {mainColOrder.map(getSection)}
         </main>
         <aside className="w-[35%] bg-slate-100 p-8 pb-24 border-l border-slate-200">
           <div
@@ -909,8 +898,7 @@ export function TemplateEngine({
               {renderContactInfo()}
             </div>
           </div>
-          {renderSkills()}
-          {renderEducation()}
+          {sideColOrder.map(getSection)}
         </aside>
       </div>
     );
