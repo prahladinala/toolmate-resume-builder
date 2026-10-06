@@ -1,6 +1,41 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { temporal } from "zundo";
+import { get, set as idbSet, del } from "idb-keyval";
 import type { ResumeStore, ResumeTemplate, ResumeData } from "@/types/resume";
+
+const idbStorage = {
+  getItem: async (name: string): Promise<string | null> => {
+    try {
+      const value = await get(name);
+      if (value) return value;
+      // Fallback to localStorage for backward compatibility (migration)
+      const localValue = localStorage.getItem(name);
+      if (localValue) {
+        await idbSet(name, localValue);
+        // We don't remove it from localStorage just to be safe, or we could.
+        return localValue;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  },
+  setItem: async (name: string, value: string): Promise<void> => {
+    try {
+      await idbSet(name, value);
+    } catch (err) {
+      console.warn("Failed to save to IndexedDB", err);
+    }
+  },
+  removeItem: async (name: string): Promise<void> => {
+    try {
+      await del(name);
+    } catch (err) {
+      console.warn("Failed to delete from IndexedDB", err);
+    }
+  },
+};
 
 const initialData: ResumeData = {
   personalInfo: {
@@ -21,8 +56,9 @@ const initialData: ResumeData = {
 };
 
 export const useResumeStore = create<ResumeStore>()(
-  persist(
-    (set) => ({
+  temporal(
+    persist(
+      (set) => ({
       data: initialData,
       activeTemplate: "dev-1" as ResumeTemplate,
       themeConfig: {},
@@ -197,7 +233,8 @@ export const useResumeStore = create<ResumeStore>()(
       reset: () => set({ data: initialData }),
     }),
     {
-      name: "resume-builder-storage", // key in local storage
+      name: "resume-builder-storage", // key in indexedDB
+      storage: createJSONStorage(() => idbStorage),
     },
-  ),
-);
+  )
+));

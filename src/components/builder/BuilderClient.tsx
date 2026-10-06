@@ -15,7 +15,11 @@ import {
   Palette,
   ChevronLeft,
   Download,
+  Undo2,
+  Redo2,
 } from "lucide-react";
+import { useStore } from "zustand";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useResumeStore } from "@/store/useResumeStore";
 
 import { BuilderSidebar } from "./ui/BuilderSidebar";
@@ -50,6 +54,24 @@ export function BuilderClient() {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const [showPreviewMobile, setShowPreviewMobile] = useState(false);
+
+  // Undo/Redo state
+  const { undo, redo, pastStates, futureStates } = useStore(useResumeStore.temporal);
+
+  useHotkeys("mod+z", (e) => {
+    e.preventDefault();
+    if (pastStates.length > 0) undo();
+  }, { enableOnFormTags: true });
+
+  useHotkeys(["mod+y", "mod+shift+z"], (e) => {
+    e.preventDefault();
+    if (futureStates.length > 0) redo();
+  }, { enableOnFormTags: true });
+
+  useHotkeys("mod+p", (e) => {
+    e.preventDefault();
+    handleDownload();
+  }, { enableOnFormTags: true });
 
   const handleDownload = () => {
     window.print();
@@ -142,12 +164,34 @@ export function BuilderClient() {
           !showPreviewMobile ? "hidden md:block" : "block"
         }`}
       >
-        {/* Top actions (Download, Mobile Back) */}
-        <div className="absolute top-4 right-4 md:top-8 md:right-8 z-20 flex gap-3 print:hidden">
+        {/* Top actions (Undo, Redo, Download, Mobile Back) */}
+        <div className="absolute top-4 right-4 md:top-8 md:right-8 z-20 flex gap-2 sm:gap-3 print:hidden">
+          <Button
+            onClick={() => undo()}
+            disabled={pastStates.length === 0}
+            variant="outline"
+            size="icon"
+            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-10 w-10 sm:h-12 sm:w-12"
+            title="Undo"
+          >
+            <Undo2 className="h-4 w-4 sm:h-5 sm:w-5" />
+          </Button>
+          
+          <Button
+            onClick={() => redo()}
+            disabled={futureStates.length === 0}
+            variant="outline"
+            size="icon"
+            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-10 w-10 sm:h-12 sm:w-12"
+            title="Redo"
+          >
+            <Redo2 className="h-4 w-4 sm:h-5 sm:w-5" />
+          </Button>
+
           <Button
             onClick={() => setShowPreviewMobile(false)}
             variant="outline"
-            className="md:hidden rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-12 px-6"
+            className="md:hidden rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-10 sm:h-12 px-4 sm:px-6"
           >
             <ChevronLeft className="mr-2 h-4 w-4" /> Edit
           </Button>
