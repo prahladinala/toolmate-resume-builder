@@ -56,6 +56,12 @@ export function BuilderClient() {
   const [activeStep, setActiveStep] = useState(0);
   const [showPreviewMobile, setShowPreviewMobile] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
+  const [hasHydrated, setHasHydrated] = useState(false);
+
+  useEffect(() => {
+    useResumeStore.persist.onFinishHydration(() => setHasHydrated(true));
+    setHasHydrated(useResumeStore.persist.hasHydrated());
+  }, []);
 
   useEffect(() => {
     setIsOnline(navigator.onLine);
@@ -136,6 +142,14 @@ export function BuilderClient() {
     }
     e.target.value = ""; // Reset input
   };
+
+  if (!hasHydrated) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-[#fafafa] dark:bg-[#111113]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen w-full bg-[#fafafa] dark:bg-[#111113] overflow-hidden font-sans print:h-auto print:overflow-visible">
