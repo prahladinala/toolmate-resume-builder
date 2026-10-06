@@ -600,6 +600,39 @@ export function TemplateEngine({
       const sectionId = name.replace('custom-', '');
       const section = data.customSections?.find(s => s.id === sectionId);
       if (!section || !section.items || section.items.length === 0) return null;
+      
+      if (config.sectionStyle === "timeline") {
+        return (
+          <section key={name} className={`${sectionSpacing} print:break-inside-avoid`}>
+            {renderSectionHeader(section.title)}
+            <div className="relative border-l ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-6">
+              {section.items.map((item) => (
+                <div key={item.id} className="relative pl-6 print:break-inside-avoid">
+                  <div className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`} />
+                  <div className="flex flex-col mb-1.5">
+                    <h4 className="font-bold text-[1.05rem] leading-snug text-slate-900 dark:text-white">
+                      {item.name}
+                    </h4>
+                    {item.date && (
+                      <div className="flex items-center gap-2 mt-0.5 text-sm">
+                        <span className="font-medium text-slate-500 dark:text-slate-400">
+                          {item.date}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  {item.description && (
+                    <div className="text-slate-600 dark:text-slate-300">
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{item.description}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      }
+
       return (
         <section key={name} className={`${sectionSpacing} print:break-inside-avoid`}>
           {renderSectionHeader(section.title)}
@@ -676,25 +709,31 @@ export function TemplateEngine({
       return (
         <section className={sectionSpacing}>
           {renderSectionHeader("Experience")}
-          <div className="relative border-l-2 ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-8">
+          <div className="relative border-l ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-6">
             {sortedExperience.map((exp) => (
               <div key={exp.id} className="relative pl-6 print:break-inside-avoid">
-                <div className={`absolute w-3 h-3 rounded-full -left-[7px] top-1.5 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`} />
-                <div className="flex flex-col mb-2">
-                  <h4 className="font-bold text-lg">
-                    {exp.role}{" "}
-                    <span className={`${accentClasses.text}`}>
-                      @ {exp.company}
-                    </span>
+                <div className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`} />
+                <div className="flex flex-col mb-1.5">
+                  <h4 className="font-bold text-[1.05rem] leading-snug text-slate-900 dark:text-white">
+                    {exp.role}
                   </h4>
-                  {!config.hideDates && (
-                    <span className="text-sm font-semibold opacity-70">
-                      {formatDate(exp.startDate)} -{" "}
-                      {exp.current ? "Present" : formatDate(exp.endDate)}
+                  <div className="flex items-center gap-2 mt-0.5 text-sm">
+                    <span className={`font-semibold ${accentClasses.text}`}>
+                      {exp.company}
                     </span>
-                  )}
+                    {!config.hideDates && (
+                      <>
+                        <span className="text-slate-300 dark:text-slate-600">•</span>
+                        <span className="font-medium text-slate-500 dark:text-slate-400">
+                          {formatDate(exp.startDate)} - {exp.current ? "Present" : formatDate(exp.endDate)}
+                        </span>
+                      </>
+                    )}
+                  </div>
                 </div>
-                {parseMarkdown(exp.description)}
+                <div className="text-slate-600 dark:text-slate-300">
+                  {parseMarkdown(exp.description)}
+                </div>
               </div>
             ))}
           </div>
@@ -740,21 +779,25 @@ export function TemplateEngine({
       return (
         <section className={sectionSpacing}>
           {renderSectionHeader("Education")}
-          <div className="relative border-l-2 ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-6">
+          <div className="relative border-l ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-6">
             {sortedEducation.map((edu) => (
               <div key={edu.id} className="relative pl-6 print:break-inside-avoid">
-                <div className={`absolute w-3 h-3 rounded-full -left-[7px] top-1.5 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`} />
+                <div className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`} />
                 <div className="flex flex-col mb-1">
-                  <h4 className="font-bold text-lg">{edu.degree}</h4>
-                  <div className="flex justify-between text-sm mt-0.5">
-                    <span className={`${accentClasses.text} font-medium`}>
+                  <h4 className="font-bold text-[1.05rem] leading-snug text-slate-900 dark:text-white">
+                    {edu.degree}
+                  </h4>
+                  <div className="flex items-center gap-2 mt-0.5 text-sm">
+                    <span className={`font-semibold ${accentClasses.text}`}>
                       {edu.institution}
                     </span>
                     {!config.hideDates && (
-                      <span className="opacity-70 font-semibold">
-                        {formatDate(edu.startDate)} -{" "}
-                        {edu.current ? "Present" : formatDate(edu.endDate)}
-                      </span>
+                      <>
+                        <span className="text-slate-300 dark:text-slate-600">•</span>
+                        <span className="font-medium text-slate-500 dark:text-slate-400">
+                          {formatDate(edu.startDate)} - {edu.current ? "Present" : formatDate(edu.endDate)}
+                        </span>
+                      </>
                     )}
                   </div>
                 </div>
