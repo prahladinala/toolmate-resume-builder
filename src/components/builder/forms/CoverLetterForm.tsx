@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect } from "react";
 import { PowerVerbs } from "../PowerVerbs";
+import { AIHelper } from "../AIHelper";
 
 export function CoverLetterForm() {
   const { data, updateCoverLetter } = useResumeStore();
@@ -49,10 +50,16 @@ export function CoverLetterForm() {
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <Label htmlFor="coverLetter">Letter Content</Label>
-          <PowerVerbs onSelect={(verb) => {
-            const currentDesc = watch("coverLetter") || "";
-            setValue("coverLetter", currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + verb);
-          }} />
+          <div className="flex items-center gap-2">
+            <AIHelper 
+              currentText={watch("coverLetter") || ""}
+              onUpdate={(improvedText) => setValue("coverLetter", improvedText)}
+            />
+            <PowerVerbs onSelect={(verb) => {
+              const currentDesc = watch("coverLetter") || "";
+              setValue("coverLetter", currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + verb);
+            }} />
+          </div>
         </div>
         <Textarea
           id="coverLetter"

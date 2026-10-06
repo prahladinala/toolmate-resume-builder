@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect } from "react";
 import { PowerVerbs } from "../PowerVerbs";
+import { AIHelper } from "../AIHelper";
 
 export function SummaryForm() {
   const { data, updateSummary } = useResumeStore();
@@ -50,10 +51,16 @@ export function SummaryForm() {
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <Label htmlFor="summary">Summary</Label>
-          <PowerVerbs onSelect={(verb) => {
-            const currentDesc = watch("summary") || "";
-            setValue("summary", currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + verb);
-          }} />
+          <div className="flex items-center gap-2">
+            <AIHelper 
+              currentText={watch("summary") || ""}
+              onUpdate={(improvedText) => setValue("summary", improvedText)}
+            />
+            <PowerVerbs onSelect={(verb) => {
+              const currentDesc = watch("summary") || "";
+              setValue("summary", currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + verb);
+            }} />
+          </div>
         </div>
         <Textarea
           id="summary"

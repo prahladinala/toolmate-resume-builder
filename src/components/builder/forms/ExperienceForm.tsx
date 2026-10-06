@@ -15,6 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { GripVertical, Plus, Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { PowerVerbs } from "../PowerVerbs";
+import { AIHelper } from "../AIHelper";
 import {
   DndContext,
   closestCenter,
@@ -164,10 +165,16 @@ function SortableExperienceItem({
         <div className="space-y-2 md:col-span-2">
           <div className="flex justify-between items-center">
             <Label>Description (Markdown supported)</Label>
-            <PowerVerbs onSelect={(verb) => {
-              const currentDesc = watch(`experiences.${index}.description`) || "";
-              setValue(`experiences.${index}.description`, currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + verb);
-            }} />
+            <div className="flex items-center gap-2">
+              <AIHelper 
+                currentText={watch(`experiences.${index}.description`) || ""}
+                onUpdate={(improvedText) => setValue(`experiences.${index}.description`, improvedText)}
+              />
+              <PowerVerbs onSelect={(verb) => {
+                const currentDesc = watch(`experiences.${index}.description`) || "";
+                setValue(`experiences.${index}.description`, currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + verb);
+              }} />
+            </div>
           </div>
           <Textarea
             placeholder="- Developed new features&#10;- Improved performance by **20%**"
