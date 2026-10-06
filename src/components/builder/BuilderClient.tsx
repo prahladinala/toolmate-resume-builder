@@ -157,7 +157,7 @@ export function BuilderClient() {
             <Button
               onClick={handleDownload}
               size="sm"
-              className="rounded-full bg-emerald-500 hover:bg-emerald-600 text-white border-0"
+              className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm border-0"
             >
               <Download className="mr-2 h-3 w-3" /> PDF
             </Button>
@@ -167,7 +167,7 @@ export function BuilderClient() {
             <Button
               onClick={handleDownload}
               size="lg"
-              className="rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg border-0 h-12 px-6 font-semibold"
+              className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg border-0 h-12 px-6 font-semibold"
             >
               <Download className="mr-2 h-4 w-4" /> Download PDF
             </Button>
