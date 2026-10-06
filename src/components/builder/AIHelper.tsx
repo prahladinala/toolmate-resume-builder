@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Loader2, Bot } from "lucide-react";
+import { ChromeAISetupModal } from "./ChromeAISetupModal";
 
 export function AIHelper({
   currentText,
@@ -37,7 +38,14 @@ export function AIHelper({
     checkAI();
   }, []);
 
+  const [showSetup, setShowSetup] = useState(false);
+
   const handleImprove = async () => {
+    if (!isAvailable) {
+      setShowSetup(true);
+      return;
+    }
+
     if (!currentText.trim() || isGenerating) return;
     setIsGenerating(true);
     
@@ -57,23 +65,20 @@ export function AIHelper({
     }
   };
 
-  // If Chrome AI is not available, we can either hide the button or show a tooltip.
-  // For now, we hide it completely so it doesn't clutter the UI on non-Chrome browsers.
-  if (!isAvailable) {
-    return null;
-  }
-
   return (
-    <div 
-      onClick={handleImprove}
-      className={`h-7 px-2 text-xs flex items-center gap-1.5 border rounded-md cursor-pointer transition-colors ${
-        isGenerating || !currentText.trim()
-          ? "opacity-50 cursor-not-allowed border-purple-200 text-purple-400 bg-purple-50 dark:border-purple-900/50 dark:bg-purple-950/20 dark:text-purple-600"
-          : "border-purple-200 text-purple-700 bg-purple-50 hover:bg-purple-100 hover:text-purple-800 dark:border-purple-900 dark:bg-purple-950/30 dark:text-purple-400"
-      }`}
-    >
-      {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Bot className="w-3 h-3" />}
-      {isGenerating ? "Improving..." : "Improve AI"}
-    </div>
+    <>
+      <div 
+        onClick={handleImprove}
+        className={`h-7 px-2 text-xs flex items-center gap-1.5 border rounded-md cursor-pointer transition-colors ${
+          (isGenerating || (!currentText.trim() && isAvailable))
+            ? "opacity-50 cursor-not-allowed border-purple-200 text-purple-400 bg-purple-50 dark:border-purple-900/50 dark:bg-purple-950/20 dark:text-purple-600"
+            : "border-purple-200 text-purple-700 bg-purple-50 hover:bg-purple-100 hover:text-purple-800 dark:border-purple-900 dark:bg-purple-950/30 dark:text-purple-400"
+        }`}
+      >
+        {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Bot className="w-3 h-3" />}
+        {isGenerating ? "Improving..." : "Improve AI"}
+      </div>
+      <ChromeAISetupModal open={showSetup} onOpenChange={setShowSetup} />
+    </>
   );
 }
