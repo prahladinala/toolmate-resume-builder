@@ -5,12 +5,41 @@ import { TemplateEngine } from "./TemplateEngine";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useEffect, useState } from "react";
 import { AtsAnalyzer } from "./AtsAnalyzer";
+import { Wand2, Loader2 } from "lucide-react";
 
 export function Preview() {
-  const { data, activeTemplate, themeConfig } = useResumeStore();
+  const { data, activeTemplate, themeConfig, updateThemeConfig } = useResumeStore();
   const [mounted, setMounted] = useState(false);
   const [mobileScale, setMobileScale] = useState(1);
   const [mode, setMode] = useState<"resume" | "cover-letter">("resume");
+  const [isShrinking, setIsShrinking] = useState(false);
+
+  const smartShrink = async () => {
+    setIsShrinking(true);
+    let currentZoom = 1;
+    // Reset zoom first
+    updateThemeConfig({ documentZoom: currentZoom });
+    
+    // Wait for react to re-render the reset zoom
+    await new Promise((r) => setTimeout(r, 150));
+    
+    const el = document.getElementById("template-root");
+    if (!el) {
+      setIsShrinking(false);
+      return;
+    }
+
+    // A4 ratio 210/297 -> for 794px width, height is exactly 1123px.
+    let count = 0;
+    while (el.scrollHeight > 1123 && currentZoom > 0.6 && count < 20) {
+      currentZoom -= 0.02;
+      updateThemeConfig({ documentZoom: currentZoom });
+      // yield to browser layout
+      await new Promise((r) => setTimeout(r, 50));
+      count++;
+    }
+    setIsShrinking(false);
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -35,6 +64,15 @@ export function Preview() {
           className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${mode === "cover-letter" ? "bg-indigo-600 text-white" : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"}`}
         >
           Cover Letter
+        </button>
+        <div className="w-[1px] h-6 bg-zinc-200 dark:bg-zinc-800 mx-1"></div>
+        <button
+          onClick={smartShrink}
+          disabled={isShrinking || mode !== "resume"}
+          className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${isShrinking ? "text-purple-400" : "text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20"} flex items-center gap-2`}
+          title="Magic Fit to 1 Page"
+        >
+          {isShrinking ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
         </button>
       </div>
 

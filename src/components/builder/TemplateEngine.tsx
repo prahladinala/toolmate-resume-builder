@@ -1051,8 +1051,9 @@ export function TemplateEngine({
 
   return (
     <div
+      id="template-root"
       className={`w-full min-h-[297mm] h-auto relative ${fontClasses[config.bodyFont]} ${config.textColor}`}
-      style={{ backgroundColor: config.bgColor }}
+      style={{ backgroundColor: config.bgColor, zoom: themeConfig?.documentZoom || 1 }}
     >
       {layoutContainer}
 

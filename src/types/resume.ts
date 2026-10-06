@@ -89,6 +89,7 @@ export type ThemeConfig = {
   hideLocation?: boolean;
   hideLinks?: boolean;
   hideDates?: boolean;
+  documentZoom?: number; // 0.5 to 1.5
 };
 
 export type ResumeStore = {
