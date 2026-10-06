@@ -18,6 +18,7 @@ export function AIHelper({
     const checkAI = async () => {
       if (typeof window !== "undefined" && "ai" in window) {
         try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const ai = (window as any).ai;
           if (ai.languageModel) {
             const capabilities = await ai.languageModel.capabilities();
@@ -41,6 +42,7 @@ export function AIHelper({
     setIsGenerating(true);
     
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const ai = (window as any).ai;
       const session = await ai.languageModel.create({
         systemPrompt: "You are an expert ATS resume writer. Rewrite the following text to be more impactful, professional, and action-oriented. Keep it concise. Do not add markdown unless it was already present in the source.",

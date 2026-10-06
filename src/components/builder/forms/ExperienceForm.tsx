@@ -16,6 +16,7 @@ import { GripVertical, Plus, Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { PowerVerbs } from "../PowerVerbs";
 import { AIHelper } from "../AIHelper";
+import { AISuggestions } from "../AISuggestions";
 import {
   DndContext,
   closestCenter,
@@ -180,6 +181,14 @@ function SortableExperienceItem({
             placeholder="- Developed new features&#10;- Improved performance by **20%**"
             className="min-h-[100px]"
             {...register(`experiences.${index}.description`)}
+          />
+          <AISuggestions 
+            currentText={watch(`experiences.${index}.description`) || ""} 
+            onSelect={(suggestion) => {
+              const currentDesc = watch(`experiences.${index}.description`) || "";
+              setValue(`experiences.${index}.description`, currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + suggestion);
+            }} 
+            contextPrompt="job experience bullet points"
           />
         </div>
       </div>

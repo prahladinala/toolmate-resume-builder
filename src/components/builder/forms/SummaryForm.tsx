@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEffect } from "react";
 import { PowerVerbs } from "../PowerVerbs";
 import { AIHelper } from "../AIHelper";
+import { AISuggestions } from "../AISuggestions";
 
 export function SummaryForm() {
   const { data, updateSummary } = useResumeStore();
@@ -67,6 +68,14 @@ export function SummaryForm() {
           placeholder="Experienced software engineer with a passion for building scalable web applications..."
           className="min-h-[200px]"
           {...register("summary")}
+        />
+        <AISuggestions 
+          currentText={watch("summary") || ""} 
+          onSelect={(suggestion) => {
+            const currentDesc = watch("summary") || "";
+            setValue("summary", currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + suggestion);
+          }} 
+          contextPrompt="professional summary"
         />
         {errors.summary && (
           <p className="text-xs text-destructive">
