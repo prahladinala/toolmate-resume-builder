@@ -973,7 +973,7 @@ export function TemplateEngine({
             {sideColOrder.map(s => {
               if (s === 'skills' && data.skills && data.skills.length > 0) return (
                 <div key="skills" className="mb-12 print:break-inside-avoid">
-                  <h3 className="text-xl font-bold mb-4 border-b border-white/20 pb-2">
+                  <h3 className={`text-xl font-bold mb-4 border-b border-white/20 pb-2 ${fontClasses[config.headingFont]}`}>
                     Skills
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -990,7 +990,7 @@ export function TemplateEngine({
               );
               if (s === 'education' && education.length > 0) return (
                 <div key="education" className="print:break-inside-avoid">
-                  <h3 className="text-xl font-bold mb-4 border-b border-white/20 pb-2">
+                  <h3 className={`text-xl font-bold mb-4 border-b border-white/20 pb-2 ${fontClasses[config.headingFont]}`}>
                     Education
                   </h3>
                   {sortedEducation.map((edu) => (

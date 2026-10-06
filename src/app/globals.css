@@ -152,3 +152,7 @@
     print-color-adjust: exact !important;
   }
 }
+
+.markdown-container :not(code, pre) {
+  font-family: inherit;
+}
