@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ import {
   Download,
   Undo2,
   Redo2,
+  WifiOff,
 } from "lucide-react";
 import { useStore } from "zustand";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -54,6 +55,19 @@ export function BuilderClient() {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const [showPreviewMobile, setShowPreviewMobile] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
+
+  useEffect(() => {
+    setIsOnline(navigator.onLine);
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   // Undo/Redo state
   const { undo, redo, pastStates, futureStates } = useStore(useResumeStore.temporal);
@@ -149,10 +163,16 @@ export function BuilderClient() {
         />
 
         {/* Desktop Header for the Form Panel */}
-        <div className="hidden md:flex h-[72px] items-center px-8 border-b border-zinc-200 dark:border-[#27272a] shrink-0 bg-white dark:bg-[#09090b]">
+        <div className="hidden md:flex h-[72px] items-center justify-between px-8 border-b border-zinc-200 dark:border-[#27272a] shrink-0 bg-white dark:bg-[#09090b]">
           <h2 className="text-xl font-bold tracking-tight">
             {STEPS[activeStep].label}
           </h2>
+          {!isOnline && (
+            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-500/20">
+              <WifiOff className="w-3.5 h-3.5" />
+              Working Offline
+            </div>
+          )}
         </div>
 
         <BuilderFormContainer activeStep={activeStep} />
