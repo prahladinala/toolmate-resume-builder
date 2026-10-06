@@ -20,7 +20,7 @@ export function Preview() {
   if (!mounted) return <div className="w-full h-full bg-muted/30" />;
 
   return (
-    <div className="w-full h-full bg-muted/30 overflow-y-auto flex justify-center @container print:!bg-transparent print:p-0 print:overflow-visible print:block relative">
+    <div className="w-full h-full bg-muted/30 overflow-y-auto flex justify-center @container print:!bg-transparent print:p-0 print:overflow-visible print:block print:h-auto relative">
       
       {/* Mode Toggle */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 print:hidden bg-white dark:bg-zinc-900 rounded-full shadow-lg p-1 border border-zinc-200 dark:border-zinc-800 flex items-center">

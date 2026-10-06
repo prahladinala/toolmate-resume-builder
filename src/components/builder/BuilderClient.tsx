@@ -138,7 +138,7 @@ export function BuilderClient() {
 
       {/* RIGHT: Live Preview Panel */}
       <div
-        className={`flex-1 h-full relative bg-zinc-100 dark:bg-[#111113] print:bg-white print:!m-0 print:!p-0 print:absolute print:inset-0 print:z-50 print:!block ${
+        className={`flex-1 h-full relative bg-zinc-100 dark:bg-[#111113] print:bg-white print:!m-0 print:!p-0 print:static print:h-auto print:!block ${
           !showPreviewMobile ? "hidden md:block" : "block"
         }`}
       >
@@ -175,8 +175,8 @@ export function BuilderClient() {
         </div>
 
         {/* The PDF Preview container */}
-        <div className="h-full w-full overflow-y-auto print:overflow-visible p-4 md:p-8 flex justify-center print:!p-0 pb-32">
-          <div className="w-full max-w-[794px] print:max-w-none transition-all duration-300">
+        <div className="h-full w-full overflow-y-auto print:h-auto print:overflow-visible p-4 md:p-8 flex justify-center print:!p-0 pb-32 print:pb-0">
+          <div className="w-full max-w-[794px] print:max-w-none transition-all duration-300 print:h-auto">
             <Preview />
           </div>
         </div>
