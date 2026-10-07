@@ -55,8 +55,8 @@ export function Preview() {
       for (const entry of entries) {
         if (entry.target === containerRef.current) {
           const width = entry.contentRect.width;
-          // Available width is container width minus padding (p-8 = 32px each side = 64px)
-          const availableWidth = width - 64;
+          // Available width is container width minus padding (py-8 px-2 = 8px each side = 16px)
+          const availableWidth = width - 16;
           // Resume is fixed to 794px width.
           setDesktopScale(Math.min(availableWidth / 794, 1));
         } else if (entry.target === resumeRef.current) {
@@ -130,11 +130,11 @@ export function Preview() {
       </div>
 
       {/* Desktop CSS Scaled View */}
-      <div className="hidden md:flex p-8 justify-center w-full print:hidden">
+      <div className="hidden md:flex py-8 px-2 justify-center w-full print:hidden">
         <div
           className="relative"
           style={{
-            width: "min(100% - 64px, 794px)",
+            width: "min(100% - 16px, 794px)",
             height: `${resumeHeight * desktopScale}px`,
           }}
         >
