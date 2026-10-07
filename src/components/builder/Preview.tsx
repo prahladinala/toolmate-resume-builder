@@ -3,7 +3,7 @@
 import { useResumeStore } from "@/store/useResumeStore";
 import { TemplateEngine } from "./TemplateEngine";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { AtsAnalyzer } from "./AtsAnalyzer";
 import { Wand2, Loader2 } from "lucide-react";
 
@@ -41,15 +41,43 @@ export function Preview() {
     setIsShrinking(false);
   };
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const resumeRef = useRef<HTMLDivElement>(null);
+  const [desktopScale, setDesktopScale] = useState(1);
+  const [resumeHeight, setResumeHeight] = useState(1123);
+
   useEffect(() => {
     setMounted(true);
     setMobileScale(1);
+
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.target === containerRef.current) {
+          const width = entry.contentRect.width;
+          // Available width is container width minus padding (p-8 = 32px each side = 64px)
+          const availableWidth = width - 64;
+          // Resume is fixed to 794px width.
+          setDesktopScale(Math.min(availableWidth / 794, 1));
+        } else if (entry.target === resumeRef.current) {
+          setResumeHeight(entry.contentRect.height);
+        }
+      }
+    });
+
+    observer.observe(containerRef.current);
+    if (resumeRef.current) observer.observe(resumeRef.current);
+
+    return () => observer.disconnect();
   }, []);
 
   if (!mounted) return <div className="w-full h-full bg-muted/30" />;
 
   return (
-    <div className="w-full h-full bg-muted/30 overflow-y-auto overflow-x-hidden flex justify-center @container print:!bg-transparent print:p-0 print:overflow-visible print:block print:h-auto relative">
+    <div 
+      ref={containerRef}
+      className="w-full h-full bg-muted/30 overflow-y-auto overflow-x-hidden flex justify-center @container print:!bg-transparent print:p-0 print:overflow-visible print:block print:h-auto relative"
+    >
       
       {/* Mode Toggle */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 print:hidden bg-white dark:bg-zinc-900 rounded-full shadow-lg p-1 border border-zinc-200 dark:border-zinc-800 flex items-center">
@@ -104,18 +132,27 @@ export function Preview() {
       {/* Desktop CSS Scaled View */}
       <div className="hidden md:flex p-8 justify-center w-full print:hidden">
         <div
-          id="resume-preview-desktop"
-          className="w-[794px] min-h-[1123px] bg-white shadow-xl"
+          className="relative"
           style={{
-            zoom: "calc(min(100cqw - 64px, 794px) / 794)",
+            width: "min(100% - 64px, 794px)",
+            height: `${resumeHeight * desktopScale}px`,
           }}
         >
-          <TemplateEngine
-            data={data}
-            templateId={activeTemplate || "dev-1"}
-            themeConfig={themeConfig}
-            mode={mode}
-          />
+          <div
+            id="resume-preview-desktop"
+            ref={resumeRef}
+            className="absolute top-0 left-0 w-[794px] min-h-[1123px] bg-white shadow-xl origin-top-left"
+            style={{
+              transform: `scale(${desktopScale})`,
+            }}
+          >
+            <TemplateEngine
+              data={data}
+              templateId={activeTemplate || "dev-1"}
+              themeConfig={themeConfig}
+              mode={mode}
+            />
+          </div>
         </div>
       </div>
 
