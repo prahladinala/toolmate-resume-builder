@@ -278,6 +278,9 @@ export function StyleForm() {
               onClick={() =>
                 updateThemeConfig({
                   fontFamily: font.id as "sans" | "serif" | "mono",
+                  titleFont: font.id as "sans" | "serif" | "mono",
+                  headingFont: font.id as "sans" | "serif" | "mono",
+                  bodyFont: font.id as "sans" | "serif" | "mono",
                 })
               }
               className={`p-3 sm:p-4 rounded-xl border text-left transition-all ${
