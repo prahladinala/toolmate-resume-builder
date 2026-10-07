@@ -49,10 +49,26 @@ export function AtsAnalyzer() {
     } else {
       let hasMetrics = false;
       let hasParagraphs = false;
+      let hasActionVerbs = false;
+      let hasPronouns = false;
+      let hasBuzzwords = false;
+      let missingDates = false;
+
+      const actionVerbs = /\b(led|managed|developed|created|designed|implemented|orchestrated|increased|improved|reduced|optimized|achieved|coordinated)\b/i;
+      const pronouns = /\b(i|me|my|we|our)\b/i;
+      const buzzwords = /\b(hard worker|team player|think outside the box|synergy|detail oriented|go-getter|self-starter)\b/i;
+
       data.experience.forEach(exp => {
+        if (!exp.startDate || (!exp.endDate && !exp.current)) {
+          missingDates = true;
+        }
+
         if (exp.description) {
           if (/\d+%|\d+x|\$\d+/i.test(exp.description)) hasMetrics = true;
           if (!exp.description.includes("-") && !exp.description.includes("*")) hasParagraphs = true;
+          if (actionVerbs.test(exp.description)) hasActionVerbs = true;
+          if (pronouns.test(exp.description)) hasPronouns = true;
+          if (buzzwords.test(exp.description)) hasBuzzwords = true;
         }
       });
 
@@ -67,12 +83,57 @@ export function AtsAnalyzer() {
         newScore -= 10;
         newFeedback.push({ type: "warning", text: "Use bullet points instead of paragraphs in experience." });
       }
+      
+      if (!hasActionVerbs) {
+        newScore -= 5;
+        newFeedback.push({ type: "warning", text: "Start bullets with strong action verbs (e.g. Developed, Managed)." });
+      } else {
+        newFeedback.push({ type: "success", text: "Good use of strong action verbs." });
+      }
+
+      if (hasPronouns) {
+        newScore -= 5;
+        newFeedback.push({ type: "warning", text: "Avoid personal pronouns (I, me, my) in your resume." });
+      }
+
+      if (hasBuzzwords) {
+        newScore -= 5;
+        newFeedback.push({ type: "warning", text: "Remove clichés/buzzwords (e.g. 'team player', 'hard worker')." });
+      }
+
+      if (missingDates) {
+        newScore -= 10;
+        newFeedback.push({ type: "error", text: "One or more experience entries are missing start/end dates." });
+      }
     }
 
     // Education Checks
     if (!data.education || data.education.length === 0) {
       newScore -= 10;
       newFeedback.push({ type: "error", text: "Missing education section." });
+    } else {
+      let missingDates = false;
+      data.education.forEach(edu => {
+        if (!edu.startDate || (!edu.endDate && !edu.current)) missingDates = true;
+      });
+      if (missingDates) {
+        newScore -= 5;
+        newFeedback.push({ type: "warning", text: "Education is missing start/end dates." });
+      }
+    }
+
+    // Projects Checks
+    if (data.projects && data.projects.length > 0) {
+      let hasLinks = false;
+      data.projects.forEach(proj => {
+        if (proj.url || proj.github) hasLinks = true;
+      });
+      if (!hasLinks) {
+        newScore -= 5;
+        newFeedback.push({ type: "warning", text: "Add live links or GitHub repos to your projects." });
+      } else {
+        newFeedback.push({ type: "success", text: "Projects include external links." });
+      }
     }
 
     // Skills Checks
@@ -82,6 +143,8 @@ export function AtsAnalyzer() {
     } else if (data.skills.length > 15) {
       newScore -= 5;
       newFeedback.push({ type: "warning", text: "Too many skills listed. Keep it focused (under 15)." });
+    } else {
+      newFeedback.push({ type: "success", text: "Optimal number of skills listed." });
     }
 
     setScore(Math.max(0, newScore));
