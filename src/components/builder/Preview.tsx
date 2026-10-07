@@ -49,7 +49,7 @@ export function Preview() {
   if (!mounted) return <div className="w-full h-full bg-muted/30" />;
 
   return (
-    <div className="w-full h-full bg-muted/30 overflow-y-auto flex justify-center @container print:!bg-transparent print:p-0 print:overflow-visible print:block print:h-auto relative">
+    <div className="w-full h-full bg-muted/30 overflow-y-auto overflow-x-hidden flex justify-center @container print:!bg-transparent print:p-0 print:overflow-visible print:block print:h-auto relative">
       
       {/* Mode Toggle */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 print:hidden bg-white dark:bg-zinc-900 rounded-full shadow-lg p-1 border border-zinc-200 dark:border-zinc-800 flex items-center">
@@ -104,26 +104,18 @@ export function Preview() {
       {/* Desktop CSS Scaled View */}
       <div className="hidden md:flex p-8 justify-center w-full print:hidden">
         <div
-          className="relative overflow-hidden"
+          id="resume-preview-desktop"
+          className="w-[794px] min-h-[1123px] bg-white shadow-xl"
           style={{
-            width: "min(100cqw - 64px, 794px)",
-            height: "calc(min(100cqw - 64px, 794px) * 1.414357)",
+            zoom: "calc(min(100cqw - 64px, 794px) / 794)",
           }}
         >
-          <div
-            id="resume-preview-desktop"
-            className="absolute top-0 left-0 w-[794px] min-h-[1123px] bg-white shadow-xl overflow-hidden origin-top-left"
-            style={{
-              transform: "scale(calc(min(100cqw - 64px, 794px) / 794))",
-            }}
-          >
-            <TemplateEngine
-              data={data}
-              templateId={activeTemplate || "dev-1"}
-              themeConfig={themeConfig}
-              mode={mode}
-            />
-          </div>
+          <TemplateEngine
+            data={data}
+            templateId={activeTemplate || "dev-1"}
+            themeConfig={themeConfig}
+            mode={mode}
+          />
         </div>
       </div>
 
