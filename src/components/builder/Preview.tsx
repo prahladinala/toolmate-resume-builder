@@ -104,7 +104,7 @@ export function Preview() {
       {/* Desktop CSS Scaled View */}
       <div className="hidden md:flex p-8 justify-center w-full print:hidden">
         <div
-          className="relative"
+          className="relative overflow-hidden"
           style={{
             width: "min(100cqw - 64px, 794px)",
             height: "calc(min(100cqw - 64px, 794px) * 1.414357)",
