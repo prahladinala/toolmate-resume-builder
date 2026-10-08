@@ -23,8 +23,14 @@ import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
 
 function SortableSectionItem({ id, label }: { id: string; label: string }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -47,7 +53,9 @@ function SortableSectionItem({ id, label }: { id: string; label: string }) {
       >
         <GripVertical className="w-5 h-5" />
       </button>
-      <span className="font-medium text-sm text-zinc-700 dark:text-[#e4e4e7] capitalize">{label}</span>
+      <span className="font-medium text-sm text-zinc-700 dark:text-[#e4e4e7] capitalize">
+        {label}
+      </span>
     </div>
   );
 }
@@ -123,6 +131,18 @@ const DATE_FORMATS = [
   { id: "YYYY", label: "2023" },
 ];
 
+const BORDER_RADIUS = [
+  { id: "none", label: "Sharp" },
+  { id: "md", label: "Rounded" },
+  { id: "full", label: "Pill" },
+];
+
+const TEXT_SIZES = [
+  { id: "sm", label: "Small" },
+  { id: "base", label: "Normal" },
+  { id: "lg", label: "Large" },
+];
+
 export function StyleForm() {
   const { themeConfig, updateThemeConfig } = useResumeStore();
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -160,7 +180,8 @@ export function StyleForm() {
           Advanced Style Customization
         </h3>
         <p className="text-sm text-muted-foreground">
-          Fine-tune your resume&apos;s colors, typography, layout, and section ordering.
+          Fine-tune your resume&apos;s colors, typography, layout, and section
+          ordering.
         </p>
       </div>
 
@@ -169,7 +190,8 @@ export function StyleForm() {
           Section Order
         </Label>
         <p className="text-xs text-zinc-500 dark:text-[#a1a1aa] mb-2">
-          Drag and drop to reorder the sections on your resume. This affects the main content flow.
+          Drag and drop to reorder the sections on your resume. This affects the
+          main content flow.
         </p>
         <DndContext
           sensors={sensors}
@@ -264,8 +286,8 @@ export function StyleForm() {
           <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
             Typography Style
           </Label>
-          <button 
-            onClick={() => setShowAdvanced(!showAdvanced)} 
+          <button
+            onClick={() => setShowAdvanced(!showAdvanced)}
             className="text-xs font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-400 transition-colors underline-offset-4 hover:underline"
           >
             {showAdvanced ? "Hide Advanced Settings" : "Advanced Settings"}
@@ -310,57 +332,87 @@ export function StyleForm() {
             </Label>
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-1">
               <div className="space-y-2">
-                <Label className="text-xs text-zinc-500 dark:text-[#a1a1aa]">Name & Main Title</Label>
+                <Label className="text-xs text-zinc-500 dark:text-[#a1a1aa]">
+                  Name & Main Title
+                </Label>
                 <div className="flex flex-wrap gap-2">
                   {FONTS.map((font) => (
                     <button
                       key={`title-${font.id}`}
-                      onClick={() => updateThemeConfig({ titleFont: font.id as "sans" | "serif" | "mono" })}
+                      onClick={() =>
+                        updateThemeConfig({
+                          titleFont: font.id as "sans" | "serif" | "mono",
+                        })
+                      }
                       className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
-                        (themeConfig?.titleFont || themeConfig?.fontFamily || "sans") === font.id
+                        (themeConfig?.titleFont ||
+                          themeConfig?.fontFamily ||
+                          "sans") === font.id
                           ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
                           : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
                       }`}
                     >
-                      <span className={`font-${font.id}`}>{font.label.split(" ")[0]}</span>
+                      <span className={`font-${font.id}`}>
+                        {font.label.split(" ")[0]}
+                      </span>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs text-zinc-500 dark:text-[#a1a1aa]">Section Headings</Label>
+                <Label className="text-xs text-zinc-500 dark:text-[#a1a1aa]">
+                  Section Headings
+                </Label>
                 <div className="flex flex-wrap gap-2">
                   {FONTS.map((font) => (
                     <button
                       key={`heading-${font.id}`}
-                      onClick={() => updateThemeConfig({ headingFont: font.id as "sans" | "serif" | "mono" })}
+                      onClick={() =>
+                        updateThemeConfig({
+                          headingFont: font.id as "sans" | "serif" | "mono",
+                        })
+                      }
                       className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
-                        (themeConfig?.headingFont || themeConfig?.fontFamily || "sans") === font.id
+                        (themeConfig?.headingFont ||
+                          themeConfig?.fontFamily ||
+                          "sans") === font.id
                           ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
                           : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
                       }`}
                     >
-                      <span className={`font-${font.id}`}>{font.label.split(" ")[0]}</span>
+                      <span className={`font-${font.id}`}>
+                        {font.label.split(" ")[0]}
+                      </span>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs text-zinc-500 dark:text-[#a1a1aa]">Body Content</Label>
+                <Label className="text-xs text-zinc-500 dark:text-[#a1a1aa]">
+                  Body Content
+                </Label>
                 <div className="flex flex-wrap gap-2">
                   {FONTS.map((font) => (
                     <button
                       key={`body-${font.id}`}
-                      onClick={() => updateThemeConfig({ bodyFont: font.id as "sans" | "serif" | "mono" })}
+                      onClick={() =>
+                        updateThemeConfig({
+                          bodyFont: font.id as "sans" | "serif" | "mono",
+                        })
+                      }
                       className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
-                        (themeConfig?.bodyFont || themeConfig?.fontFamily || "sans") === font.id
+                        (themeConfig?.bodyFont ||
+                          themeConfig?.fontFamily ||
+                          "sans") === font.id
                           ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
                           : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
                       }`}
                     >
-                      <span className={`font-${font.id}`}>{font.label.split(" ")[0]}</span>
+                      <span className={`font-${font.id}`}>
+                        {font.label.split(" ")[0]}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -372,188 +424,260 @@ export function StyleForm() {
             <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
               Section & Badge Layout
             </Label>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {STYLES.map((style) => (
-            <button
-              key={style.id}
-              onClick={() =>
-                updateThemeConfig({
-                  sectionStyle: style.id as
-                    "minimal" | "badge" | "boxed" | "underline",
-                })
-              }
-              className={`p-3 rounded-xl border transition-all text-sm font-medium ${
-                themeConfig?.sectionStyle === style.id
-                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
-                  : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
-              }`}
-            >
-              {style.label.split(" ")[0]}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
-        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
-          Profile Photo Layout
-        </Label>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {IMAGE_ALIGNS.map((align) => (
-            <button
-              key={align.id}
-              onClick={() =>
-                updateThemeConfig({
-                  imageAlign: align.id as
-                    "left" | "center" | "right" | "hidden",
-                })
-              }
-              className={`p-3 rounded-xl border transition-all text-sm font-medium ${
-                themeConfig?.imageAlign === align.id
-                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
-                  : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
-              }`}
-            >
-              {align.label.split(" ")[0]}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
-        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
-          Layout Spacing
-        </Label>
-        <div className="grid grid-cols-3 gap-3">
-          {SPACINGS.map((spacing) => (
-            <button
-              key={spacing.id}
-              onClick={() =>
-                updateThemeConfig({
-                  spacing: spacing.id as "compact" | "normal" | "relaxed",
-                })
-              }
-              className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
-                (themeConfig?.spacing || "normal") === spacing.id
-                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
-                  : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
-              }`}
-            >
-              {spacing.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
-        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
-          Date Formatting
-        </Label>
-        <div className="grid grid-cols-3 gap-3">
-          {DATE_FORMATS.map((format) => (
-            <button
-              key={format.id}
-              onClick={() =>
-                updateThemeConfig({
-                  dateFormat: format.id as "MM/YYYY" | "Month YYYY" | "YYYY",
-                })
-              }
-              className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
-                (themeConfig?.dateFormat || "Month YYYY") === format.id
-                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
-                  : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
-              }`}
-            >
-              {format.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
-        <div className="flex items-center justify-between">
-          <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
-            Page Margin
-          </Label>
-          <span className="text-xs font-medium text-emerald-500">{themeConfig?.pageMargin !== undefined ? themeConfig.pageMargin : 32}px</span>
-        </div>
-        <input
-          type="range"
-          min="0"
-          max="64"
-          step="4"
-          value={themeConfig?.pageMargin !== undefined ? themeConfig.pageMargin : 32}
-          onChange={(e) => updateThemeConfig({ pageMargin: parseInt(e.target.value) })}
-          className="w-full h-2 bg-zinc-200 dark:bg-[#27272a] rounded-lg appearance-none cursor-pointer accent-emerald-500"
-        />
-        <div className="flex justify-between text-[10px] text-zinc-500 dark:text-[#a1a1aa] font-medium uppercase tracking-wider">
-          <span>Edge-to-Edge</span>
-          <span>Spacious</span>
-        </div>
-      </div>
-
-      <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
-        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
-          Field Visibility
-        </Label>
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            { id: 'hidePhoto', label: 'Profile Photo' },
-            { id: 'hidePhone', label: 'Phone Number' },
-            { id: 'hideEmail', label: 'Email Address' },
-            { id: 'hideLocation', label: 'Location' },
-            { id: 'hideLinks', label: 'Social Links' },
-            { id: 'hideDates', label: 'Experience Dates' }
-          ].map(field => (
-            <button
-              key={field.id}
-              onClick={() => updateThemeConfig({ [field.id]: !themeConfig?.[field.id as keyof typeof themeConfig] })}
-              className={`p-3 rounded-xl border text-left transition-all text-sm font-medium flex items-center justify-between ${
-                !themeConfig?.[field.id as keyof typeof themeConfig]
-                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
-                  : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46] line-through opacity-70"
-              }`}
-            >
-              <span>{field.label}</span>
-              <div className={`w-2 h-2 rounded-full ${!themeConfig?.[field.id as keyof typeof themeConfig] ? "bg-emerald-500" : "bg-zinc-300 dark:bg-zinc-600"}`} />
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="pt-6 border-t border-zinc-200 dark:border-[#27272a]">
-        <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113]">
-          <div className="space-y-0.5">
-            <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
-              Show Contact Icons
-            </Label>
-            <p className="text-xs text-zinc-500 dark:text-[#a1a1aa]">
-              Display icons next to email, phone, and links
-            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {STYLES.map((style) => (
+                <button
+                  key={style.id}
+                  onClick={() =>
+                    updateThemeConfig({
+                      sectionStyle: style.id as
+                        "minimal" | "badge" | "boxed" | "underline",
+                    })
+                  }
+                  className={`p-3 rounded-xl border transition-all text-sm font-medium ${
+                    themeConfig?.sectionStyle === style.id
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                      : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
+                  }`}
+                >
+                  {style.label.split(" ")[0]}
+                </button>
+              ))}
+            </div>
           </div>
-          <button
-            onClick={() =>
-              updateThemeConfig({
-                showContactIcons:
-                  themeConfig?.showContactIcons !== false ? false : true,
-              })
-            }
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              themeConfig?.showContactIcons !== false
-                ? "bg-emerald-500"
-                : "bg-[#3f3f46]"
-            }`}
-          >
-            <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                themeConfig?.showContactIcons !== false
-                  ? "translate-x-6"
-                  : "translate-x-1"
-              }`}
+
+          {(themeConfig?.sectionStyle === "badge" ||
+            themeConfig?.sectionStyle === "boxed") && (
+            <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a] animate-in fade-in slide-in-from-top-2 duration-300">
+              <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+                Border Radius
+              </Label>
+              <div className="grid grid-cols-3 gap-3">
+                {BORDER_RADIUS.map((radius) => (
+                  <button
+                    key={radius.id}
+                    onClick={() =>
+                      updateThemeConfig({
+                        borderRadius: radius.id as "none" | "md" | "full",
+                      })
+                    }
+                    className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
+                      (themeConfig?.borderRadius || "none") === radius.id
+                        ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                        : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
+                    }`}
+                  >
+                    {radius.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+              Profile Photo Layout
+            </Label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {IMAGE_ALIGNS.map((align) => (
+                <button
+                  key={align.id}
+                  onClick={() =>
+                    updateThemeConfig({
+                      imageAlign: align.id as
+                        "left" | "center" | "right" | "hidden",
+                    })
+                  }
+                  className={`p-3 rounded-xl border transition-all text-sm font-medium ${
+                    themeConfig?.imageAlign === align.id
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                      : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
+                  }`}
+                >
+                  {align.label.split(" ")[0]}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+              Layout Spacing
+            </Label>
+            <div className="grid grid-cols-3 gap-3">
+              {SPACINGS.map((spacing) => (
+                <button
+                  key={spacing.id}
+                  onClick={() =>
+                    updateThemeConfig({
+                      spacing: spacing.id as "compact" | "normal" | "relaxed",
+                    })
+                  }
+                  className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
+                    (themeConfig?.spacing || "normal") === spacing.id
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                      : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
+                  }`}
+                >
+                  {spacing.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+              Body Text Size
+            </Label>
+            <div className="grid grid-cols-3 gap-3">
+              {TEXT_SIZES.map((size) => (
+                <button
+                  key={size.id}
+                  onClick={() =>
+                    updateThemeConfig({
+                      textSize: size.id as "sm" | "base" | "lg",
+                    })
+                  }
+                  className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
+                    (themeConfig?.textSize || "base") === size.id
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                      : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
+                  }`}
+                >
+                  {size.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+              Date Formatting
+            </Label>
+            <div className="grid grid-cols-3 gap-3">
+              {DATE_FORMATS.map((format) => (
+                <button
+                  key={format.id}
+                  onClick={() =>
+                    updateThemeConfig({
+                      dateFormat: format.id as
+                        "MM/YYYY" | "Month YYYY" | "YYYY",
+                    })
+                  }
+                  className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
+                    (themeConfig?.dateFormat || "Month YYYY") === format.id
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                      : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
+                  }`}
+                >
+                  {format.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+                Page Margin
+              </Label>
+              <span className="text-xs font-medium text-emerald-500">
+                {themeConfig?.pageMargin !== undefined
+                  ? themeConfig.pageMargin
+                  : 32}
+                px
+              </span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="64"
+              step="4"
+              value={
+                themeConfig?.pageMargin !== undefined
+                  ? themeConfig.pageMargin
+                  : 32
+              }
+              onChange={(e) =>
+                updateThemeConfig({ pageMargin: parseInt(e.target.value) })
+              }
+              className="w-full h-2 bg-zinc-200 dark:bg-[#27272a] rounded-lg appearance-none cursor-pointer accent-emerald-500"
             />
-          </button>
-        </div>
-      </div>
+            <div className="flex justify-between text-[10px] text-zinc-500 dark:text-[#a1a1aa] font-medium uppercase tracking-wider">
+              <span>Edge-to-Edge</span>
+              <span>Spacious</span>
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+              Field Visibility
+            </Label>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { id: "hidePhoto", label: "Profile Photo" },
+                { id: "hidePhone", label: "Phone Number" },
+                { id: "hideEmail", label: "Email Address" },
+                { id: "hideLocation", label: "Location" },
+                { id: "hideLinks", label: "Social Links" },
+                { id: "hideDates", label: "Experience Dates" },
+              ].map((field) => (
+                <button
+                  key={field.id}
+                  onClick={() =>
+                    updateThemeConfig({
+                      [field.id]:
+                        !themeConfig?.[field.id as keyof typeof themeConfig],
+                    })
+                  }
+                  className={`p-3 rounded-xl border text-left transition-all text-sm font-medium flex items-center justify-between ${
+                    !themeConfig?.[field.id as keyof typeof themeConfig]
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm"
+                      : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46] line-through opacity-70"
+                  }`}
+                >
+                  <span>{field.label}</span>
+                  <div
+                    className={`w-2 h-2 rounded-full ${!themeConfig?.[field.id as keyof typeof themeConfig] ? "bg-emerald-500" : "bg-zinc-300 dark:bg-zinc-600"}`}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113]">
+              <div className="space-y-0.5">
+                <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+                  Show Contact Icons
+                </Label>
+                <p className="text-xs text-zinc-500 dark:text-[#a1a1aa]">
+                  Display icons next to email, phone, and links
+                </p>
+              </div>
+              <button
+                onClick={() =>
+                  updateThemeConfig({
+                    showContactIcons:
+                      themeConfig?.showContactIcons !== false ? false : true,
+                  })
+                }
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  themeConfig?.showContactIcons !== false
+                    ? "bg-emerald-500"
+                    : "bg-[#3f3f46]"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    themeConfig?.showContactIcons !== false
+                      ? "translate-x-6"
+                      : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

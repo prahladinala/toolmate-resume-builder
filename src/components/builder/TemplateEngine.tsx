@@ -6,7 +6,11 @@ import { Mail, Phone, MapPin, Globe, Briefcase, Terminal } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 type LayoutType =
-  "left-sidebar" | "right-sidebar" | "single-column" | "split-header" | "executive";
+  | "left-sidebar"
+  | "right-sidebar"
+  | "single-column"
+  | "split-header"
+  | "executive";
 type AlignType = "left" | "center" | "right";
 type FontType = "sans" | "serif" | "mono";
 
@@ -289,9 +293,16 @@ export function TemplateEngine({
     ...baseConfig,
     accentColor: themeConfig?.accentColor || baseConfig.accentColor,
     fontFamily: themeConfig?.fontFamily || baseConfig.fontFamily,
-    titleFont: themeConfig?.titleFont || themeConfig?.fontFamily || baseConfig.fontFamily,
-    headingFont: themeConfig?.headingFont || themeConfig?.fontFamily || baseConfig.fontFamily,
-    bodyFont: themeConfig?.bodyFont || themeConfig?.fontFamily || baseConfig.fontFamily,
+    titleFont:
+      themeConfig?.titleFont ||
+      themeConfig?.fontFamily ||
+      baseConfig.fontFamily,
+    headingFont:
+      themeConfig?.headingFont ||
+      themeConfig?.fontFamily ||
+      baseConfig.fontFamily,
+    bodyFont:
+      themeConfig?.bodyFont || themeConfig?.fontFamily || baseConfig.fontFamily,
     bgColor: themeConfig?.backgroundColor || baseConfig.bgColor,
     textColor: themeConfig?.headerColor || baseConfig.textColor,
     sectionStyle: themeConfig?.sectionStyle || baseConfig.sectionStyle,
@@ -315,7 +326,8 @@ export function TemplateEngine({
     hideLocation: themeConfig?.hideLocation || false,
     hideLinks: themeConfig?.hideLinks || false,
     hideDates: themeConfig?.hideDates || false,
-    pageMargin: themeConfig?.pageMargin !== undefined ? themeConfig.pageMargin : 32, // Default 32px padding/margin
+    pageMargin:
+      themeConfig?.pageMargin !== undefined ? themeConfig.pageMargin : 32, // Default 32px padding/margin
   };
 
   const colorClasses = {
@@ -436,7 +448,7 @@ export function TemplateEngine({
   const sortedExperience = [...(experience || [])].sort(
     (a, b) => parseDateForSort(b.startDate) - parseDateForSort(a.startDate),
   );
-  
+
   const sortedEducation = [...(education || [])].sort(
     (a, b) => parseDateForSort(b.startDate) - parseDateForSort(a.startDate),
   );
@@ -489,7 +501,11 @@ export function TemplateEngine({
   // -- Component Renderers based on Config --
 
   const renderImage = () => {
-    if (!personalInfo.photoBase64 || config.imageAlign === "hidden" || config.hidePhoto)
+    if (
+      !personalInfo.photoBase64 ||
+      config.imageAlign === "hidden" ||
+      config.hidePhoto
+    )
       return null;
     return (
       // eslint-disable-next-line @next/next/no-img-element
@@ -594,21 +610,28 @@ export function TemplateEngine({
     }
   };
 
-
   const getSection = (name: string) => {
-    if (name.startsWith('custom-')) {
-      const sectionId = name.replace('custom-', '');
-      const section = data.customSections?.find(s => s.id === sectionId);
+    if (name.startsWith("custom-")) {
+      const sectionId = name.replace("custom-", "");
+      const section = data.customSections?.find((s) => s.id === sectionId);
       if (!section || !section.items || section.items.length === 0) return null;
-      
+
       if (config.sectionStyle === "timeline") {
         return (
-          <section key={name} className={`${sectionSpacing} print:break-inside-avoid`}>
+          <section
+            key={name}
+            className={`${sectionSpacing} print:break-inside-avoid`}
+          >
             {renderSectionHeader(section.title)}
             <div className="relative border-l ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-6">
               {section.items.map((item) => (
-                <div key={item.id} className="relative pl-6 print:break-inside-avoid">
-                  <div className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`} />
+                <div
+                  key={item.id}
+                  className="relative pl-6 print:break-inside-avoid"
+                >
+                  <div
+                    className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`}
+                  />
                   <div className="flex flex-col mb-1.5">
                     <h4 className="font-bold text-[1.05rem] leading-snug text-slate-900 dark:text-white">
                       {item.name}
@@ -623,7 +646,9 @@ export function TemplateEngine({
                   </div>
                   {item.description && (
                     <div className="text-slate-600 dark:text-slate-300">
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{item.description}</p>
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                        {item.description}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -634,7 +659,10 @@ export function TemplateEngine({
       }
 
       return (
-        <section key={name} className={`${sectionSpacing} print:break-inside-avoid`}>
+        <section
+          key={name}
+          className={`${sectionSpacing} print:break-inside-avoid`}
+        >
           {renderSectionHeader(section.title)}
           <div className={itemSpacing}>
             {section.items.map((item) => (
@@ -651,7 +679,9 @@ export function TemplateEngine({
                   )}
                 </div>
                 {item.description && (
-                  <p className="text-sm leading-relaxed mb-2 whitespace-pre-wrap">{item.description}</p>
+                  <p className="text-sm leading-relaxed mb-2 whitespace-pre-wrap">
+                    {item.description}
+                  </p>
                 )}
               </div>
             ))}
@@ -661,30 +691,43 @@ export function TemplateEngine({
     }
 
     switch (name) {
-      case 'cover-letter': return (
-        <section key='cover-letter' className={`${sectionSpacing}`}>
-          <div className='leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert'>
-            {data.coverLetter ? (
-              <ReactMarkdown>{data.coverLetter}</ReactMarkdown>
-            ) : (
-              <p className="text-muted-foreground italic">
-                Your cover letter is empty. Go to the Cover Letter step to write one!
-              </p>
-            )}
-          </div>
-        </section>
-      );
-      case 'summary': return summary ? (
-        <section key='summary' className={`${sectionSpacing} print:break-inside-avoid`}>
-          {renderSectionHeader('Summary')}
-          <div className='leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert'><ReactMarkdown>{summary}</ReactMarkdown></div>
-        </section>
-      ) : null;
-      case 'experience': return <Fragment key='experience'>{renderExperience()}</Fragment>;
-      case 'projects': return <Fragment key='projects'>{renderProjects()}</Fragment>;
-      case 'education': return <Fragment key='education'>{renderEducation()}</Fragment>;
-      case 'skills': return <Fragment key='skills'>{renderSkills()}</Fragment>;
-      default: return null;
+      case "cover-letter":
+        return (
+          <section key="cover-letter" className={`${sectionSpacing}`}>
+            <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert">
+              {data.coverLetter ? (
+                <ReactMarkdown>{data.coverLetter}</ReactMarkdown>
+              ) : (
+                <p className="text-muted-foreground italic">
+                  Your cover letter is empty. Go to the Cover Letter step to
+                  write one!
+                </p>
+              )}
+            </div>
+          </section>
+        );
+      case "summary":
+        return summary ? (
+          <section
+            key="summary"
+            className={`${sectionSpacing} print:break-inside-avoid`}
+          >
+            {renderSectionHeader("Summary")}
+            <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert">
+              <ReactMarkdown>{summary}</ReactMarkdown>
+            </div>
+          </section>
+        ) : null;
+      case "experience":
+        return <Fragment key="experience">{renderExperience()}</Fragment>;
+      case "projects":
+        return <Fragment key="projects">{renderProjects()}</Fragment>;
+      case "education":
+        return <Fragment key="education">{renderEducation()}</Fragment>;
+      case "skills":
+        return <Fragment key="skills">{renderSkills()}</Fragment>;
+      default:
+        return null;
     }
   };
 
@@ -692,27 +735,37 @@ export function TemplateEngine({
   if (mode === "cover-letter") {
     fullSectionOrder = ["cover-letter"];
   } else if (data.customSections) {
-    data.customSections.forEach(cs => {
+    data.customSections.forEach((cs) => {
       if (!fullSectionOrder.includes(`custom-${cs.id}`)) {
         fullSectionOrder.push(`custom-${cs.id}`);
       }
     });
   }
 
-  const mainColOrder = fullSectionOrder.filter(s => !['skills', 'education'].includes(s));
-  const sideColOrder = mode === "cover-letter" ? [] : fullSectionOrder.filter(s => ['skills', 'education'].includes(s));
+  const mainColOrder = fullSectionOrder.filter(
+    (s) => !["skills", "education"].includes(s),
+  );
+  const sideColOrder =
+    mode === "cover-letter"
+      ? []
+      : fullSectionOrder.filter((s) => ["skills", "education"].includes(s));
 
   const renderExperience = () => {
     if (!data.experience || data.experience.length === 0) return null;
-    
+
     if (config.sectionStyle === "timeline") {
       return (
         <section className={sectionSpacing}>
           {renderSectionHeader("Experience")}
           <div className="relative border-l ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-6">
             {sortedExperience.map((exp) => (
-              <div key={exp.id} className="relative pl-6 print:break-inside-avoid">
-                <div className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`} />
+              <div
+                key={exp.id}
+                className="relative pl-6 print:break-inside-avoid"
+              >
+                <div
+                  className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`}
+                />
                 <div className="flex flex-col mb-1.5">
                   <h4 className="font-bold text-[1.05rem] leading-snug text-slate-900 dark:text-white">
                     {exp.role}
@@ -723,9 +776,12 @@ export function TemplateEngine({
                     </span>
                     {!config.hideDates && (
                       <>
-                        <span className="text-slate-300 dark:text-slate-600">•</span>
+                        <span className="text-slate-300 dark:text-slate-600">
+                          •
+                        </span>
                         <span className="font-medium text-slate-500 dark:text-slate-400">
-                          {formatDate(exp.startDate)} - {exp.current ? "Present" : formatDate(exp.endDate)}
+                          {formatDate(exp.startDate)} -{" "}
+                          {exp.current ? "Present" : formatDate(exp.endDate)}
                         </span>
                       </>
                     )}
@@ -781,8 +837,13 @@ export function TemplateEngine({
           {renderSectionHeader("Education")}
           <div className="relative border-l ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-6">
             {sortedEducation.map((edu) => (
-              <div key={edu.id} className="relative pl-6 print:break-inside-avoid">
-                <div className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`} />
+              <div
+                key={edu.id}
+                className="relative pl-6 print:break-inside-avoid"
+              >
+                <div
+                  className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`}
+                />
                 <div className="flex flex-col mb-1">
                   <h4 className="font-bold text-[1.05rem] leading-snug text-slate-900 dark:text-white">
                     {edu.degree}
@@ -793,9 +854,12 @@ export function TemplateEngine({
                     </span>
                     {!config.hideDates && (
                       <>
-                        <span className="text-slate-300 dark:text-slate-600">•</span>
+                        <span className="text-slate-300 dark:text-slate-600">
+                          •
+                        </span>
                         <span className="font-medium text-slate-500 dark:text-slate-400">
-                          {formatDate(edu.startDate)} - {edu.current ? "Present" : formatDate(edu.endDate)}
+                          {formatDate(edu.startDate)} -{" "}
+                          {edu.current ? "Present" : formatDate(edu.endDate)}
                         </span>
                       </>
                     )}
@@ -922,7 +986,7 @@ export function TemplateEngine({
 
   if (config.layout === "single-column") {
     layoutContainer = (
-      <div 
+      <div
         className="pb-24 max-w-4xl mx-auto"
         style={{ padding: `${config.pageMargin}px` }}
       >
@@ -946,7 +1010,9 @@ export function TemplateEngine({
                     : "w-full"
               }
             >
-              <h1 className={`text-5xl font-black mb-2 ${fontClasses[config.titleFont]}`}>
+              <h1
+                className={`text-5xl font-black mb-2 ${fontClasses[config.titleFont]}`}
+              >
                 {personalInfo.firstName}{" "}
                 <span className={`${accentClasses.text}`}>
                   {personalInfo.lastName}
@@ -971,7 +1037,9 @@ export function TemplateEngine({
         >
           {renderImage()}
           <div className="flex-1">
-            <h1 className={`text-4xl font-bold mb-2 ${fontClasses[config.titleFont]}`}>
+            <h1
+              className={`text-4xl font-bold mb-2 ${fontClasses[config.titleFont]}`}
+            >
               {personalInfo.firstName} {personalInfo.lastName}
             </h1>
             <h2 className="text-xl opacity-90 mb-4">{personalInfo.title}</h2>
@@ -984,12 +1052,8 @@ export function TemplateEngine({
         </header>
         <div className="pb-24" style={{ padding: `${config.pageMargin}px` }}>
           <div className="grid grid-cols-[2fr_1fr] gap-8">
-            <div>
-              {mainColOrder.map(getSection)}
-            </div>
-            <div>
-              {sideColOrder.map(getSection)}
-            </div>
+            <div>{mainColOrder.map(getSection)}</div>
+            <div>{sideColOrder.map(getSection)}</div>
           </div>
         </div>
       </div>
@@ -997,12 +1061,17 @@ export function TemplateEngine({
   } else if (config.layout === "left-sidebar") {
     layoutContainer = (
       <div className="flex min-h-[297mm] h-auto">
-        <aside className={`w-[35%] ${accentClasses.bg} text-white pb-24`} style={{ padding: `${config.pageMargin}px` }}>
+        <aside
+          className={`w-[35%] ${accentClasses.bg} text-white pb-24`}
+          style={{ padding: `${config.pageMargin}px` }}
+        >
           <div
             className={`flex flex-col mb-8 ${config.imageAlign === "left" ? "items-start text-left" : config.imageAlign === "right" ? "items-end text-right" : "items-center text-center"}`}
           >
             <div className="mb-6">{renderImage()}</div>
-            <h1 className={`text-3xl font-bold mb-1 ${fontClasses[config.titleFont]}`}>
+            <h1
+              className={`text-3xl font-bold mb-1 ${fontClasses[config.titleFont]}`}
+            >
               {personalInfo.firstName} {personalInfo.lastName}
             </h1>
             <h2 className="text-lg opacity-90">{personalInfo.title}</h2>
@@ -1013,47 +1082,57 @@ export function TemplateEngine({
             {renderContactInfo("text-white")}
           </div>
           <div className="mt-12 text-white">
-            {sideColOrder.map(s => {
-              if (s === 'skills' && data.skills && data.skills.length > 0) return (
-                <div key="skills" className="mb-12 print:break-inside-avoid">
-                  <h3 className={`text-xl font-bold mb-4 border-b border-white/20 pb-2 ${fontClasses[config.headingFont]}`}>
-                    Skills
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {data.skills.map((s) => (
-                      <span
-                        key={s.id}
-                        className="bg-white/20 px-2 py-1 rounded text-xs"
-                      >
-                        {s.name}
-                      </span>
+            {sideColOrder.map((s) => {
+              if (s === "skills" && data.skills && data.skills.length > 0)
+                return (
+                  <div key="skills" className="mb-12 print:break-inside-avoid">
+                    <h3
+                      className={`text-xl font-bold mb-4 border-b border-white/20 pb-2 ${fontClasses[config.headingFont]}`}
+                    >
+                      Skills
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {data.skills.map((s) => (
+                        <span
+                          key={s.id}
+                          className="bg-white/20 px-2 py-1 rounded text-xs"
+                        >
+                          {s.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              if (s === "education" && education.length > 0)
+                return (
+                  <div key="education" className="print:break-inside-avoid">
+                    <h3
+                      className={`text-xl font-bold mb-4 border-b border-white/20 pb-2 ${fontClasses[config.headingFont]}`}
+                    >
+                      Education
+                    </h3>
+                    {sortedEducation.map((edu) => (
+                      <div key={edu.id} className="mb-4">
+                        <h4 className="font-bold text-sm">{edu.degree}</h4>
+                        <p className="text-xs opacity-80">{edu.institution}</p>
+                        {!config.hideDates && (
+                          <p className="text-xs opacity-80">
+                            {edu.startDate} -{" "}
+                            {edu.current ? "Present" : edu.endDate}
+                          </p>
+                        )}
+                      </div>
                     ))}
                   </div>
-                </div>
-              );
-              if (s === 'education' && education.length > 0) return (
-                <div key="education" className="print:break-inside-avoid">
-                  <h3 className={`text-xl font-bold mb-4 border-b border-white/20 pb-2 ${fontClasses[config.headingFont]}`}>
-                    Education
-                  </h3>
-                  {sortedEducation.map((edu) => (
-                    <div key={edu.id} className="mb-4">
-                      <h4 className="font-bold text-sm">{edu.degree}</h4>
-                      <p className="text-xs opacity-80">{edu.institution}</p>
-                      {!config.hideDates && (
-                        <p className="text-xs opacity-80">
-                          {edu.startDate} - {edu.current ? "Present" : edu.endDate}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              );
+                );
               return null;
             })}
           </div>
         </aside>
-        <main className="w-[65%] pb-24" style={{ padding: `${config.pageMargin}px` }}>
+        <main
+          className="w-[65%] pb-24"
+          style={{ padding: `${config.pageMargin}px` }}
+        >
           {mainColOrder.map(getSection)}
         </main>
       </div>
@@ -1062,9 +1141,14 @@ export function TemplateEngine({
     // Right sidebar
     layoutContainer = (
       <div className="flex min-h-[297mm] h-auto">
-        <main className="w-[65%] pb-24" style={{ padding: `${config.pageMargin}px` }}>
+        <main
+          className="w-[65%] pb-24"
+          style={{ padding: `${config.pageMargin}px` }}
+        >
           <header className="mb-10">
-            <h1 className={`text-5xl font-black mb-2 ${accentClasses.text} ${fontClasses[config.titleFont]}`}>
+            <h1
+              className={`text-5xl font-black mb-2 ${accentClasses.text} ${fontClasses[config.titleFont]}`}
+            >
               {personalInfo.firstName} {personalInfo.lastName}
             </h1>
             <h2 className="text-2xl font-medium opacity-80">
@@ -1073,7 +1157,10 @@ export function TemplateEngine({
           </header>
           {mainColOrder.map(getSection)}
         </main>
-        <aside className="w-[35%] bg-slate-100 pb-24 border-l border-slate-200" style={{ padding: `${config.pageMargin}px` }}>
+        <aside
+          className="w-[35%] bg-slate-100 pb-24 border-l border-slate-200"
+          style={{ padding: `${config.pageMargin}px` }}
+        >
           <div
             className={`mb-8 flex flex-col ${config.imageAlign === "left" ? "items-start text-left" : config.imageAlign === "center" ? "items-center text-center" : "items-end text-right"}`}
           >
@@ -1090,14 +1177,37 @@ export function TemplateEngine({
     );
   }
 
-
-
   return (
     <div
       id="template-root"
       className={`w-full min-h-[297mm] h-auto relative ${fontClasses[config.bodyFont]} ${config.textColor}`}
-      style={{ backgroundColor: config.bgColor, zoom: themeConfig?.documentZoom || 1 }}
+      style={{
+        backgroundColor: config.bgColor,
+        zoom: themeConfig?.documentZoom || 1,
+      }}
     >
+      <style>{`
+        #template-root .text-sm {
+          font-size: ${themeConfig?.textSize === "lg" ? "1rem" : themeConfig?.textSize === "sm" ? "0.75rem" : "0.875rem"} !important;
+          line-height: ${themeConfig?.textSize === "lg" ? "1.5rem" : themeConfig?.textSize === "sm" ? "1rem" : "1.25rem"} !important;
+        }
+        #template-root .text-xs {
+          font-size: ${themeConfig?.textSize === "lg" ? "0.875rem" : themeConfig?.textSize === "sm" ? "0.65rem" : "0.75rem"} !important;
+          line-height: ${themeConfig?.textSize === "lg" ? "1.25rem" : themeConfig?.textSize === "sm" ? "0.875rem" : "1rem"} !important;
+        }
+        #template-root .text-\\[1\\.05rem\\] {
+          font-size: ${themeConfig?.textSize === "lg" ? "1.25rem" : themeConfig?.textSize === "sm" ? "0.9rem" : "1.05rem"} !important;
+        }
+        #template-root .rounded-xl, #template-root .rounded {
+          border-radius: ${themeConfig?.borderRadius === "none" ? "0" : themeConfig?.borderRadius === "full" ? "1.5rem" : "0.5rem"} !important;
+        }
+        #template-root .rounded-full {
+          border-radius: ${themeConfig?.borderRadius === "none" ? "0" : themeConfig?.borderRadius === "md" ? "0.5rem" : "9999px"} !important;
+        }
+        #template-root .w-2\\.5.h-2\\.5.rounded-full {
+          border-radius: 9999px !important;
+        }
+      `}</style>
       {layoutContainer}
 
       <div className="absolute bottom-4 print:fixed print:bottom-4 left-0 right-0 text-center text-[10px] opacity-40 font-sans tracking-widest uppercase pointer-events-none z-50">

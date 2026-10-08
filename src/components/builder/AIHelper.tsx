@@ -48,18 +48,21 @@ export function AIHelper({
 
     if (!currentText.trim() || isGenerating) return;
     setIsGenerating(true);
-    
+
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const ai = (window as any).ai;
       const session = await ai.languageModel.create({
-        systemPrompt: "You are an expert ATS resume writer. Rewrite the following text to be more impactful, professional, and action-oriented. Keep it concise. Do not add markdown unless it was already present in the source.",
+        systemPrompt:
+          "You are an expert ATS resume writer. Rewrite the following text to be more impactful, professional, and action-oriented. Keep it concise. Do not add markdown unless it was already present in the source.",
       });
       const result = await session.prompt(currentText);
       onUpdate(result);
     } catch (e) {
       console.error("AI Generation failed", e);
-      alert("AI generation failed. Please ensure Chrome AI features are enabled.");
+      alert(
+        "AI generation failed. Please ensure Chrome AI features are enabled.",
+      );
     } finally {
       setIsGenerating(false);
     }
@@ -67,16 +70,23 @@ export function AIHelper({
 
   return (
     <>
-      <div 
+      <div
         onClick={handleImprove}
-        className={`h-7 px-2 text-xs flex items-center gap-1.5 border rounded-md cursor-pointer transition-colors ${
-          (isGenerating || (!currentText.trim() && isAvailable))
+        className={`h-7 w-7 xl:w-auto px-0 xl:px-2 flex items-center justify-center xl:justify-start gap-1.5 border rounded-md cursor-pointer transition-colors ${
+          isGenerating || (!currentText.trim() && isAvailable)
             ? "opacity-50 cursor-not-allowed border-purple-200 text-purple-400 bg-purple-50 dark:border-purple-900/50 dark:bg-purple-950/20 dark:text-purple-600"
             : "border-purple-200 text-purple-700 bg-purple-50 hover:bg-purple-100 hover:text-purple-800 dark:border-purple-900 dark:bg-purple-950/30 dark:text-purple-400"
         }`}
+        title="Improve with AI"
       >
-        {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Bot className="w-3 h-3" />}
-        {isGenerating ? "Improving..." : "Improve AI"}
+        {isGenerating ? (
+          <Loader2 className="w-3 h-3 animate-spin shrink-0" />
+        ) : (
+          <Bot className="w-3 h-3 shrink-0" />
+        )}
+        <span className="hidden xl:inline text-xs whitespace-nowrap">
+          {isGenerating ? "Improving..." : "Improve AI"}
+        </span>
       </div>
       <ChromeAISetupModal open={showSetup} onOpenChange={setShowSetup} />
     </>

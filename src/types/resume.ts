@@ -90,6 +90,8 @@ export type ThemeConfig = {
   hideLinks?: boolean;
   hideDates?: boolean;
   documentZoom?: number; // 0.5 to 1.5
+  borderRadius?: "none" | "sm" | "md" | "lg" | "full";
+  textSize?: "sm" | "base" | "lg";
 };
 
 export type ResumeStore = {
