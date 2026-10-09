@@ -2,18 +2,29 @@
 
 import { useResumeStore } from "@/store/useResumeStore";
 import { useState, useEffect } from "react";
-import { Activity, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  Sparkles,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function AtsAnalyzer() {
   const { data } = useResumeStore();
   const [isOpen, setIsOpen] = useState(false);
   const [score, setScore] = useState(100);
-  const [feedback, setFeedback] = useState<{ type: "error" | "warning" | "success"; text: string }[]>([]);
+  const [feedback, setFeedback] = useState<
+    { type: "error" | "warning" | "success"; text: string }[]
+  >([]);
 
   useEffect(() => {
     let newScore = 100;
-    const newFeedback: { type: "error" | "warning" | "success"; text: string }[] = [];
+    const newFeedback: {
+      type: "error" | "warning" | "success";
+      text: string;
+    }[] = [];
 
     // Personal Info Checks
     if (!data.personalInfo.email) {
@@ -24,20 +35,36 @@ export function AtsAnalyzer() {
       newScore -= 5;
       newFeedback.push({ type: "warning", text: "Missing phone number." });
     }
-    if (!data.personalInfo.linkedin && !data.personalInfo.github && !data.personalInfo.website) {
+    if (
+      !data.personalInfo.linkedin &&
+      !data.personalInfo.github &&
+      !data.personalInfo.website
+    ) {
       newScore -= 10;
-      newFeedback.push({ type: "warning", text: "Add a LinkedIn, GitHub, or Portfolio link." });
+      newFeedback.push({
+        type: "warning",
+        text: "Add a LinkedIn, GitHub, or Portfolio link.",
+      });
     } else {
-      newFeedback.push({ type: "success", text: "Good use of professional links." });
+      newFeedback.push({
+        type: "success",
+        text: "Good use of professional links.",
+      });
     }
 
     // Summary Checks
     if (!data.summary || data.summary.trim().length < 50) {
       newScore -= 15;
-      newFeedback.push({ type: "error", text: "Professional summary is too short or missing." });
+      newFeedback.push({
+        type: "error",
+        text: "Professional summary is too short or missing.",
+      });
     } else if (data.summary.split(".").length > 5) {
       newScore -= 5;
-      newFeedback.push({ type: "warning", text: "Summary is too long (over 4 sentences)." });
+      newFeedback.push({
+        type: "warning",
+        text: "Summary is too long (over 4 sentences).",
+      });
     } else {
       newFeedback.push({ type: "success", text: "Summary length is optimal." });
     }
@@ -54,18 +81,21 @@ export function AtsAnalyzer() {
       let hasBuzzwords = false;
       let missingDates = false;
 
-      const actionVerbs = /\b(led|managed|developed|created|designed|implemented|orchestrated|increased|improved|reduced|optimized|achieved|coordinated)\b/i;
+      const actionVerbs =
+        /\b(led|managed|developed|created|designed|implemented|orchestrated|increased|improved|reduced|optimized|achieved|coordinated)\b/i;
       const pronouns = /\b(i|me|my|we|our)\b/i;
-      const buzzwords = /\b(hard worker|team player|think outside the box|synergy|detail oriented|go-getter|self-starter)\b/i;
+      const buzzwords =
+        /\b(hard worker|team player|think outside the box|synergy|detail oriented|go-getter|self-starter)\b/i;
 
-      data.experience.forEach(exp => {
+      data.experience.forEach((exp) => {
         if (!exp.startDate || (!exp.endDate && !exp.current)) {
           missingDates = true;
         }
 
         if (exp.description) {
           if (/\d+%|\d+x|\$\d+/i.test(exp.description)) hasMetrics = true;
-          if (!exp.description.includes("-") && !exp.description.includes("*")) hasParagraphs = true;
+          if (!exp.description.includes("-") && !exp.description.includes("*"))
+            hasParagraphs = true;
           if (actionVerbs.test(exp.description)) hasActionVerbs = true;
           if (pronouns.test(exp.description)) hasPronouns = true;
           if (buzzwords.test(exp.description)) hasBuzzwords = true;
@@ -74,36 +104,60 @@ export function AtsAnalyzer() {
 
       if (!hasMetrics) {
         newScore -= 10;
-        newFeedback.push({ type: "warning", text: "Consider adding numbers/metrics to your experience." });
+        newFeedback.push({
+          type: "warning",
+          text: "Consider adding numbers/metrics to your experience.",
+        });
       } else {
-        newFeedback.push({ type: "success", text: "Experience includes strong metrics/numbers." });
+        newFeedback.push({
+          type: "success",
+          text: "Experience includes strong metrics/numbers.",
+        });
       }
 
       if (hasParagraphs) {
         newScore -= 10;
-        newFeedback.push({ type: "warning", text: "Use bullet points instead of paragraphs in experience." });
+        newFeedback.push({
+          type: "warning",
+          text: "Use bullet points instead of paragraphs in experience.",
+        });
       }
-      
+
       if (!hasActionVerbs) {
         newScore -= 5;
-        newFeedback.push({ type: "warning", text: "Start bullets with strong action verbs (e.g. Developed, Managed)." });
+        newFeedback.push({
+          type: "warning",
+          text: "Start bullets with strong action verbs (e.g. Developed, Managed).",
+        });
       } else {
-        newFeedback.push({ type: "success", text: "Good use of strong action verbs." });
+        newFeedback.push({
+          type: "success",
+          text: "Good use of strong action verbs.",
+        });
       }
 
       if (hasPronouns) {
         newScore -= 5;
-        newFeedback.push({ type: "warning", text: "Avoid personal pronouns (I, me, my) in your resume." });
+        newFeedback.push({
+          type: "warning",
+          text: "Avoid personal pronouns (I, me, my) in your resume.",
+        });
       }
 
       if (hasBuzzwords) {
         newScore -= 5;
-        newFeedback.push({ type: "warning", text: "Remove clichés/buzzwords (e.g. 'team player', 'hard worker')." });
+        newFeedback.push({
+          type: "warning",
+          text: "Remove clichés/buzzwords (e.g. 'team player', 'hard worker').",
+        });
       }
 
       if (missingDates) {
         newScore -= 10;
-        newFeedback.push({ type: "error", text: "One or more experience entries are missing start/end dates." });
+        newFeedback.push({
+          type: "error",
+          text: "One or more experience entries are missing start/end dates.",
+        });
       }
     }
 
@@ -113,26 +167,36 @@ export function AtsAnalyzer() {
       newFeedback.push({ type: "error", text: "Missing education section." });
     } else {
       let missingDates = false;
-      data.education.forEach(edu => {
-        if (!edu.startDate || (!edu.endDate && !edu.current)) missingDates = true;
+      data.education.forEach((edu) => {
+        if (!edu.startDate || (!edu.endDate && !edu.current))
+          missingDates = true;
       });
       if (missingDates) {
         newScore -= 5;
-        newFeedback.push({ type: "warning", text: "Education is missing start/end dates." });
+        newFeedback.push({
+          type: "warning",
+          text: "Education is missing start/end dates.",
+        });
       }
     }
 
     // Projects Checks
     if (data.projects && data.projects.length > 0) {
       let hasLinks = false;
-      data.projects.forEach(proj => {
+      data.projects.forEach((proj) => {
         if (proj.url || proj.github) hasLinks = true;
       });
       if (!hasLinks) {
         newScore -= 5;
-        newFeedback.push({ type: "warning", text: "Add live links or GitHub repos to your projects." });
+        newFeedback.push({
+          type: "warning",
+          text: "Add live links or GitHub repos to your projects.",
+        });
       } else {
-        newFeedback.push({ type: "success", text: "Projects include external links." });
+        newFeedback.push({
+          type: "success",
+          text: "Projects include external links.",
+        });
       }
     }
 
@@ -142,16 +206,24 @@ export function AtsAnalyzer() {
       newFeedback.push({ type: "error", text: "List at least 3 key skills." });
     } else if (data.skills.length > 15) {
       newScore -= 5;
-      newFeedback.push({ type: "warning", text: "Too many skills listed. Keep it focused (under 15)." });
+      newFeedback.push({
+        type: "warning",
+        text: "Too many skills listed. Keep it focused (under 15).",
+      });
     } else {
-      newFeedback.push({ type: "success", text: "Optimal number of skills listed." });
+      newFeedback.push({
+        type: "success",
+        text: "Optimal number of skills listed.",
+      });
     }
 
     setScore(Math.max(0, newScore));
-    setFeedback(newFeedback.sort((a, b) => {
-      const weight = { error: 0, warning: 1, success: 2 };
-      return weight[a.type] - weight[b.type];
-    }));
+    setFeedback(
+      newFeedback.sort((a, b) => {
+        const weight = { error: 0, warning: 1, success: 2 };
+        return weight[a.type] - weight[b.type];
+      }),
+    );
   }, [data]);
 
   return (
@@ -169,19 +241,36 @@ export function AtsAnalyzer() {
                 <Activity className="w-4 h-4 text-indigo-500" />
                 Live ATS Analyzer
               </h3>
-              <div className={`font-bold text-lg ${score >= 90 ? 'text-emerald-500' : score >= 70 ? 'text-amber-500' : 'text-rose-500'}`}>
+              <div
+                className={`font-bold text-lg ${score >= 90 ? "text-emerald-500" : score >= 70 ? "text-amber-500" : "text-rose-500"}`}
+              >
                 {score}/100
               </div>
             </div>
             <div className="p-4 overflow-y-auto space-y-3">
               {feedback.map((fb, i) => (
                 <div key={i} className="flex gap-3 text-sm">
-                  {fb.type === "error" && <XCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />}
-                  {fb.type === "warning" && <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />}
-                  {fb.type === "success" && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />}
-                  <span className="leading-tight text-zinc-600 dark:text-zinc-400">{fb.text}</span>
+                  {fb.type === "error" && (
+                    <XCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                  )}
+                  {fb.type === "warning" && (
+                    <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                  )}
+                  {fb.type === "success" && (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  )}
+                  <span className="leading-tight text-zinc-600 dark:text-zinc-400">
+                    {fb.text}
+                  </span>
                 </div>
               ))}
+            </div>
+            <div className="p-3 border-t border-zinc-100 dark:border-zinc-800 bg-purple-50/70 dark:bg-purple-950/30 text-xs text-purple-700 dark:text-purple-300 flex items-center gap-2">
+              <Sparkles className="w-3.5 h-3.5 shrink-0 text-purple-600" />
+              <span>
+                Boost ATS Score: Open <strong>Skills</strong> tab to
+                auto-discover missing keywords with Gemini Nano!
+              </span>
             </div>
           </motion.div>
         )}
@@ -193,7 +282,9 @@ export function AtsAnalyzer() {
       >
         <Activity className="w-5 h-5" />
         <span className="hidden sm:inline">ATS Score</span>
-        <span className={`px-2 py-0.5 rounded-full text-xs font-bold bg-white/20`}>
+        <span
+          className={`px-2 py-0.5 rounded-full text-xs font-bold bg-white/20`}
+        >
           {score}
         </span>
       </button>
