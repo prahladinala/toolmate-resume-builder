@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
-import { useState } from "react";
+import React, { useState } from "react";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Label } from "@/components/ui/label";
 import {
@@ -20,9 +20,71 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical } from "lucide-react";
+import {
+  GripVertical,
+  ChevronUp,
+  ChevronDown,
+  ArrowRight,
+  ArrowLeft,
+  User,
+  Briefcase,
+  GraduationCap,
+  Lightbulb,
+  Terminal,
+  Star,
+  Columns,
+  LayoutList,
+} from "lucide-react";
 
-function SortableSectionItem({ id, label }: { id: string; label: string }) {
+function getSectionIcon(id: string) {
+  if (id === "summary") return User;
+  if (id === "experience") return Briefcase;
+  if (id === "projects") return Terminal;
+  if (id === "education") return GraduationCap;
+  if (id === "skills") return Lightbulb;
+  return Star;
+}
+
+function getSectionTitle(
+  id: string,
+  customSections?: Array<{ id: string; title: string }>,
+): string {
+  if (id === "summary") return "Professional Summary";
+  if (id === "experience") return "Work Experience";
+  if (id === "projects") return "Projects";
+  if (id === "education") return "Education";
+  if (id === "skills") return "Skills";
+  if (id.startsWith("custom-")) {
+    const customId = id.replace("custom-", "");
+    const found = customSections?.find((cs) => cs.id === customId);
+    return found?.title || "Custom Section";
+  }
+  return id;
+}
+
+function SortableSectionItem({
+  id,
+  title,
+  isCustom,
+  icon: Icon,
+  canMoveUp,
+  canMoveDown,
+  onMoveUp,
+  onMoveDown,
+  onSwitchColumn,
+  switchColumnLabel,
+}: {
+  id: string;
+  title: string;
+  isCustom: boolean;
+  icon: React.ComponentType<{ className?: string }>;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  onSwitchColumn?: () => void;
+  switchColumnLabel?: string;
+}) {
   const {
     attributes,
     listeners,
@@ -35,27 +97,80 @@ function SortableSectionItem({ id, label }: { id: string; label: string }) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: isDragging ? 1 : 0,
-    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 10 : 0,
+    opacity: isDragging ? 0.4 : 1,
   };
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center gap-3 p-3 bg-white dark:bg-[#111113] border border-zinc-200 dark:border-[#27272a] rounded-xl shadow-sm"
+      className="flex items-center justify-between gap-3 p-3 bg-white dark:bg-[#111113] border border-zinc-200 dark:border-[#27272a] rounded-xl shadow-sm hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
     >
-      <button
-        type="button"
-        className="cursor-move text-zinc-400 hover:text-zinc-900 dark:hover:text-[#fafafa] transition-colors"
-        {...attributes}
-        {...listeners}
-      >
-        <GripVertical className="w-5 h-5" />
-      </button>
-      <span className="font-medium text-sm text-zinc-700 dark:text-[#e4e4e7] capitalize">
-        {label}
-      </span>
+      <div className="flex items-center gap-2.5 min-w-0">
+        <button
+          type="button"
+          className="cursor-grab active:cursor-grabbing text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors touch-none"
+          {...attributes}
+          {...listeners}
+          title="Drag to reorder"
+        >
+          <GripVertical className="w-4 h-4 shrink-0" />
+        </button>
+        <div className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 shrink-0">
+          <Icon className="w-4 h-4" />
+        </div>
+        <div className="flex items-center gap-2 truncate">
+          <span className="font-semibold text-xs sm:text-sm text-zinc-800 dark:text-[#fafafa] truncate">
+            {title}
+          </span>
+          {isCustom && (
+            <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-400 shrink-0">
+              Custom
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1 shrink-0">
+        {onMoveUp && (
+          <button
+            type="button"
+            disabled={!canMoveUp}
+            onClick={onMoveUp}
+            className="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 disabled:opacity-20 disabled:hover:bg-transparent transition-colors"
+            title="Move Up"
+          >
+            <ChevronUp className="w-3.5 h-3.5" />
+          </button>
+        )}
+        {onMoveDown && (
+          <button
+            type="button"
+            disabled={!canMoveDown}
+            onClick={onMoveDown}
+            className="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 disabled:opacity-20 disabled:hover:bg-transparent transition-colors"
+            title="Move Down"
+          >
+            <ChevronDown className="w-3.5 h-3.5" />
+          </button>
+        )}
+        {onSwitchColumn && (
+          <button
+            type="button"
+            onClick={onSwitchColumn}
+            className="ml-1 px-2 py-1 rounded-md text-[11px] font-medium border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors flex items-center gap-1"
+            title={switchColumnLabel}
+          >
+            {switchColumnLabel?.includes("Sidebar") ? (
+              <ArrowRight className="w-3 h-3 text-purple-500" />
+            ) : (
+              <ArrowLeft className="w-3 h-3 text-purple-500" />
+            )}
+            <span className="hidden sm:inline">{switchColumnLabel}</span>
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -144,8 +259,11 @@ const TEXT_SIZES = [
 ];
 
 export function StyleForm() {
-  const { themeConfig, updateThemeConfig } = useResumeStore();
+  const { themeConfig, updateThemeConfig, data } = useResumeStore();
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [activeOrderTab, setActiveOrderTab] = useState<"main" | "sidebar">(
+    "main",
+  );
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -154,23 +272,103 @@ export function StyleForm() {
     }),
   );
 
-  const sectionOrder = themeConfig?.sectionOrder || [
+  // All valid custom sections in current resume
+  const customSections = data?.customSections || [];
+  const customSectionIds = customSections.map((cs) => `custom-${cs.id}`);
+
+  // Base default ordering
+  const defaultMain = [
     "summary",
     "experience",
     "projects",
-    "education",
-    "skills",
+    ...customSectionIds,
   ];
+  const defaultSidebar = ["skills", "education"];
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  // Resolve current active main and sidebar orders
+  const activeMain: string[] = (
+    themeConfig?.mainSectionOrder || defaultMain
+  ).filter((id) => !id.startsWith("custom-") || customSectionIds.includes(id));
+
+  const activeSidebar: string[] = (
+    themeConfig?.sidebarSectionOrder || defaultSidebar
+  ).filter((id) => !id.startsWith("custom-") || customSectionIds.includes(id));
+
+  // Ensure any custom sections not yet in main or sidebar are added to main
+  customSectionIds.forEach((cId) => {
+    if (!activeMain.includes(cId) && !activeSidebar.includes(cId)) {
+      activeMain.push(cId);
+    }
+  });
+
+  const handleMainDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (active.id !== over?.id) {
-      const oldIndex = sectionOrder.indexOf(active.id as string);
-      const newIndex = sectionOrder.indexOf(over?.id as string);
+      const oldIndex = activeMain.indexOf(active.id as string);
+      const newIndex = activeMain.indexOf(over?.id as string);
+      const newMain = arrayMove(activeMain, oldIndex, newIndex);
       updateThemeConfig({
-        sectionOrder: arrayMove(sectionOrder, oldIndex, newIndex),
+        mainSectionOrder: newMain,
+        sidebarSectionOrder: activeSidebar,
+        sectionOrder: [...newMain, ...activeSidebar],
       });
     }
+  };
+
+  const handleSidebarDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = activeSidebar.indexOf(active.id as string);
+      const newIndex = activeSidebar.indexOf(over?.id as string);
+      const newSidebar = arrayMove(activeSidebar, oldIndex, newIndex);
+      updateThemeConfig({
+        mainSectionOrder: activeMain,
+        sidebarSectionOrder: newSidebar,
+        sectionOrder: [...activeMain, ...newSidebar],
+      });
+    }
+  };
+
+  const moveMainItem = (index: number, direction: -1 | 1) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= activeMain.length) return;
+    const newMain = arrayMove(activeMain, index, targetIndex);
+    updateThemeConfig({
+      mainSectionOrder: newMain,
+      sidebarSectionOrder: activeSidebar,
+      sectionOrder: [...newMain, ...activeSidebar],
+    });
+  };
+
+  const moveSidebarItem = (index: number, direction: -1 | 1) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= activeSidebar.length) return;
+    const newSidebar = arrayMove(activeSidebar, index, targetIndex);
+    updateThemeConfig({
+      mainSectionOrder: activeMain,
+      sidebarSectionOrder: newSidebar,
+      sectionOrder: [...activeMain, ...newSidebar],
+    });
+  };
+
+  const moveToSidebar = (id: string) => {
+    const newMain = activeMain.filter((item) => item !== id);
+    const newSidebar = [...activeSidebar, id];
+    updateThemeConfig({
+      mainSectionOrder: newMain,
+      sidebarSectionOrder: newSidebar,
+      sectionOrder: [...newMain, ...newSidebar],
+    });
+  };
+
+  const moveToMain = (id: string) => {
+    const newSidebar = activeSidebar.filter((item) => item !== id);
+    const newMain = [...activeMain, id];
+    updateThemeConfig({
+      mainSectionOrder: newMain,
+      sidebarSectionOrder: newSidebar,
+      sectionOrder: [...newMain, ...newSidebar],
+    });
   };
 
   return (
@@ -186,33 +384,143 @@ export function StyleForm() {
       </div>
 
       <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-[#27272a]">
-        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
-          Section Order
-        </Label>
-        <p className="text-xs text-zinc-500 dark:text-[#a1a1aa] mb-2">
-          Drag and drop to reorder the sections on your resume. This affects the
-          main content flow.
-        </p>
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={sectionOrder}
-            strategy={verticalListSortingStrategy}
+        <div>
+          <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+            Section Order & Column Layout
+          </Label>
+          <p className="text-xs text-zinc-500 dark:text-[#a1a1aa] mt-0.5">
+            Customize section flow in Main Content and Sidebar. Custom sections
+            automatically appear using their configured titles.
+          </p>
+        </div>
+
+        {/* Tab switch between Main Content Order and Sidebar Order */}
+        <div className="flex p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl gap-1">
+          <button
+            type="button"
+            onClick={() => setActiveOrderTab("main")}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+              activeOrderTab === "main"
+                ? "bg-white dark:bg-[#18181b] text-zinc-900 dark:text-white shadow-sm"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+            }`}
           >
-            <div className="space-y-2 flex flex-col">
-              {sectionOrder.map((sectionId) => (
-                <SortableSectionItem
-                  key={sectionId}
-                  id={sectionId}
-                  label={sectionId}
-                />
-              ))}
+            <LayoutList className="w-3.5 h-3.5 text-purple-500" />
+            <span>Main Content Order</span>
+            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+              {activeMain.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveOrderTab("sidebar")}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+              activeOrderTab === "sidebar"
+                ? "bg-white dark:bg-[#18181b] text-zinc-900 dark:text-white shadow-sm"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+            }`}
+          >
+            <Columns className="w-3.5 h-3.5 text-purple-500" />
+            <span>Sidebar Order</span>
+            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+              {activeSidebar.length}
+            </span>
+          </button>
+        </div>
+
+        {/* Active tab content */}
+        {activeOrderTab === "main" ? (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 pb-1">
+              <span>Main column sections (drag or use arrows):</span>
+              <span className="text-[11px] text-purple-600 dark:text-purple-400 font-medium">
+                Tip: Click &quot;→ Sidebar&quot; to relocate
+              </span>
             </div>
-          </SortableContext>
-        </DndContext>
+
+            {activeMain.length === 0 ? (
+              <div className="p-6 text-center border border-dashed border-zinc-300 dark:border-zinc-800 rounded-xl text-xs text-zinc-400">
+                No sections in Main Content. Move sections here from the Sidebar
+                tab.
+              </div>
+            ) : (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleMainDragEnd}
+              >
+                <SortableContext
+                  items={activeMain}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="space-y-2 flex flex-col">
+                    {activeMain.map((sectionId, idx) => (
+                      <SortableSectionItem
+                        key={sectionId}
+                        id={sectionId}
+                        title={getSectionTitle(sectionId, customSections)}
+                        isCustom={sectionId.startsWith("custom-")}
+                        icon={getSectionIcon(sectionId)}
+                        canMoveUp={idx > 0}
+                        canMoveDown={idx < activeMain.length - 1}
+                        onMoveUp={() => moveMainItem(idx, -1)}
+                        onMoveDown={() => moveMainItem(idx, 1)}
+                        onSwitchColumn={() => moveToSidebar(sectionId)}
+                        switchColumnLabel="→ Sidebar"
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 pb-1">
+              <span>Sidebar sections (used in 2-column templates):</span>
+              <span className="text-[11px] text-purple-600 dark:text-purple-400 font-medium">
+                Tip: Click &quot;← Main&quot; to relocate
+              </span>
+            </div>
+
+            {activeSidebar.length === 0 ? (
+              <div className="p-6 text-center border border-dashed border-zinc-300 dark:border-zinc-800 rounded-xl text-xs text-zinc-400">
+                No sections in Sidebar. Move sections here from the Main Content
+                tab.
+              </div>
+            ) : (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleSidebarDragEnd}
+              >
+                <SortableContext
+                  items={activeSidebar}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="space-y-2 flex flex-col">
+                    {activeSidebar.map((sectionId, idx) => (
+                      <SortableSectionItem
+                        key={sectionId}
+                        id={sectionId}
+                        title={getSectionTitle(sectionId, customSections)}
+                        isCustom={sectionId.startsWith("custom-")}
+                        icon={getSectionIcon(sectionId)}
+                        canMoveUp={idx > 0}
+                        canMoveDown={idx < activeSidebar.length - 1}
+                        onMoveUp={() => moveSidebarItem(idx, -1)}
+                        onMoveDown={() => moveSidebarItem(idx, 1)}
+                        onSwitchColumn={() => moveToMain(sectionId)}
+                        switchColumnLabel="← Main"
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-[#27272a]">

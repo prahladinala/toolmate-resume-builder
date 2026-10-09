@@ -352,6 +352,8 @@ export function TemplateEngine({
     timelineLineStyle: themeConfig?.timelineLineStyle || "solid",
     dividerStyle: themeConfig?.dividerStyle || "solid",
     contactLayout: themeConfig?.contactLayout || "inline",
+    mainSectionOrder: themeConfig?.mainSectionOrder,
+    sidebarSectionOrder: themeConfig?.sidebarSectionOrder,
   };
 
   const colorClasses = {
@@ -832,13 +834,34 @@ export function TemplateEngine({
     });
   }
 
-  const mainColOrder = fullSectionOrder.filter(
-    (s) => !["skills", "education"].includes(s),
-  );
+  const mainColOrder = config.mainSectionOrder
+    ? [...config.mainSectionOrder]
+    : fullSectionOrder.filter((s) => !["skills", "education"].includes(s));
+
   const sideColOrder =
     mode === "cover-letter"
       ? []
-      : fullSectionOrder.filter((s) => ["skills", "education"].includes(s));
+      : config.sidebarSectionOrder
+        ? [...config.sidebarSectionOrder]
+        : fullSectionOrder.filter((s) => ["skills", "education"].includes(s));
+
+  // Ensure any newly added custom sections are present in mainColOrder if not placed in sidebar
+  if (data.customSections && mode !== "cover-letter") {
+    data.customSections.forEach((cs) => {
+      const customKey = `custom-${cs.id}`;
+      if (
+        !mainColOrder.includes(customKey) &&
+        !sideColOrder.includes(customKey)
+      ) {
+        mainColOrder.push(customKey);
+      }
+    });
+  }
+
+  // If user configured custom main/sidebar order, sync fullSectionOrder for single column templates
+  if (config.mainSectionOrder || config.sidebarSectionOrder) {
+    fullSectionOrder = [...mainColOrder, ...sideColOrder];
+  }
 
   const renderExperience = () => {
     if (!data.experience || data.experience.length === 0) return null;
@@ -1208,12 +1231,12 @@ export function TemplateEngine({
                       Skills
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {data.skills.map((s) => (
+                      {data.skills.map((sk) => (
                         <span
-                          key={s.id}
+                          key={sk.id}
                           className="bg-white/20 px-2 py-1 rounded text-xs"
                         >
-                          {s.name}
+                          {sk.name}
                         </span>
                       ))}
                     </div>
@@ -1221,7 +1244,10 @@ export function TemplateEngine({
                 );
               if (s === "education" && education.length > 0)
                 return (
-                  <div key="education" className="print:break-inside-avoid">
+                  <div
+                    key="education"
+                    className="print:break-inside-avoid mb-12"
+                  >
                     <h3
                       className={`text-xl font-bold mb-4 border-b border-white/20 pb-2 ${fontClasses[config.headingFont]}`}
                     >
@@ -1241,7 +1267,50 @@ export function TemplateEngine({
                     ))}
                   </div>
                 );
-              return null;
+              if (s.startsWith("custom-")) {
+                const customId = s.replace("custom-", "");
+                const customSec = data.customSections?.find(
+                  (cs) => cs.id === customId,
+                );
+                if (
+                  !customSec ||
+                  !customSec.items ||
+                  customSec.items.length === 0
+                )
+                  return null;
+                return (
+                  <div key={s} className="mb-12 print:break-inside-avoid">
+                    <h3
+                      className={`text-xl font-bold mb-4 border-b border-white/20 pb-2 ${fontClasses[config.headingFont]}`}
+                    >
+                      {customSec.title}
+                    </h3>
+                    <div className="space-y-3">
+                      {customSec.items.map((item) => (
+                        <div key={item.id}>
+                          <h4 className="font-bold text-sm">{item.name}</h4>
+                          {item.description && (
+                            <p className="text-xs opacity-80">
+                              {item.description}
+                            </p>
+                          )}
+                          {item.date && !config.hideDates && (
+                            <p className="text-xs opacity-80">{item.date}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+              return (
+                <div
+                  key={s}
+                  className="mb-12 print:break-inside-avoid text-white"
+                >
+                  {getSection(s, "text-white")}
+                </div>
+              );
             })}
           </div>
         </aside>

@@ -78,6 +78,8 @@ export type ThemeConfig = {
   showContactIcons?: boolean;
   spacing?: "compact" | "normal" | "relaxed";
   sectionOrder?: string[];
+  mainSectionOrder?: string[];
+  sidebarSectionOrder?: string[];
   dateFormat?: "MM/YYYY" | "Month YYYY" | "YYYY";
   titleFont?: "sans" | "serif" | "mono";
   headingFont?: "sans" | "serif" | "mono";
