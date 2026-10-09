@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEffect } from "react";
 import { PowerVerbs } from "../PowerVerbs";
 import { AIHelper } from "../AIHelper";
+import { AICoverLetterHelper } from "../AICoverLetterHelper";
 
 export function CoverLetterForm() {
   const { data, updateCoverLetter } = useResumeStore();
@@ -43,6 +44,11 @@ export function CoverLetterForm() {
           markdown!
         </p>
       </div>
+
+      <AICoverLetterHelper
+        currentText={watch("coverLetter") || ""}
+        onUpdate={(improvedText) => setValue("coverLetter", improvedText)}
+      />
 
       <div className="space-y-2">
         <div className="flex justify-between items-center">

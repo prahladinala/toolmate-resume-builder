@@ -16,15 +16,28 @@ export interface AIParsedResult {
 /**
  * Cleans markdown quotes, stray labels, and surrounding punctuation from a candidate text.
  */
-function cleanCandidateText(raw: string): string {
+function cleanCandidateText(raw: string, preserveParagraphs = false): string {
   let text = raw.trim();
 
-  // Strip blockquote markers on each line
-  text = text
-    .split("\n")
-    .map((line) => line.replace(/^\s*>\s*/, "").trim())
-    .filter(Boolean)
-    .join(" ");
+  // If preserveParagraphs is enabled or content looks like a multi-paragraph cover letter
+  if (
+    preserveParagraphs ||
+    /dear\s+/i.test(raw) ||
+    (raw.match(/\n\s*\n/g) || []).length >= 2
+  ) {
+    text = text
+      .split("\n")
+      .map((line) => line.replace(/^\s*>\s*/, ""))
+      .join("\n")
+      .replace(/\n{3,}/g, "\n\n");
+  } else {
+    // Single-bullet mode: join into a single concise line
+    text = text
+      .split("\n")
+      .map((line) => line.replace(/^\s*>\s*/, "").trim())
+      .filter(Boolean)
+      .join(" ");
+  }
 
   // Remove leading leftover asterisks, colons, or dashes before text
   text = text.replace(/^(\*{1,2}|_{1,2}|:|\s)+/, "");
@@ -46,6 +59,7 @@ function cleanCandidateText(raw: string): string {
 export function parseAIResponse(
   rawResponse: string,
   originalText?: string,
+  preserveParagraphs = false,
 ): AIParsedResult {
   if (!rawResponse || !rawResponse.trim()) {
     return {
@@ -84,7 +98,7 @@ export function parseAIResponse(
       const optNum = match[1] || `${index + 1}`;
       const focusRaw = match[2] ? match[2].trim() : "";
       const bodyRaw = match[3] || "";
-      const cleanText = cleanCandidateText(bodyRaw);
+      const cleanText = cleanCandidateText(bodyRaw, preserveParagraphs);
 
       if (cleanText) {
         let focus = focusRaw;
@@ -130,7 +144,7 @@ export function parseAIResponse(
             : idx === 1
               ? "Expertise"
               : "Impact";
-        const cleanText = cleanCandidateText(m[3]);
+        const cleanText = cleanCandidateText(m[3], preserveParagraphs);
         if (cleanText) {
           options.push({
             id: `opt-${num}-${idx}`,
@@ -146,7 +160,7 @@ export function parseAIResponse(
 
   // Fallback: If still no options, treat the cleaned whole text as a single option
   if (options.length === 0) {
-    const singleText = cleanCandidateText(optionsPart);
+    const singleText = cleanCandidateText(optionsPart, preserveParagraphs);
     if (singleText) {
       options.push({
         id: "opt-1-single",

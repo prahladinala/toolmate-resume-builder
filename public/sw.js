@@ -36,14 +36,14 @@ define(["./workbox-4754cb34"], function (e) {
       [
         {
           url: "/_next/app-build-manifest.json",
-          revision: "ddfe883a6a889d06fc72845eba2a09ae",
+          revision: "d587de8c725e3f3131b8d7b8cf2a83a7",
         },
         {
-          url: "/_next/static/6lPZST8KNz2XkIOg6WsGE/_buildManifest.js",
+          url: "/_next/static/Ym_S_alfrVLNd7qNA0TaT/_buildManifest.js",
           revision: "a6e43c87bd608b9e0dcf598ef6cbdcaa",
         },
         {
-          url: "/_next/static/6lPZST8KNz2XkIOg6WsGE/_ssgManifest.js",
+          url: "/_next/static/Ym_S_alfrVLNd7qNA0TaT/_ssgManifest.js",
           revision: "b6652df95db52feb4daf4eca35380933",
         },
         {
@@ -67,16 +67,16 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "69a4a78fac9becef",
         },
         {
-          url: "/_next/static/chunks/296-5fa3b28c680119cd.js",
-          revision: "5fa3b28c680119cd",
-        },
-        {
           url: "/_next/static/chunks/4bd1b696-409494caf8c83275.js",
           revision: "409494caf8c83275",
         },
         {
           url: "/_next/static/chunks/4e0084c3.e0b99db629e28504.js",
           revision: "e0b99db629e28504",
+        },
+        {
+          url: "/_next/static/chunks/564-83cfd932f6bf795b.js",
+          revision: "83cfd932f6bf795b",
         },
         {
           url: "/_next/static/chunks/646.c2c67a3e35c59670.js",
@@ -111,8 +111,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "b05f28c964559e78",
         },
         {
-          url: "/_next/static/chunks/app/builder/page-660ec3f0c43121e1.js",
-          revision: "660ec3f0c43121e1",
+          url: "/_next/static/chunks/app/builder/page-4dcb4f90163613fc.js",
+          revision: "4dcb4f90163613fc",
         },
         {
           url: "/_next/static/chunks/app/error-2813a774e6a1d57a.js",
@@ -183,8 +183,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "2651684a858482eb",
         },
         {
-          url: "/_next/static/css/45fbbded88d5443e.css",
-          revision: "45fbbded88d5443e",
+          url: "/_next/static/css/fc78c06c22e7a99c.css",
+          revision: "fc78c06c22e7a99c",
         },
         {
           url: "/_next/static/media/013b72fa676f92e0-s.woff2",
