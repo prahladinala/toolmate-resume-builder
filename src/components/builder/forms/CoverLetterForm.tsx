@@ -13,11 +13,7 @@ import { AIHelper } from "../AIHelper";
 export function CoverLetterForm() {
   const { data, updateCoverLetter } = useResumeStore();
 
-  const {
-    register,
-    watch,
-    setValue,
-  } = useForm({
+  const { register, watch, setValue } = useForm({
     resolver: zodResolver(coverLetterSchema),
     defaultValues: { coverLetter: data.coverLetter || "" },
   });
@@ -43,7 +39,8 @@ export function CoverLetterForm() {
           Cover Letter Generator
         </h2>
         <p className="text-sm text-muted-foreground">
-          Write a cover letter that matches your resume&apos;s design. Use markdown!
+          Write a cover letter that matches your resume&apos;s design. Use
+          markdown!
         </p>
       </div>
 
@@ -51,14 +48,22 @@ export function CoverLetterForm() {
         <div className="flex justify-between items-center">
           <Label htmlFor="coverLetter">Letter Content</Label>
           <div className="flex items-center gap-2">
-            <AIHelper 
+            <AIHelper
               currentText={watch("coverLetter") || ""}
               onUpdate={(improvedText) => setValue("coverLetter", improvedText)}
+              targetId="cover-letter-ai-options"
             />
-            <PowerVerbs onSelect={(verb) => {
-              const currentDesc = watch("coverLetter") || "";
-              setValue("coverLetter", currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + verb);
-            }} />
+            <PowerVerbs
+              onSelect={(verb) => {
+                const currentDesc = watch("coverLetter") || "";
+                setValue(
+                  "coverLetter",
+                  currentDesc +
+                    (currentDesc && !currentDesc.endsWith(" ") ? " " : "") +
+                    verb,
+                );
+              }}
+            />
           </div>
         </div>
         <Textarea
@@ -67,6 +72,7 @@ export function CoverLetterForm() {
           className="min-h-[400px]"
           {...register("coverLetter")}
         />
+        <div id="cover-letter-ai-options" />
       </div>
     </div>
   );

@@ -4,18 +4,23 @@ import { useState, useEffect, useCallback } from "react";
 import { Loader2, Bot, Sparkles } from "lucide-react";
 import { ChromeAISetupModal } from "./ChromeAISetupModal";
 import { checkChromeAIAvailability, runChromeAIPrompt } from "@/lib/chromeAI";
+import { parseAIResponse, type AIParsedResult } from "@/lib/aiParser";
+import { AIOptionsCard } from "./AIOptionsCard";
 import { notify } from "@/lib/toast";
 
 export function AIHelper({
   currentText,
   onUpdate,
+  targetId,
 }: {
   currentText: string;
   onUpdate: (text: string) => void;
+  targetId?: string;
 }) {
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
+  const [parsedResult, setParsedResult] = useState<AIParsedResult | null>(null);
 
   const verifyAI = useCallback(async () => {
     try {
@@ -47,13 +52,23 @@ export function AIHelper({
     setIsGenerating(true);
 
     try {
-      const systemPrompt =
-        "You are an expert ATS resume writer. Rewrite the following text to be more impactful, professional, and action-oriented. Keep it concise. Do not add markdown unless it was already present in the source.";
+      const rawResult = await runChromeAIPrompt(currentText);
 
-      const result = await runChromeAIPrompt(currentText, systemPrompt);
-      if (result && result.trim()) {
-        onUpdate(result.trim());
-        notify.aiSuccess("ATS-optimized rewrite applied successfully.");
+      if (rawResult && rawResult.trim()) {
+        const parsed = parseAIResponse(rawResult, currentText);
+        setParsedResult(parsed);
+
+        if (parsed.options.length > 0) {
+          const recommended = parsed.options[parsed.recommendedIndex];
+          // Prefill ONLY the clean recommended text into input (NO Option headers/markdown)
+          onUpdate(recommended.text);
+          notify.aiSuccess(
+            `Prefilled input with Recommended ATS rewrite. Options shown below!`,
+          );
+        } else {
+          onUpdate(rawResult.trim());
+          notify.aiSuccess("ATS-optimized rewrite applied successfully.");
+        }
       }
     } catch (e) {
       console.error("AI Generation failed", e);
@@ -89,6 +104,10 @@ export function AIHelper({
     executeImprove();
   };
 
+  const handleSelectOption = (text: string) => {
+    onUpdate(text);
+  };
+
   return (
     <>
       <div
@@ -113,6 +132,14 @@ export function AIHelper({
           {isGenerating ? "Improving..." : "Improve AI"}
         </span>
       </div>
+
+      <AIOptionsCard
+        result={parsedResult}
+        currentText={currentText}
+        onSelectOption={handleSelectOption}
+        onClose={() => setParsedResult(null)}
+        targetId={targetId}
+      />
 
       <ChromeAISetupModal
         open={showSetup}

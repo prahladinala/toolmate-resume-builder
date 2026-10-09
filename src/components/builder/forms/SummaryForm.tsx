@@ -53,14 +53,22 @@ export function SummaryForm() {
         <div className="flex justify-between items-center">
           <Label htmlFor="summary">Summary</Label>
           <div className="flex items-center gap-2">
-            <AIHelper 
+            <AIHelper
               currentText={watch("summary") || ""}
               onUpdate={(improvedText) => setValue("summary", improvedText)}
+              targetId="summary-ai-options"
             />
-            <PowerVerbs onSelect={(verb) => {
-              const currentDesc = watch("summary") || "";
-              setValue("summary", currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + verb);
-            }} />
+            <PowerVerbs
+              onSelect={(verb) => {
+                const currentDesc = watch("summary") || "";
+                setValue(
+                  "summary",
+                  currentDesc +
+                    (currentDesc && !currentDesc.endsWith(" ") ? " " : "") +
+                    verb,
+                );
+              }}
+            />
           </div>
         </div>
         <Textarea
@@ -69,12 +77,18 @@ export function SummaryForm() {
           className="min-h-[200px]"
           {...register("summary")}
         />
-        <AISuggestions 
-          currentText={watch("summary") || ""} 
+        <div id="summary-ai-options" />
+        <AISuggestions
+          currentText={watch("summary") || ""}
           onSelect={(suggestion) => {
             const currentDesc = watch("summary") || "";
-            setValue("summary", currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + suggestion);
-          }} 
+            setValue(
+              "summary",
+              currentDesc +
+                (currentDesc && !currentDesc.endsWith(" ") ? " " : "") +
+                suggestion,
+            );
+          }}
           contextPrompt="professional summary"
         />
         {errors.summary && (

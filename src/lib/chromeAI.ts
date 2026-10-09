@@ -235,7 +235,35 @@ export async function runChromeAIPrompt(
     }
 
     // Build instruction prompt to guide ATS rewrite
-    const fullPrompt = `${systemPrompt}\n\nRewrite this resume bullet/text concisely:\n"${promptText}"\n\nDirect ATS Rewrite:`;
+    let fullPrompt = "";
+    if (
+      systemPrompt &&
+      (systemPrompt.includes("autocomplete") ||
+        systemPrompt.includes("3-8 words"))
+    ) {
+      fullPrompt = `${systemPrompt}\n\n${promptText}`;
+    } else {
+      fullPrompt = `You are an expert ATS resume optimizer and career coach.
+Given this resume text:
+"${promptText}"
+
+Rewrite it into 3 distinct ATS-optimized alternatives followed by brief insights in this exact structure:
+
+**Option 1 (Focus on Improvement):**
+> <concise, professional rewrite emphasizing continuous enhancement>
+
+**Option 2 (Focus on Expertise):**
+> <strong action-oriented rewrite highlighting technical skills & problem solving>
+
+**Option 3 (High Impact & Metrics - Recommended):**
+> <maximum impact rewrite with quantifiable metrics, efficiency gains, or tangible results>
+
+**Explanation:**
+* Eliminated Ambiguity: <clarity improvements>
+* Action Verbs: <action-oriented verbs applied>
+* Quantifiable Results: <impact and ATS advantages>`;
+    }
+
     const result = await session.prompt(fullPrompt);
 
     if (typeof session.destroy === "function") {

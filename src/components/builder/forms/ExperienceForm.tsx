@@ -148,11 +148,15 @@ function SortableExperienceItem({
                 // Uncheck all other experiences
                 fields.forEach((_: unknown, i: number) => {
                   if (i !== index) {
-                    setValue(`experiences.${i}.current`, false, { shouldValidate: true });
+                    setValue(`experiences.${i}.current`, false, {
+                      shouldValidate: true,
+                    });
                   }
                 });
               }
-              setValue(`experiences.${index}.current`, checked, { shouldValidate: true });
+              setValue(`experiences.${index}.current`, checked, {
+                shouldValidate: true,
+              });
             }}
           />
           <Label
@@ -167,14 +171,25 @@ function SortableExperienceItem({
           <div className="flex justify-between items-center">
             <Label>Description (Markdown supported)</Label>
             <div className="flex items-center gap-2">
-              <AIHelper 
+              <AIHelper
                 currentText={watch(`experiences.${index}.description`) || ""}
-                onUpdate={(improvedText) => setValue(`experiences.${index}.description`, improvedText)}
+                onUpdate={(improvedText) =>
+                  setValue(`experiences.${index}.description`, improvedText)
+                }
+                targetId={`exp-${index}-ai-options`}
               />
-              <PowerVerbs onSelect={(verb) => {
-                const currentDesc = watch(`experiences.${index}.description`) || "";
-                setValue(`experiences.${index}.description`, currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + verb);
-              }} />
+              <PowerVerbs
+                onSelect={(verb) => {
+                  const currentDesc =
+                    watch(`experiences.${index}.description`) || "";
+                  setValue(
+                    `experiences.${index}.description`,
+                    currentDesc +
+                      (currentDesc && !currentDesc.endsWith(" ") ? " " : "") +
+                      verb,
+                  );
+                }}
+              />
             </div>
           </div>
           <Textarea
@@ -182,12 +197,19 @@ function SortableExperienceItem({
             className="min-h-[100px]"
             {...register(`experiences.${index}.description`)}
           />
-          <AISuggestions 
-            currentText={watch(`experiences.${index}.description`) || ""} 
+          <div id={`exp-${index}-ai-options`} />
+          <AISuggestions
+            currentText={watch(`experiences.${index}.description`) || ""}
             onSelect={(suggestion) => {
-              const currentDesc = watch(`experiences.${index}.description`) || "";
-              setValue(`experiences.${index}.description`, currentDesc + (currentDesc && !currentDesc.endsWith(" ") ? " " : "") + suggestion);
-            }} 
+              const currentDesc =
+                watch(`experiences.${index}.description`) || "";
+              setValue(
+                `experiences.${index}.description`,
+                currentDesc +
+                  (currentDesc && !currentDesc.endsWith(" ") ? " " : "") +
+                  suggestion,
+              );
+            }}
             contextPrompt="job experience bullet points"
           />
         </div>
