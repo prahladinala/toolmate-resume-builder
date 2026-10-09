@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 // @ts-nocheck
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, GripVertical } from "lucide-react";
 import { useEffect } from "react";
+import { AIHelper } from "../AIHelper";
 import {
   DndContext,
   closestCenter,
@@ -38,9 +39,9 @@ const customSectionSchema = z.object({
           name: z.string().min(1, "Item name is required"),
           description: z.string().optional(),
           date: z.string().optional(),
-        })
+        }),
       ),
-    })
+    }),
   ),
 });
 
@@ -50,12 +51,16 @@ function SortableItem({
   sectionIndex,
   register,
   remove,
+  watch,
+  setValue,
 }: {
   id: string;
   index: number;
   sectionIndex: number;
-  register: unknown;
-  remove: unknown;
+  register: any;
+  remove: any;
+  watch: any;
+  setValue: any;
 }) {
   const {
     attributes,
@@ -117,12 +122,39 @@ function SortableItem({
           />
         </div>
         <div className="space-y-1 md:col-span-2">
-          <Label className="text-xs">Description (Optional)</Label>
+          <div className="flex justify-between items-center">
+            <Label className="text-xs">Description (Optional)</Label>
+            <div className="flex items-center gap-2">
+              <AIHelper
+                currentText={
+                  (watch &&
+                    watch(
+                      `customSections.${sectionIndex}.items.${index}.description`,
+                    )) ||
+                  ""
+                }
+                onUpdate={(improvedText) => {
+                  if (setValue) {
+                    setValue(
+                      `customSections.${sectionIndex}.items.${index}.description`,
+                      improvedText,
+                      { shouldValidate: true },
+                    );
+                  }
+                }}
+                targetId={`custom-${sectionIndex}-${index}-ai-options`}
+                sectionType="custom"
+              />
+            </div>
+          </div>
           <Textarea
             className="min-h-[60px] text-sm"
             placeholder="Additional details..."
-            {...register(`customSections.${sectionIndex}.items.${index}.description`)}
+            {...register(
+              `customSections.${sectionIndex}.items.${index}.description`,
+            )}
           />
+          <div id={`custom-${sectionIndex}-${index}-ai-options`} />
         </div>
       </div>
     </div>
@@ -134,11 +166,15 @@ function SectionEditor({
   control,
   register,
   removeSection,
+  watch,
+  setValue,
 }: {
   sectionIndex: number;
-  control: unknown;
-  register: unknown;
-  removeSection: unknown;
+  control: any;
+  register: any;
+  removeSection: any;
+  watch: any;
+  setValue: any;
 }) {
   const { fields, append, remove, move } = useFieldArray({
     control,
@@ -182,8 +218,15 @@ function SectionEditor({
       </div>
 
       <div className="pt-2">
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={fields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={fields.map((f) => f.id)}
+            strategy={verticalListSortingStrategy}
+          >
             <div className="space-y-3">
               {fields.map((field, index) => (
                 <SortableItem
@@ -193,6 +236,8 @@ function SectionEditor({
                   sectionIndex={sectionIndex}
                   register={register}
                   remove={remove}
+                  watch={watch}
+                  setValue={setValue}
                 />
               ))}
             </div>
@@ -221,11 +266,7 @@ function SectionEditor({
 export function CustomSectionForm() {
   const { data } = useResumeStore();
 
-  const {
-    register,
-    control,
-    watch,
-  } = useForm({
+  const { register, control, watch, setValue } = useForm({
     resolver: zodResolver(customSectionSchema),
     defaultValues: {
       customSections: data.customSections || [],
@@ -262,7 +303,9 @@ export function CustomSectionForm() {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Custom Sections</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Custom Sections
+          </h2>
           <p className="text-sm text-muted-foreground">
             Add custom lists for Languages, Certifications, Awards, etc.
           </p>
@@ -290,6 +333,8 @@ export function CustomSectionForm() {
             control={control}
             register={register}
             removeSection={remove}
+            watch={watch}
+            setValue={setValue}
           />
         ))}
         {fields.length === 0 && (

@@ -197,15 +197,167 @@ export async function checkChromeAIAvailability(): Promise<ChromeAIStatus> {
   };
 }
 
+export type SectionContextType =
+  "summary" | "experience" | "project" | "cover_letter" | "custom" | "general";
+
+export type OptimizationTone =
+  "default" | "metrics" | "action" | "executive" | "concise" | "technical";
+
+export interface AIOptimizeOptions {
+  sectionType?: SectionContextType;
+  tone?: OptimizationTone;
+  systemPrompt?: string;
+}
+
+function buildOptimizedPrompt(
+  promptText: string,
+  sectionType: SectionContextType = "general",
+  tone: OptimizationTone = "default",
+  customSystemPrompt?: string,
+): string {
+  if (
+    customSystemPrompt &&
+    (customSystemPrompt.includes("autocomplete") ||
+      customSystemPrompt.includes("3-8 words"))
+  ) {
+    return `${customSystemPrompt}\n\n${promptText}`;
+  }
+
+  let roleContext = "";
+  let option1Desc = "";
+  let option2Desc = "";
+  let option3Desc = "";
+  let explanationGuide = "";
+
+  switch (sectionType) {
+    case "summary":
+      roleContext =
+        "You are an executive resume coach specializing in compelling, high-converting Professional Summaries.";
+      option1Desc =
+        "Option 1 (Focus on Leadership & Vision):\n> <engaging executive summary emphasizing domain leadership and career trajectory>";
+      option2Desc =
+        "Option 2 (Focus on Technical Competencies):\n> <skills-forward summary emphasizing modern technologies, tools, and engineering methodologies>";
+      option3Desc =
+        "Option 3 (High Impact & Measurable Results - Recommended):\n> <achievement-driven summary highlighting career milestones and quantifiable business outcomes>";
+      explanationGuide =
+        "* Eliminated Ambiguity: <how generic statements were replaced with specific authority>\n* Action Verbs: <strategic keywords applied>\n* Quantifiable Results: <how accomplishments and metrics stand out>";
+      break;
+
+    case "experience":
+      roleContext =
+        "You are an expert ATS resume writer specializing in high-impact job experience bullets using the Challenge-Action-Result (CAR) method.";
+      option1Desc =
+        "Option 1 (Action-Verb Driven):\n> <starts with high-power action verb, clearly describing the task and technical execution>";
+      option2Desc =
+        "Option 2 (Problem & Solution Focus):\n> <highlights complex business or technical challenge overcome with strategic solution>";
+      option3Desc =
+        "Option 3 (High Impact & Quantifiable Metrics - Recommended):\n> <impact-first bullet point featuring quantifiable metrics (e.g. % improvement, time saved, revenue or scale)>";
+      explanationGuide =
+        "* Eliminated Ambiguity: <how vague tasks were turned into concrete achievements>\n* Action Verbs: <strong verbs like Architected, Spearheaded, Optimized>\n* Quantifiable Results: <metrics and measurable outcomes added>";
+      break;
+
+    case "project":
+      roleContext =
+        "You are an expert technical resume coach specializing in project showcase descriptions that impress hiring managers.";
+      option1Desc =
+        "Option 1 (Architecture & Tech Stack):\n> <highlights architectural decisions, modern frameworks, and engineering best practices>";
+      option2Desc =
+        "Option 2 (Problem Solved & Product Features):\n> <clearly outlines the user problem solved, product features built, and user experience>";
+      option3Desc =
+        "Option 3 (Performance & Scale - Recommended):\n> <emphasizes performance benchmarks, latency reduction, test coverage, or adoption metrics>";
+      explanationGuide =
+        "* Architecture Clarity: <technical decisions highlighted>\n* Value Delivered: <how the project showcases real-world problem-solving skills>\n* Metric Impact: <performance or scalability improvements highlighted>";
+      break;
+
+    case "cover_letter":
+      roleContext =
+        "You are an expert career strategist optimizing a Cover Letter paragraph to maximize interview callback rates.";
+      option1Desc =
+        "Option 1 (Enthusiastic & Culturally Aligned):\n> <warm, engaging paragraph conveying deep company interest and alignment>";
+      option2Desc =
+        "Option 2 (Skills & Direct Role Fit):\n> <evidence-based paragraph demonstrating direct mapping of skills to role requirements>";
+      option3Desc =
+        "Option 3 (High-Impact Accomplishments - Recommended):\n> <results-driven narrative demonstrating proven past track record of success>";
+      explanationGuide =
+        "* Tone & Polish: <engaging, confident professional narrative>\n* Relevance: <alignment with employer expectations>\n* Impact: <clear value proposition>";
+      break;
+
+    default:
+      roleContext = "You are an expert ATS resume optimizer and career coach.";
+      option1Desc =
+        "Option 1 (Focus on Improvement):\n> <concise, professional rewrite emphasizing continuous enhancement>";
+      option2Desc =
+        "Option 2 (Focus on Expertise):\n> <strong action-oriented rewrite highlighting technical skills & problem solving>";
+      option3Desc =
+        "Option 3 (High Impact & Metrics - Recommended):\n> <maximum impact rewrite with quantifiable metrics, efficiency gains, or tangible results>";
+      explanationGuide =
+        "* Eliminated Ambiguity: <clarity improvements>\n* Action Verbs: <action-oriented verbs applied>\n* Quantifiable Results: <impact and ATS advantages>";
+      break;
+  }
+
+  let toneDirective = "";
+  if (tone === "metrics") {
+    toneDirective =
+      "\nTONE FOCUS: Emphasize quantifiable metrics, estimated percentage improvements (e.g. 35%), latency reduction, or efficiency gains in all options.";
+  } else if (tone === "action") {
+    toneDirective =
+      "\nTONE FOCUS: Start every option with a high-power active verb (e.g. Spearheaded, Engineered, Orchestrated, Overhauled) and keep phrasing dynamic.";
+  } else if (tone === "executive") {
+    toneDirective =
+      "\nTONE FOCUS: Use strategic, executive-level language highlighting cross-functional leadership, vision, governance, and business alignment.";
+  } else if (tone === "concise") {
+    toneDirective =
+      "\nTONE FOCUS: Keep each option ultra-concise, punchy, and under 20 words without losing core impact.";
+  } else if (tone === "technical") {
+    toneDirective =
+      "\nTONE FOCUS: Emphasize deep technical rigor, systems architecture, design patterns, testing, and modern developer tooling.";
+  }
+
+  return `${roleContext}${toneDirective}
+
+Given the user's specific input:
+"${promptText}"
+
+Rewrite it into 3 distinct ATS-optimized alternatives followed by brief insights in this exact structure:
+
+**${option1Desc}
+
+**${option2Desc}
+
+**${option3Desc}
+
+**Explanation:**
+${explanationGuide}`;
+}
+
 /**
  * Runs a prompt using Gemini Nano on-device
  */
 export async function runChromeAIPrompt(
   promptText: string,
-  systemPrompt = "You are an expert ATS resume writer. Rewrite the text to be impactful, concise, and professional.",
+  options?: string | AIOptimizeOptions,
 ): Promise<string> {
   const LM = getLanguageModelAPI();
   let session: any = null;
+
+  const sectionType: SectionContextType =
+    typeof options === "object" && options.sectionType
+      ? options.sectionType
+      : "general";
+
+  const tone: OptimizationTone =
+    typeof options === "object" && options.tone ? options.tone : "default";
+
+  const customSystemPrompt =
+    typeof options === "string"
+      ? options
+      : typeof options === "object"
+        ? options.systemPrompt
+        : undefined;
+
+  const systemPrompt =
+    customSystemPrompt ||
+    "You are an expert ATS resume writer and career coach.";
 
   try {
     if (LM && typeof LM.create === "function") {
@@ -217,7 +369,6 @@ export async function runChromeAIPrompt(
             initialPrompts: [{ role: "system", content: systemPrompt }],
           });
         } catch {
-          // Direct create() as in Chrome 131+ standard
           session = await LM.create();
         }
       }
@@ -234,35 +385,12 @@ export async function runChromeAIPrompt(
       throw new Error("Failed to initialize Gemini Nano prompt session.");
     }
 
-    // Build instruction prompt to guide ATS rewrite
-    let fullPrompt = "";
-    if (
-      systemPrompt &&
-      (systemPrompt.includes("autocomplete") ||
-        systemPrompt.includes("3-8 words"))
-    ) {
-      fullPrompt = `${systemPrompt}\n\n${promptText}`;
-    } else {
-      fullPrompt = `You are an expert ATS resume optimizer and career coach.
-Given this resume text:
-"${promptText}"
-
-Rewrite it into 3 distinct ATS-optimized alternatives followed by brief insights in this exact structure:
-
-**Option 1 (Focus on Improvement):**
-> <concise, professional rewrite emphasizing continuous enhancement>
-
-**Option 2 (Focus on Expertise):**
-> <strong action-oriented rewrite highlighting technical skills & problem solving>
-
-**Option 3 (High Impact & Metrics - Recommended):**
-> <maximum impact rewrite with quantifiable metrics, efficiency gains, or tangible results>
-
-**Explanation:**
-* Eliminated Ambiguity: <clarity improvements>
-* Action Verbs: <action-oriented verbs applied>
-* Quantifiable Results: <impact and ATS advantages>`;
-    }
+    const fullPrompt = buildOptimizedPrompt(
+      promptText,
+      sectionType,
+      tone,
+      customSystemPrompt,
+    );
 
     const result = await session.prompt(fullPrompt);
 

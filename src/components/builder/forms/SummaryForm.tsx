@@ -57,6 +57,7 @@ export function SummaryForm() {
               currentText={watch("summary") || ""}
               onUpdate={(improvedText) => setValue("summary", improvedText)}
               targetId="summary-ai-options"
+              sectionType="summary"
             />
             <PowerVerbs
               onSelect={(verb) => {

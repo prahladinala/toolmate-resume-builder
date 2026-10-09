@@ -177,6 +177,7 @@ function SortableExperienceItem({
                   setValue(`experiences.${index}.description`, improvedText)
                 }
                 targetId={`exp-${index}-ai-options`}
+                sectionType="experience"
               />
               <PowerVerbs
                 onSelect={(verb) => {

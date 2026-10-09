@@ -3,7 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { Loader2, Bot, Sparkles } from "lucide-react";
 import { ChromeAISetupModal } from "./ChromeAISetupModal";
-import { checkChromeAIAvailability, runChromeAIPrompt } from "@/lib/chromeAI";
+import {
+  checkChromeAIAvailability,
+  runChromeAIPrompt,
+  type SectionContextType,
+  type OptimizationTone,
+} from "@/lib/chromeAI";
 import { parseAIResponse, type AIParsedResult } from "@/lib/aiParser";
 import { AIOptionsCard } from "./AIOptionsCard";
 import { notify } from "@/lib/toast";
@@ -12,15 +17,18 @@ export function AIHelper({
   currentText,
   onUpdate,
   targetId,
+  sectionType = "general",
 }: {
   currentText: string;
   onUpdate: (text: string) => void;
   targetId?: string;
+  sectionType?: SectionContextType;
 }) {
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
   const [parsedResult, setParsedResult] = useState<AIParsedResult | null>(null);
+  const [activeTone, setActiveTone] = useState<OptimizationTone>("default");
 
   const verifyAI = useCallback(async () => {
     try {
@@ -47,12 +55,16 @@ export function AIHelper({
     };
   }, [verifyAI]);
 
-  const executeImprove = async () => {
+  const executeImprove = async (toneToUse: OptimizationTone = "default") => {
     if (!currentText.trim() || isGenerating) return;
     setIsGenerating(true);
+    setActiveTone(toneToUse);
 
     try {
-      const rawResult = await runChromeAIPrompt(currentText);
+      const rawResult = await runChromeAIPrompt(currentText, {
+        sectionType,
+        tone: toneToUse,
+      });
 
       if (rawResult && rawResult.trim()) {
         const parsed = parseAIResponse(rawResult, currentText);
@@ -101,11 +113,15 @@ export function AIHelper({
     }
 
     // AI is confirmed available - proceed immediately!
-    executeImprove();
+    executeImprove(activeTone);
   };
 
   const handleSelectOption = (text: string) => {
     onUpdate(text);
+  };
+
+  const handleRegenerateTone = (tone: OptimizationTone) => {
+    executeImprove(tone);
   };
 
   return (
@@ -118,7 +134,9 @@ export function AIHelper({
             : "border-purple-200 text-purple-700 bg-purple-50 hover:bg-purple-100 hover:text-purple-800 dark:border-purple-900 dark:bg-purple-950/30 dark:text-purple-400"
         }`}
         title={
-          isAvailable ? "Enhance with Gemini Nano AI" : "Enable Gemini Nano AI"
+          isAvailable
+            ? `Optimize with Gemini Nano AI (${sectionType})`
+            : "Enable Gemini Nano AI"
         }
       >
         {isGenerating ? (
@@ -139,6 +157,10 @@ export function AIHelper({
         onSelectOption={handleSelectOption}
         onClose={() => setParsedResult(null)}
         targetId={targetId}
+        sectionType={sectionType}
+        activeTone={activeTone}
+        onRegenerateTone={handleRegenerateTone}
+        isRegenerating={isGenerating}
       />
 
       <ChromeAISetupModal
@@ -146,7 +168,7 @@ export function AIHelper({
         onOpenChange={setShowSetup}
         onSuccess={() => {
           verifyAI();
-          executeImprove();
+          executeImprove("default");
         }}
       />
     </>

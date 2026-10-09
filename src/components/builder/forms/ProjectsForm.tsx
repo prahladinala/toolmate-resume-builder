@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 // @ts-nocheck
 "use client";
 
@@ -12,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, GripVertical } from "lucide-react";
 import { useEffect } from "react";
+import { AIHelper } from "../AIHelper";
+import { PowerVerbs } from "../PowerVerbs";
 import {
   DndContext,
   closestCenter,
@@ -49,12 +51,16 @@ function SortableProjectItem({
   register,
   errors,
   remove,
+  watch,
+  setValue,
 }: {
   id: string;
   index: number;
-  register: unknown;
-  errors: unknown;
-  remove: unknown;
+  register: any;
+  errors: any;
+  remove: any;
+  watch: any;
+  setValue: any;
 }) {
   const {
     attributes,
@@ -140,12 +146,46 @@ function SortableProjectItem({
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <Label>Description *</Label>
+          <div className="flex justify-between items-center">
+            <Label>Description *</Label>
+            <div className="flex items-center gap-2">
+              <AIHelper
+                currentText={
+                  (watch && watch(`projects.${index}.description`)) || ""
+                }
+                onUpdate={(improvedText) => {
+                  if (setValue) {
+                    setValue(`projects.${index}.description`, improvedText, {
+                      shouldValidate: true,
+                    });
+                  }
+                }}
+                targetId={`project-${index}-ai-options`}
+                sectionType="project"
+              />
+              <PowerVerbs
+                onSelect={(verb) => {
+                  const currentDesc =
+                    (watch && watch(`projects.${index}.description`)) || "";
+                  if (setValue) {
+                    setValue(
+                      `projects.${index}.description`,
+                      currentDesc +
+                        (currentDesc && !currentDesc.endsWith(" ") ? " " : "") +
+                        verb,
+                      { shouldValidate: true },
+                    );
+                  }
+                }}
+              />
+            </div>
+          </div>
           <Textarea
             placeholder="Describe what you built and the problems it solved..."
             className="min-h-[100px]"
             {...register(`projects.${index}.description`)}
           />
+          <div id={`project-${index}-ai-options`} />
           {errors.projects?.[index]?.description && (
             <p className="text-xs text-destructive">
               {errors.projects[index].description.message}
@@ -164,6 +204,7 @@ export function ProjectsForm() {
     register,
     control,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(projectFormSchema),
@@ -279,6 +320,8 @@ export function ProjectsForm() {
                 register={register}
                 errors={errors}
                 remove={remove}
+                watch={watch}
+                setValue={setValue}
               />
             ))}
             {fields.length === 0 && (

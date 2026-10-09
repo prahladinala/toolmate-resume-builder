@@ -52,6 +52,7 @@ export function CoverLetterForm() {
               currentText={watch("coverLetter") || ""}
               onUpdate={(improvedText) => setValue("coverLetter", improvedText)}
               targetId="cover-letter-ai-options"
+              sectionType="cover_letter"
             />
             <PowerVerbs
               onSelect={(verb) => {
