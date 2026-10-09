@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
-// Utilities for Google Chrome Built-in AI (Gemini Nano)
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// Comprehensive Prompt API / Gemini Nano engine supporting Chrome 127-133+ specifications
 
 export type ChromeAIAvailability =
   "ready" | "downloading" | "not_available" | "checking";
@@ -11,12 +11,54 @@ export interface ChromeAIStatus {
   details?: string;
 }
 
-// Helper to access the AI object safely from window or self
-function getChromeAI(): any {
+/**
+ * Access the LanguageModel class or namespace across various Chrome versions:
+ * - Chrome 131+: window.LanguageModel or global LanguageModel
+ * - Chrome 128-130: window.ai.languageModel
+ * - Chrome 127: window.ai.assistant
+ */
+export function getLanguageModelAPI(): any {
+  if (typeof window !== "undefined") {
+    // 1. Direct Chrome 131+ global LanguageModel
+    if ("LanguageModel" in window && (window as any).LanguageModel) {
+      return (window as any).LanguageModel;
+    }
+    // 2. window.ai.languageModel
+    if ("ai" in window && (window as any).ai?.languageModel) {
+      return (window as any).ai.languageModel;
+    }
+    // 3. window.ai.assistant
+    if ("ai" in window && (window as any).ai?.assistant) {
+      return (window as any).ai.assistant;
+    }
+  }
+
+  // Check globalThis
+  if (typeof globalThis !== "undefined") {
+    if ((globalThis as any).LanguageModel) {
+      return (globalThis as any).LanguageModel;
+    }
+    if ((globalThis as any).ai?.languageModel) {
+      return (globalThis as any).ai.languageModel;
+    }
+  }
+
+  // Check self
+  if (typeof self !== "undefined") {
+    if ((self as any).LanguageModel) return (self as any).LanguageModel;
+    if ((self as any).ai?.languageModel) return (self as any).ai.languageModel;
+    if ((self as any).ai?.assistant) return (self as any).ai.assistant;
+  }
+
+  return null;
+}
+
+/**
+ * Helper to check legacy window.ai session creator
+ */
+export function getLegacyAIApi(): any {
   if (typeof window !== "undefined") {
     if ("ai" in window && (window as any).ai) return (window as any).ai;
-    if ("model" in window && (window as any).model)
-      return (window as any).model;
   }
   if (typeof self !== "undefined" && "ai" in self && (self as any).ai) {
     return (self as any).ai;
@@ -26,7 +68,6 @@ function getChromeAI(): any {
 
 /**
  * Robustly checks if Chrome's Built-in Gemini Nano model is available
- * Supports all Prompt API versions (languageModel, assistant, canCreateTextSession)
  */
 export async function checkChromeAIAvailability(): Promise<ChromeAIStatus> {
   if (typeof window === "undefined") {
@@ -37,29 +78,23 @@ export async function checkChromeAIAvailability(): Promise<ChromeAIStatus> {
     };
   }
 
-  const ai = getChromeAI();
+  const LM = getLanguageModelAPI();
 
-  if (!ai) {
-    return {
-      isAvailable: false,
-      status: "not_available",
-      message: "Chrome AI (window.ai) is not detected.",
-      details:
-        "Ensure Chrome version >= 127, enable required flags in chrome://flags, and relaunch Chrome.",
-    };
-  }
-
-  try {
-    // 1. Check window.ai.languageModel (Current standard Prompt API)
-    if (ai.languageModel) {
-      // Newer API: availability()
-      if (typeof ai.languageModel.availability === "function") {
-        const availability = await ai.languageModel.availability();
-        if (availability === "readily") {
+  if (LM) {
+    try {
+      // Chrome 131+ Prompt API: LanguageModel.availability()
+      if (typeof LM.availability === "function") {
+        const availability = await LM.availability();
+        console.log("LanguageModel.availability result:", availability);
+        if (
+          availability === "readily" ||
+          availability === "available" ||
+          availability === true
+        ) {
           return {
             isAvailable: true,
             status: "ready",
-            message: "Gemini Nano is ready and available on-device.",
+            message: "Gemini Nano is active and ready on-device.",
           };
         }
         if (availability === "after-download") {
@@ -67,22 +102,34 @@ export async function checkChromeAIAvailability(): Promise<ChromeAIStatus> {
             isAvailable: true,
             status: "downloading",
             message:
-              "Gemini Nano is enabled, but the model needs to finish downloading.",
+              "Gemini Nano flags are enabled; model is finishing download.",
             details:
-              "Open chrome://components and check for update on 'Optimization Guide On Device Model'.",
+              "Navigate to chrome://components and check for update on 'Optimization Guide On Device Model'.",
+          };
+        }
+        if (availability !== "no") {
+          return {
+            isAvailable: true,
+            status: "ready",
+            message: `Gemini Nano available (${String(availability)}).`,
           };
         }
       }
 
-      // Preceding API: capabilities()
-      if (typeof ai.languageModel.capabilities === "function") {
-        const capabilities = await ai.languageModel.capabilities();
+      // Chrome 128-130: LanguageModel.capabilities()
+      if (typeof LM.capabilities === "function") {
+        const capabilities = await LM.capabilities();
         const available = capabilities?.available;
-        if (available === "readily" || available === true) {
+        console.log("LanguageModel.capabilities result:", capabilities);
+        if (
+          available === "readily" ||
+          available === "available" ||
+          available === true
+        ) {
           return {
             isAvailable: true,
             status: "ready",
-            message: "Gemini Nano is ready and available on-device.",
+            message: "Gemini Nano is active and ready on-device.",
           };
         }
         if (available === "after-download") {
@@ -90,94 +137,63 @@ export async function checkChromeAIAvailability(): Promise<ChromeAIStatus> {
             isAvailable: true,
             status: "downloading",
             message:
-              "Gemini Nano is enabled, but the model needs to finish downloading.",
+              "Gemini Nano flags are enabled; model is finishing download.",
             details:
-              "Open chrome://components and check for update on 'Optimization Guide On Device Model'.",
+              "Navigate to chrome://components and check for update on 'Optimization Guide On Device Model'.",
           };
         }
         if (available !== "no") {
           return {
             isAvailable: true,
             status: "ready",
-            message: "Gemini Nano appears available.",
+            message: "Gemini Nano is active and ready on-device.",
           };
         }
       }
 
-      // Fallback: if languageModel.create exists
-      if (typeof ai.languageModel.create === "function") {
+      // If LM.create function exists, model is supported
+      if (typeof LM.create === "function") {
         return {
           isAvailable: true,
           status: "ready",
-          message: "Gemini Nano languageModel.create is accessible.",
+          message: "Gemini Nano LanguageModel.create is accessible.",
         };
       }
-    }
-
-    // 2. Check window.ai.assistant (Early Chrome 127/128 implementation)
-    if (ai.assistant) {
-      if (typeof ai.assistant.capabilities === "function") {
-        const capabilities = await ai.assistant.capabilities();
-        const available = capabilities?.available;
-        if (
-          available === "readily" ||
-          available === true ||
-          available !== "no"
-        ) {
-          return {
-            isAvailable: true,
-            status: available === "after-download" ? "downloading" : "ready",
-            message: "Gemini Nano assistant API is available.",
-          };
-        }
-      }
-      if (typeof ai.assistant.create === "function") {
+    } catch (err: any) {
+      console.warn("Error probing LanguageModel:", err);
+      if (typeof LM.create === "function") {
         return {
           isAvailable: true,
           status: "ready",
-          message: "Gemini Nano assistant.create is accessible.",
+          message: "Gemini Nano LanguageModel is accessible.",
         };
       }
     }
+  }
 
-    // 3. Check legacy canCreateTextSession
-    if (typeof ai.canCreateTextSession === "function") {
-      const state = await ai.canCreateTextSession();
+  // Fallback: Check legacy canCreateTextSession / createTextSession
+  const legacyAi = getLegacyAIApi();
+  if (legacyAi && typeof legacyAi.canCreateTextSession === "function") {
+    try {
+      const state = await legacyAi.canCreateTextSession();
       if (state === "readily" || state === "after-download" || state !== "no") {
         return {
           isAvailable: true,
           status: state === "after-download" ? "downloading" : "ready",
-          message: "Gemini Nano text session API is available.",
+          message: "Chrome AI text session API is available.",
         };
       }
+    } catch (err) {
+      console.warn("Legacy canCreateTextSession error:", err);
     }
-  } catch (err: any) {
-    console.warn("Chrome AI availability check encountered an error:", err);
-    // If an error happened during capabilities check, but ai.languageModel or ai exists, try create
-    if (
-      ai.languageModel?.create ||
-      ai.assistant?.create ||
-      ai.createTextSession
-    ) {
-      return {
-        isAvailable: true,
-        status: "ready",
-        message: "Gemini Nano session creation API is present.",
-      };
-    }
-    return {
-      isAvailable: false,
-      status: "not_available",
-      message: err?.message || "Failed to query Gemini Nano capabilities.",
-    };
   }
 
   return {
     isAvailable: false,
     status: "not_available",
-    message: "Gemini Nano flags are not enabled or model is not downloaded.",
+    message: "Gemini Nano is not detected in this browser session.",
     details:
-      "Ensure Prompt API and Optimization Guide flags are enabled, then check chrome://components.",
+      "Ensure Chrome version >= 127, enable required flags in chrome://flags, and relaunch Chrome.",
   };
 }
 
@@ -186,44 +202,42 @@ export async function checkChromeAIAvailability(): Promise<ChromeAIStatus> {
  */
 export async function runChromeAIPrompt(
   promptText: string,
-  systemPrompt = "You are a professional ATS resume expert. Rewrite the text concisely and professionally.",
+  systemPrompt = "You are an expert ATS resume writer. Rewrite the text to be impactful, concise, and professional.",
 ): Promise<string> {
-  const ai = getChromeAI();
-  if (!ai) {
-    throw new Error("Chrome AI is not available in this browser session.");
-  }
-
+  const LM = getLanguageModelAPI();
   let session: any = null;
 
   try {
-    if (ai.languageModel && typeof ai.languageModel.create === "function") {
+    if (LM && typeof LM.create === "function") {
       try {
-        session = await ai.languageModel.create({
-          systemPrompt,
-        });
-      } catch (createErr) {
-        // Fallback for versions using initialPrompts
-        session = await ai.languageModel.create({
-          initialPrompts: [{ role: "system", content: systemPrompt }],
-        });
+        session = await LM.create({ systemPrompt });
+      } catch {
+        try {
+          session = await LM.create({
+            initialPrompts: [{ role: "system", content: systemPrompt }],
+          });
+        } catch {
+          // Direct create() as in Chrome 131+ standard
+          session = await LM.create();
+        }
       }
-    } else if (ai.assistant && typeof ai.assistant.create === "function") {
-      session = await ai.assistant.create({
-        systemPrompt,
-      });
-    } else if (typeof ai.createTextSession === "function") {
-      session = await ai.createTextSession();
     } else {
-      throw new Error("No compatible Gemini Nano creation API found.");
+      const legacyAi = getLegacyAIApi();
+      if (legacyAi && typeof legacyAi.createTextSession === "function") {
+        session = await legacyAi.createTextSession();
+      } else {
+        throw new Error("No compatible Chrome Gemini Nano API found.");
+      }
     }
 
     if (!session || typeof session.prompt !== "function") {
-      throw new Error("Created session is not a valid prompt session.");
+      throw new Error("Failed to initialize Gemini Nano prompt session.");
     }
 
-    const result = await session.prompt(promptText);
+    // Build instruction prompt to guide ATS rewrite
+    const fullPrompt = `${systemPrompt}\n\nRewrite this resume bullet/text concisely:\n"${promptText}"\n\nDirect ATS Rewrite:`;
+    const result = await session.prompt(fullPrompt);
 
-    // Clean up session if destroy is available
     if (typeof session.destroy === "function") {
       try {
         session.destroy();
