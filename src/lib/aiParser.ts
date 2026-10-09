@@ -19,7 +19,15 @@ export interface AIParsedResult {
 function cleanCandidateText(raw: string, preserveParagraphs = false): string {
   let text = raw.trim();
 
-  // If preserveParagraphs is enabled or content looks like a multi-paragraph cover letter
+  // Strip sub-explanation if included inside option block
+  text = text.replace(/(?:\*{0,2}Explanation\*{0,2}:?[\s\S]*)/i, "").trim();
+
+  // Strip any bot conversational remarks at beginning of option
+  text = text.replace(
+    /^(?:Okay|Sure|Certainly|Here is|Here are)[^.\n]*[.:]\s*/i,
+    "",
+  );
+
   if (
     preserveParagraphs ||
     /dear\s+/i.test(raw) ||
@@ -40,13 +48,13 @@ function cleanCandidateText(raw: string, preserveParagraphs = false): string {
   }
 
   // Remove leading leftover asterisks, colons, or dashes before text
-  text = text.replace(/^(\*{1,2}|_{1,2}|:|\s)+/, "");
+  text = text.replace(/^(\*{1,2}|_{1,2}|:|\s|>)+/, "");
   // Remove leading option prefixes if any
   text = text.replace(/^Option\s*\d+\s*(\([^)]*\))?:?\s*/i, "");
   // Remove leading bold labels like **Rewrite:**
   text = text.replace(/^\*\*[^*]+:\*\*\s*/i, "");
   // Strip trailing asterisks or underscores
-  text = text.replace(/(\*{1,2}|_{1,2}|\s)+$/, "");
+  text = text.replace(/(\*{1,2}|_{1,2}|\s|>)+$/, "");
   // Remove wrapping quotes
   text = text.replace(/^["'“](.*)["'”]$/, "$1");
 
@@ -69,46 +77,89 @@ export function parseAIResponse(
     };
   }
 
-  // 1. Separate Explanation section if present
-  let optionsPart = rawResponse;
+  // Strip conversational closing like "I am ready for another segment..."
+  const cleanedRaw = rawResponse
+    .replace(
+      /(?:I am ready for another|Let me know if you|Feel free to ask|Hope this helps)[\s\S]*$/i,
+      "",
+    )
+    .trim();
+
+  // Match Option headers: e.g. "*Option 1 (Focus on Improvement):**", "**Option 1:**", "### Option 1", "Option 1:"
+  const optionHeaderRegex =
+    /(?:^|\n)\s*(?:\*{1,2}|#{1,4}\s*)?Option\s*(\d+|[A-Z])\s*(?:\(([^)]+)\))?\s*(?:\*{1,2})?:?\s*(?:\*{1,2})?/gi;
+
+  const matches = [...cleanedRaw.matchAll(optionHeaderRegex)];
+  const options: AIOption[] = [];
   let explanationPart = "";
 
-  const explanationMatch = rawResponse.match(
-    /(?:\*{0,2}(?:Explanation|Why this works|Why this was optimized|ATS Insights)\*{0,2}:?\*{0,2})([\s\S]*)/i,
-  );
-
-  if (explanationMatch) {
-    explanationPart = explanationMatch[1].trim();
-    // Clean any leading asterisks or colons leaving markdown bullets intact
-    explanationPart = explanationPart
-      .replace(/^(\*{2}:?\*{0,2}\s*)+/, "")
-      .trim();
-    optionsPart = rawResponse.substring(0, explanationMatch.index).trim();
-  }
-
-  // 2. Extract options (e.g. "**Option 1 (Focus on Improvement):**", "Option 2:", etc.)
-  const optionRegex =
-    /(?:\*{0,2}Option\s*(\d+|[A-Z])\s*(?:\(([^)]+)\))?\*{0,2}:?\*{0,2})([\s\S]*?)(?=(?:\*{0,2}Option\s*(?:\d+|[A-Z])|\*{0,2}Explanation|###|$))/gi;
-
-  const matches = [...optionsPart.matchAll(optionRegex)];
-  const options: AIOption[] = [];
-
   if (matches.length > 0) {
-    matches.forEach((match, index) => {
-      const optNum = match[1] || `${index + 1}`;
-      const focusRaw = match[2] ? match[2].trim() : "";
-      const bodyRaw = match[3] || "";
-      const cleanText = cleanCandidateText(bodyRaw, preserveParagraphs);
+    const lastMatch = matches[matches.length - 1];
+    const lastMatchEndIndex = lastMatch.index + lastMatch[0].length;
+    const lastSection = cleanedRaw.substring(lastMatchEndIndex);
 
-      if (cleanText) {
+    const takeawayMatch = lastSection.match(
+      /(?:\*{0,2}(?:Key Takeaways|Overall Explanation|Explanation for ATS|ATS Insights|Why this works)\*{0,2}:?\*{0,2})([\s\S]*)/i,
+    );
+
+    if (takeawayMatch) {
+      explanationPart = takeawayMatch[1].trim();
+      explanationPart = explanationPart
+        .replace(/^(?:for ATS Optimization:?\*{0,2}|\*{1,2}|:\*{0,2}|\s)+/i, "")
+        .trim();
+    }
+
+    for (let i = 0; i < matches.length; i++) {
+      const match = matches[i];
+      const optNum = match[1] || `${i + 1}`;
+      let focusRaw = match[2] ? match[2].trim() : "";
+      let isOptionRecommended = false;
+
+      if (/recommended/i.test(focusRaw)) {
+        isOptionRecommended = true;
+        focusRaw = focusRaw.replace(/[\s-–—]*recommended[\s]*/i, "").trim();
+      }
+
+      const startIdx = match.index + match[0].length;
+      let endIdx = cleanedRaw.length;
+
+      if (i + 1 < matches.length) {
+        endIdx = matches[i + 1].index;
+      } else if (takeawayMatch && takeawayMatch.index !== undefined) {
+        endIdx = lastMatchEndIndex + takeawayMatch.index;
+      }
+
+      const bodyChunk = cleanedRaw.substring(startIdx, endIdx).trim();
+
+      // If bodyChunk has an embedded "*Explanation: ...", extract it if we don't have explanation yet
+      const subExpMatch = bodyChunk.match(
+        /(?:\*{0,2}Explanation\*{0,2}:?\*{0,2})([\s\S]*)/i,
+      );
+      if (subExpMatch && !explanationPart) {
+        const subExpText = subExpMatch[1]
+          .replace(/(\*{1,2}|_{1,2}|\s|>)+$/, "")
+          .trim();
+        if (subExpText) {
+          explanationPart =
+            (explanationPart ? explanationPart + "\n" : "") + subExpText;
+        }
+      }
+
+      const cleanText = cleanCandidateText(bodyChunk, preserveParagraphs);
+
+      // Verify that this is not bot preamble
+      if (
+        cleanText &&
+        !cleanText.toLowerCase().startsWith("okay, i'm ready") &&
+        !cleanText.toLowerCase().startsWith("here's the original")
+      ) {
         let focus = focusRaw;
         if (!focus) {
-          if (index === 0) focus = "Clear & Concise";
-          else if (index === 1) focus = "Action & Expertise";
+          if (i === 0) focus = "Clear & Concise";
+          else if (i === 1) focus = "Action & Expertise";
           else focus = "High Impact & Metrics";
         }
 
-        // Clean up common focus phrases
         focus = focus.replace(/^focus on\s+/i, "");
         if (/significant improvement/i.test(focus)) {
           focus = "High Impact & Metrics";
@@ -118,21 +169,21 @@ export function parseAIResponse(
         }
 
         options.push({
-          id: `opt-${optNum}-${index}`,
+          id: `opt-${optNum}-${i}`,
           title: `Option ${optNum}`,
           focus,
           text: cleanText,
-          isRecommended: false,
+          isRecommended: isOptionRecommended,
         });
       }
-    });
+    }
   }
 
   // Fallback: If no structured "Option X" matches, try numbered list "1. ... 2. ..."
   if (options.length === 0) {
     const numberedRegex =
       /(?:^|\n)\s*(\d+)\.\s+(?:\(([^)]+)\)\s*)?([^\n]+(?:\n(?!\d+\.)[^\n]+)*)/g;
-    const numMatches = [...optionsPart.matchAll(numberedRegex)];
+    const numMatches = [...cleanedRaw.matchAll(numberedRegex)];
 
     if (numMatches.length >= 2) {
       numMatches.forEach((m, idx) => {
@@ -145,7 +196,10 @@ export function parseAIResponse(
               ? "Expertise"
               : "Impact";
         const cleanText = cleanCandidateText(m[3], preserveParagraphs);
-        if (cleanText) {
+        if (
+          cleanText &&
+          !cleanText.toLowerCase().startsWith("okay, i'm ready")
+        ) {
           options.push({
             id: `opt-${num}-${idx}`,
             title: `Option ${num}`,
@@ -160,7 +214,14 @@ export function parseAIResponse(
 
   // Fallback: If still no options, treat the cleaned whole text as a single option
   if (options.length === 0) {
-    const singleText = cleanCandidateText(optionsPart, preserveParagraphs);
+    let singleText = cleanCandidateText(cleanedRaw, preserveParagraphs);
+    singleText = singleText
+      .replace(
+        /^[\s\S]*?(?:Here(?:'s| is) (?:a|the) (?:rewrite|version|text):?|Here are \d+ (?:options|alternatives):?)/i,
+        "",
+      )
+      .trim();
+
     if (singleText) {
       options.push({
         id: "opt-1-single",
@@ -172,32 +233,29 @@ export function parseAIResponse(
     }
   }
 
-  // 3. Determine the best / recommended option
+  // Determine best index
   let bestIndex = 0;
-
   if (options.length > 0) {
-    // Look for option with numbers/percentages (metrics) or keywords
+    const explicitRecIndex = options.findIndex(
+      (o) => o.isRecommended || /recommended/i.test(o.focus),
+    );
     const metricIndex = options.findIndex((o) =>
-      /\b\d+%\b|\b\d+x\b|\b\$\d+|\breduced by|\bincreased by|\bimproved by/i.test(
-        o.text,
-      ),
+      /\b\d+%\b|\b\d+x\b|\b\$\d+|\breduced by|\bincreased by/i.test(o.text),
     );
 
-    const explicitRecIndex = options.findIndex((o) =>
-      /recommended|significant|high impact|metrics/i.test(o.focus),
-    );
-
-    if (metricIndex !== -1) {
-      bestIndex = metricIndex;
-    } else if (explicitRecIndex !== -1) {
+    if (explicitRecIndex !== -1) {
       bestIndex = explicitRecIndex;
+    } else if (metricIndex !== -1) {
+      bestIndex = metricIndex;
     } else if (options.length >= 3) {
-      bestIndex = 2; // Option 3 is high impact
+      bestIndex = 2;
     } else if (options.length >= 2) {
       bestIndex = 1;
     }
 
-    options[bestIndex].isRecommended = true;
+    options.forEach((o, idx) => {
+      o.isRecommended = idx === bestIndex;
+    });
   }
 
   return {

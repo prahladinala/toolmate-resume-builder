@@ -267,7 +267,7 @@ export function AIOptionsCard({
                 </div>
               </div>
 
-              <p className="text-xs text-foreground/90 leading-relaxed font-normal">
+              <p className="text-xs text-foreground/90 leading-relaxed whitespace-pre-line font-normal">
                 {option.text}
               </p>
             </div>

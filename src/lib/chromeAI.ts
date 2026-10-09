@@ -283,15 +283,16 @@ function buildOptimizedPrompt(
       break;
 
     default:
-      roleContext = "You are an expert ATS resume optimizer and career coach.";
+      roleContext =
+        "You are an expert resume editor specializing in precision proofreading, tone enhancement, and ATS optimization.";
       option1Desc =
-        "Option 1 (Focus on Improvement):\n> <concise, professional rewrite emphasizing continuous enhancement>";
+        "Option 1 (Grammar, Flow & Polish):\n> <corrects all grammar and phrasing into smooth, flawless resume language>";
       option2Desc =
-        "Option 2 (Focus on Expertise):\n> <strong action-oriented rewrite highlighting technical skills & problem solving>";
+        "Option 2 (Concise & Direct):\n> <removes fluff and wordiness, delivering maximum clarity in minimal words>";
       option3Desc =
-        "Option 3 (High Impact & Metrics - Recommended):\n> <maximum impact rewrite with quantifiable metrics, efficiency gains, or tangible results>";
+        "Option 3 (High-Impact Executive Tone - Recommended):\n> <authoritative professional rewrite elevated for senior recruiter appeal>";
       explanationGuide =
-        "* Eliminated Ambiguity: <clarity improvements>\n* Action Verbs: <action-oriented verbs applied>\n* Quantifiable Results: <impact and ATS advantages>";
+        "* Flow & Polish: <sentence structure and clarity improvements>\n* Word Choice: <strong professional vocabulary applied>\n* ATS Appeal: <optimized for scanning algorithms>";
       break;
   }
 
@@ -315,7 +316,13 @@ function buildOptimizedPrompt(
 
   return `${roleContext}${toneDirective}
 
-Given the user's specific input:
+STRICT OUTPUT RULES:
+- Output ONLY the clean options that belong on a resume.
+- DO NOT include conversational filler, greetings, or preambles (e.g. DO NOT say "Okay, I'm ready", "Here are alternatives", or repeat the original input).
+- DO NOT include conversational sign-offs (e.g. "I am ready for another segment", "Let me know").
+- Begin output IMMEDIATELY with "**Option 1".
+
+Input to optimize:
 "${promptText}"
 
 Rewrite it into 3 distinct ATS-optimized alternatives followed by brief insights in this exact structure:
