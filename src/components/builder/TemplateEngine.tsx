@@ -834,9 +834,12 @@ export function TemplateEngine({
     });
   }
 
-  const mainColOrder = config.mainSectionOrder
-    ? [...config.mainSectionOrder]
-    : fullSectionOrder.filter((s) => !["skills", "education"].includes(s));
+  const mainColOrder =
+    mode === "cover-letter"
+      ? ["cover-letter"]
+      : config.mainSectionOrder
+        ? [...config.mainSectionOrder]
+        : fullSectionOrder.filter((s) => !["skills", "education"].includes(s));
 
   const sideColOrder =
     mode === "cover-letter"
@@ -859,7 +862,10 @@ export function TemplateEngine({
   }
 
   // If user configured custom main/sidebar order, sync fullSectionOrder for single column templates
-  if (config.mainSectionOrder || config.sidebarSectionOrder) {
+  if (
+    mode !== "cover-letter" &&
+    (config.mainSectionOrder || config.sidebarSectionOrder)
+  ) {
     fullSectionOrder = [...mainColOrder, ...sideColOrder];
   }
 
