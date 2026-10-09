@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
+import { checkChromeAIAvailability, runChromeAIPrompt } from "@/lib/chromeAI";
 
 export function AISuggestions({
   currentText,
@@ -19,24 +20,23 @@ export function AISuggestions({
   // Check availability
   useEffect(() => {
     const checkAI = async () => {
-      if (typeof window !== "undefined" && "ai" in window) {
-        try {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const ai = (window as any).ai;
-          if (ai.languageModel) {
-            const capabilities = await ai.languageModel.capabilities();
-            if (capabilities.available !== "no") {
-              setIsAvailable(true);
-              return;
-            }
-          }
-        } catch (e) {
-          console.error("AI check failed", e);
-        }
+      try {
+        const res = await checkChromeAIAvailability();
+        setIsAvailable(res.isAvailable);
+      } catch {
+        setIsAvailable(false);
       }
-      setIsAvailable(false);
     };
     checkAI();
+
+    const handleFocus = () => {
+      checkAI();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
   }, []);
 
   // Generate suggestion on debounce
@@ -50,22 +50,22 @@ export function AISuggestions({
     const timer = setTimeout(async () => {
       setIsGenerating(true);
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const ai = (window as any).ai;
-        const session = await ai.languageModel.create({
-          systemPrompt: `You are a resume autocomplete engine. The user is writing their ${contextPrompt}. Based on the partial text, suggest the next 3-8 words to complete the sentence professionally. ONLY return the suggested words, no quotes, no explanations, no prefix.`,
-        });
-        const result = await session.prompt(`Current text: "${currentText}"`);
-        
-        let cleanResult = result.replace(/^["']|["']$/g, "").trim();
+        const systemPrompt = `You are a resume autocomplete engine. The user is writing their ${contextPrompt}. Based on the partial text, suggest the next 3-8 words to complete the sentence professionally. ONLY return the suggested words, no quotes, no explanations, no prefix.`;
+
+        const result = await runChromeAIPrompt(
+          `Current text: "${currentText}"`,
+          systemPrompt,
+        );
+
+        let cleanResult = (result || "").replace(/^["']|["']$/g, "").trim();
         // Remove "Suggestion:" prefix if the AI hallucinated it
         cleanResult = cleanResult.replace(/^suggestion:\s*/i, "");
-        
+
         if (cleanResult) {
           setSuggestion(cleanResult);
         }
       } catch (e) {
-        console.error("AI autocomplete failed", e);
+        console.warn("AI autocomplete failed:", e);
       } finally {
         setIsGenerating(false);
       }

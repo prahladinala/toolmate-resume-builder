@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Loader2, Bot } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Loader2, Bot, Sparkles } from "lucide-react";
 import { ChromeAISetupModal } from "./ChromeAISetupModal";
+import { checkChromeAIAvailability, runChromeAIPrompt } from "@/lib/chromeAI";
 
 export function AIHelper({
   currentText,
@@ -13,74 +14,85 @@ export function AIHelper({
 }) {
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-
-  useEffect(() => {
-    // Check if window.ai exists (Chrome Local AI)
-    const checkAI = async () => {
-      if (typeof window !== "undefined" && "ai" in window) {
-        try {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const ai = (window as any).ai;
-          if (ai.languageModel) {
-            const capabilities = await ai.languageModel.capabilities();
-            if (capabilities.available !== "no") {
-              setIsAvailable(true);
-              return;
-            }
-          }
-        } catch (e) {
-          console.error("AI check failed", e);
-        }
-      }
-      // If we reach here, it's not available
-      setIsAvailable(false);
-    };
-    checkAI();
-  }, []);
-
   const [showSetup, setShowSetup] = useState(false);
 
-  const handleImprove = async () => {
-    if (!isAvailable) {
-      setShowSetup(true);
-      return;
+  const verifyAI = useCallback(async () => {
+    try {
+      const res = await checkChromeAIAvailability();
+      setIsAvailable(res.isAvailable);
+      return res.isAvailable;
+    } catch {
+      setIsAvailable(false);
+      return false;
     }
+  }, []);
 
+  useEffect(() => {
+    verifyAI();
+
+    // Re-check automatically when user switches tabs/focus back to this window
+    const handleFocus = () => {
+      verifyAI();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [verifyAI]);
+
+  const executeImprove = async () => {
     if (!currentText.trim() || isGenerating) return;
     setIsGenerating(true);
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const ai = (window as any).ai;
-      const session = await ai.languageModel.create({
-        systemPrompt:
-          "You are an expert ATS resume writer. Rewrite the following text to be more impactful, professional, and action-oriented. Keep it concise. Do not add markdown unless it was already present in the source.",
-      });
-      const result = await session.prompt(currentText);
-      onUpdate(result);
+      const systemPrompt =
+        "You are an expert ATS resume writer. Rewrite the following text to be more impactful, professional, and action-oriented. Keep it concise. Do not add markdown unless it was already present in the source.";
+
+      const result = await runChromeAIPrompt(currentText, systemPrompt);
+      if (result && result.trim()) {
+        onUpdate(result.trim());
+      }
     } catch (e) {
       console.error("AI Generation failed", e);
       alert(
-        "AI generation failed. Please ensure Chrome AI features are enabled.",
+        "AI generation failed. Please ensure Chrome AI is active and model download is complete.",
       );
     } finally {
       setIsGenerating(false);
     }
   };
 
+  const handleImproveClick = async () => {
+    // Perform a live, dynamic check so we never show the popup if AI is already enabled!
+    const available = await verifyAI();
+
+    if (!available) {
+      setShowSetup(true);
+      return;
+    }
+
+    // AI is confirmed available - proceed immediately!
+    executeImprove();
+  };
+
   return (
     <>
       <div
-        onClick={handleImprove}
-        className={`h-7 w-7 xl:w-auto px-0 xl:px-2 flex items-center justify-center xl:justify-start gap-1.5 border rounded-md cursor-pointer transition-colors ${
+        onClick={handleImproveClick}
+        className={`h-7 w-7 xl:w-auto px-0 xl:px-2 flex items-center justify-center xl:justify-start gap-1.5 border rounded-md cursor-pointer transition-colors select-none ${
           isGenerating || (!currentText.trim() && isAvailable)
             ? "opacity-50 cursor-not-allowed border-purple-200 text-purple-400 bg-purple-50 dark:border-purple-900/50 dark:bg-purple-950/20 dark:text-purple-600"
             : "border-purple-200 text-purple-700 bg-purple-50 hover:bg-purple-100 hover:text-purple-800 dark:border-purple-900 dark:bg-purple-950/30 dark:text-purple-400"
         }`}
-        title="Improve with AI"
+        title={
+          isAvailable ? "Enhance with Gemini Nano AI" : "Enable Gemini Nano AI"
+        }
       >
         {isGenerating ? (
           <Loader2 className="w-3 h-3 animate-spin shrink-0" />
+        ) : isAvailable ? (
+          <Sparkles className="w-3 h-3 shrink-0 text-purple-600 dark:text-purple-400" />
         ) : (
           <Bot className="w-3 h-3 shrink-0" />
         )}
@@ -88,7 +100,15 @@ export function AIHelper({
           {isGenerating ? "Improving..." : "Improve AI"}
         </span>
       </div>
-      <ChromeAISetupModal open={showSetup} onOpenChange={setShowSetup} />
+
+      <ChromeAISetupModal
+        open={showSetup}
+        onOpenChange={setShowSetup}
+        onSuccess={() => {
+          verifyAI();
+          executeImprove();
+        }}
+      />
     </>
   );
 }
