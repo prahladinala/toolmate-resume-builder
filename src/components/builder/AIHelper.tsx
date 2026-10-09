@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Loader2, Bot, Sparkles } from "lucide-react";
 import { ChromeAISetupModal } from "./ChromeAISetupModal";
 import { checkChromeAIAvailability, runChromeAIPrompt } from "@/lib/chromeAI";
+import { notify } from "@/lib/toast";
 
 export function AIHelper({
   currentText,
@@ -52,11 +53,15 @@ export function AIHelper({
       const result = await runChromeAIPrompt(currentText, systemPrompt);
       if (result && result.trim()) {
         onUpdate(result.trim());
+        notify.aiSuccess("ATS-optimized rewrite applied successfully.");
       }
     } catch (e) {
       console.error("AI Generation failed", e);
-      alert(
-        "AI generation failed. Please ensure Chrome AI is active and model download is complete.",
+      const errMsg = e instanceof Error ? e.message : undefined;
+      notify.aiError(
+        errMsg ||
+          "Ensure Chrome flags are enabled and model download is complete in chrome://components.",
+        () => setShowSetup(true),
       );
     } finally {
       setIsGenerating(false);
@@ -64,6 +69,14 @@ export function AIHelper({
   };
 
   const handleImproveClick = async () => {
+    if (!currentText.trim()) {
+      notify.info(
+        "No text to improve",
+        "Type your experience bullet or summary first, then click Improve AI.",
+      );
+      return;
+    }
+
     // Perform a live, dynamic check so we never show the popup if AI is already enabled!
     const available = await verifyAI();
 

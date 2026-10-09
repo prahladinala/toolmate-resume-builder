@@ -20,6 +20,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { checkChromeAIAvailability, type ChromeAIStatus } from "@/lib/chromeAI";
+import { notify } from "@/lib/toast";
 
 interface ChromeAISetupModalProps {
   open: boolean;
@@ -63,10 +64,11 @@ export function ChromeAISetupModal({
     }
   }, [open, performCheck]);
 
-  const copyToClipboard = (text: string, key: string) => {
+  const copyToClipboard = (text: string, key: string, label = "Flag URL") => {
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text);
       setCopiedKey(key);
+      notify.copied(label);
       setTimeout(() => setCopiedKey(null), 3000);
     }
   };

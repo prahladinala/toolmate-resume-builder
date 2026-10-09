@@ -36,7 +36,7 @@ const Preview = dynamic(
         Loading preview...
       </div>
     ),
-  }
+  },
 );
 
 const STEPS = [
@@ -76,25 +76,46 @@ export function BuilderClient() {
   }, []);
 
   // Undo/Redo state
-  const { undo, redo, pastStates, futureStates } = useStore(useResumeStore.temporal);
+  const { undo, redo, pastStates, futureStates } = useStore(
+    useResumeStore.temporal,
+  );
 
-  useHotkeys("mod+z", (e) => {
-    e.preventDefault();
-    if (pastStates.length > 0) undo();
-  }, { enableOnFormTags: true });
+  useHotkeys(
+    "mod+z",
+    (e) => {
+      e.preventDefault();
+      if (pastStates.length > 0) undo();
+    },
+    { enableOnFormTags: true },
+  );
 
-  useHotkeys(["mod+y", "mod+shift+z"], (e) => {
-    e.preventDefault();
-    if (futureStates.length > 0) redo();
-  }, { enableOnFormTags: true });
+  useHotkeys(
+    ["mod+y", "mod+shift+z"],
+    (e) => {
+      e.preventDefault();
+      if (futureStates.length > 0) redo();
+    },
+    { enableOnFormTags: true },
+  );
 
-  useHotkeys("mod+p", (e) => {
-    e.preventDefault();
-    handleDownload();
-  }, { enableOnFormTags: true });
+  useHotkeys(
+    "mod+p",
+    (e) => {
+      e.preventDefault();
+      handleDownload();
+    },
+    { enableOnFormTags: true },
+  );
 
   const handleDownload = () => {
-    window.print();
+    toast.info("Opening Print & PDF Dialog 📄", {
+      description:
+        "Select 'Save as PDF' with Background Graphics checked for ATS output.",
+      duration: 3500,
+    });
+    setTimeout(() => {
+      window.print();
+    }, 250);
   };
 
   const handleBack = () => {
@@ -108,35 +129,61 @@ export function BuilderClient() {
   };
 
   const exportJSON = () => {
-    const data = useResumeStore.getState().data;
-    const dataStr =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(data, null, 2));
-    const downloadAnchorNode = document.createElement("a");
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "resume-backup.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-    toast.success("Backup Saved! 💾", {
-      description: "Your JSON file has been downloaded.",
-    });
+    try {
+      const data = useResumeStore.getState().data;
+      const dataStr =
+        "data:text/json;charset=utf-8," +
+        encodeURIComponent(JSON.stringify(data, null, 2));
+      const downloadAnchorNode = document.createElement("a");
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "resume-backup.json");
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+      toast.success("Backup Exported! 💾", {
+        description: "Your resume data was downloaded as resume-backup.json.",
+      });
+    } catch {
+      toast.error("Export Failed", {
+        description: "Could not export resume backup. Please try again.",
+      });
+    }
   };
 
   const importJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (!file.name.endsWith(".json")) {
+        toast.error("Unsupported File Format", {
+          description: "Please upload a .json resume backup file.",
+        });
+        e.target.value = "";
+        return;
+      }
+
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = (event) => {
         try {
-          const json = JSON.parse(e.target?.result as string);
+          const json = JSON.parse(event.target?.result as string);
+          if (!json || typeof json !== "object") {
+            throw new Error("Invalid structure");
+          }
           useResumeStore.setState({ data: json });
-          toast.success("Resume Loaded! 🚀", {
-            description: "Your data has been successfully imported.",
+          toast.success("Resume Imported! 🚀", {
+            description:
+              "Your resume sections and styles have been successfully restored.",
           });
         } catch {
-          toast.error("Invalid JSON file");
+          toast.error("Invalid Resume Backup", {
+            description:
+              "The JSON file appears corrupted or improperly formatted.",
+          });
         }
+      };
+      reader.onerror = () => {
+        toast.error("File Read Error", {
+          description: "Failed to read the selected file from disk.",
+        });
       };
       reader.readAsText(file);
     }
@@ -210,7 +257,7 @@ export function BuilderClient() {
           >
             <Undo2 className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
-          
+
           <Button
             onClick={() => redo()}
             disabled={futureStates.length === 0}
