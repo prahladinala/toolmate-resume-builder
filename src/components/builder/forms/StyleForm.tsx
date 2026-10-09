@@ -474,6 +474,90 @@ export function StyleForm() {
             </div>
           )}
 
+          {themeConfig?.sectionStyle === "badge" && (
+            <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a] animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+                  Show Section Icons
+                </Label>
+                <button
+                  onClick={() =>
+                    updateThemeConfig({
+                      hideSectionIcons: !themeConfig?.hideSectionIcons,
+                    })
+                  }
+                  className={`w-11 h-6 rounded-full transition-colors relative ${!themeConfig?.hideSectionIcons ? "bg-emerald-500" : "bg-zinc-200 dark:bg-zinc-700"}`}
+                >
+                  <div
+                    className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${!themeConfig?.hideSectionIcons ? "left-6" : "left-1"}`}
+                  />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {themeConfig?.sectionStyle === "boxed" && (
+            <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a] animate-in fade-in slide-in-from-top-2 duration-300">
+              <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+                Box Background Color
+              </Label>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  {
+                    id: "bg-slate-50 dark:bg-[#111113]",
+                    label: "Theme Default",
+                  },
+                  {
+                    id: "transparent border border-zinc-200 dark:border-zinc-800",
+                    label: "Transparent (Outline)",
+                  },
+                  { id: "bg-white dark:bg-[#18181b]", label: "Solid Paper" },
+                  { id: "bg-zinc-100 dark:bg-zinc-900", label: "Contrast" },
+                ].map((bg) => (
+                  <button
+                    key={bg.id}
+                    onClick={() =>
+                      updateThemeConfig({ boxBackgroundColor: bg.id })
+                    }
+                    className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${(themeConfig?.boxBackgroundColor || "bg-slate-50 dark:bg-[#111113]") === bg.id ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm" : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 hover:border-[#3f3f46]"}`}
+                  >
+                    {bg.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {themeConfig?.sectionStyle === "timeline" && (
+            <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a] animate-in fade-in slide-in-from-top-2 duration-300">
+              <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+                Timeline Dot Style
+              </Label>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { id: "solid", label: "Solid Filled" },
+                  { id: "hollow", label: "Hollow Outline" },
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() =>
+                      updateThemeConfig({
+                        timelineStyle: s.id as "solid" | "hollow",
+                      })
+                    }
+                    className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
+                      (themeConfig?.timelineStyle || "solid") === s.id
+                        ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                        : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 hover:border-[#3f3f46]"
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
             <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
               Profile Photo Layout
@@ -644,6 +728,194 @@ export function StyleForm() {
               ))}
             </div>
           </div>
+
+          {/* ── Skill Display Style ── */}
+          <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+              Skills Display Style
+            </Label>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { id: "badge", label: "Badge (Pill)" },
+                { id: "tag", label: "Tag (Outline)" },
+                { id: "grid", label: "Grid Cards" },
+                { id: "list", label: "Plain List" },
+              ].map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() =>
+                    updateThemeConfig({
+                      skillStyle: s.id as "badge" | "list" | "grid" | "tag",
+                    })
+                  }
+                  className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
+                    (themeConfig?.skillStyle || "badge") === s.id
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                      : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Letter Spacing ── */}
+          <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+              Heading Letter Spacing
+            </Label>
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { id: "tight", label: "Tight" },
+                { id: "normal", label: "Normal" },
+                { id: "wide", label: "Wide" },
+              ].map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() =>
+                    updateThemeConfig({
+                      letterSpacing: s.id as "tight" | "normal" | "wide",
+                    })
+                  }
+                  className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
+                    (themeConfig?.letterSpacing || "normal") === s.id
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                      : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 dark:text-[#a1a1aa] hover:border-[#3f3f46]"
+                  }`}
+                >
+                  <span
+                    className={
+                      s.id === "tight"
+                        ? "tracking-tight"
+                        : s.id === "wide"
+                          ? "tracking-widest"
+                          : ""
+                    }
+                  >
+                    {s.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Heading Case ── */}
+          <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+                Uppercase Section Headings
+              </Label>
+              <button
+                onClick={() =>
+                  updateThemeConfig({
+                    headingUppercase:
+                      themeConfig?.headingUppercase === false ? true : false,
+                  })
+                }
+                className={`w-11 h-6 rounded-full transition-colors relative ${themeConfig?.headingUppercase !== false ? "bg-emerald-500" : "bg-zinc-200 dark:bg-zinc-700"}`}
+              >
+                <div
+                  className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${themeConfig?.headingUppercase !== false ? "left-6" : "left-1"}`}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* ── Timeline Line Style (when timeline is selected) ── */}
+          {themeConfig?.sectionStyle === "timeline" && (
+            <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a] animate-in fade-in slide-in-from-top-2 duration-300">
+              <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+                Timeline Line Style
+              </Label>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { id: "solid", label: "Solid" },
+                  { id: "dashed", label: "Dashed" },
+                  { id: "dotted", label: "Dotted" },
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() =>
+                      updateThemeConfig({
+                        timelineLineStyle: s.id as
+                          "solid" | "dashed" | "dotted",
+                      })
+                    }
+                    className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
+                      (themeConfig?.timelineLineStyle || "solid") === s.id
+                        ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                        : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 hover:border-[#3f3f46]"
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Badge Icon Shape & Size (when badge is selected) ── */}
+          {themeConfig?.sectionStyle === "badge" && (
+            <div className="space-y-6 pt-6 border-t border-zinc-200 dark:border-[#27272a] animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+                  Icon Shape
+                </Label>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { id: "circle", label: "Circle" },
+                    { id: "square", label: "Square" },
+                    { id: "none", label: "No Shape" },
+                  ].map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() =>
+                        updateThemeConfig({
+                          iconShape: s.id as "circle" | "square" | "none",
+                        })
+                      }
+                      className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
+                        (themeConfig?.iconShape || "circle") === s.id
+                          ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                          : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 hover:border-[#3f3f46]"
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+                  Icon Size
+                </Label>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { id: "sm", label: "Small" },
+                    { id: "md", label: "Medium" },
+                    { id: "lg", label: "Large" },
+                  ].map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() =>
+                        updateThemeConfig({
+                          iconSize: s.id as "sm" | "md" | "lg",
+                        })
+                      }
+                      className={`p-3 rounded-xl border transition-all text-xs sm:text-sm font-medium ${
+                        (themeConfig?.iconSize || "md") === s.id
+                          ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-sm"
+                          : "border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] text-zinc-500 hover:border-[#3f3f46]"
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="pt-6 border-t border-zinc-200 dark:border-[#27272a]">
             <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113]">

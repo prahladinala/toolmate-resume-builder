@@ -92,6 +92,21 @@ export type ThemeConfig = {
   documentZoom?: number; // 0.5 to 1.5
   borderRadius?: "none" | "sm" | "md" | "lg" | "full";
   textSize?: "sm" | "base" | "lg";
+  hideSectionIcons?: boolean;
+  boxBackgroundColor?: string;
+  timelineStyle?: "solid" | "hollow";
+  // Shape & Icon
+  iconShape?: "circle" | "square" | "none";
+  iconSize?: "sm" | "md" | "lg";
+  // Typography extras
+  letterSpacing?: "tight" | "normal" | "wide";
+  lineHeight?: "tight" | "normal" | "relaxed";
+  headingUppercase?: boolean;
+  // Content display
+  skillStyle?: "badge" | "list" | "grid" | "tag";
+  timelineLineStyle?: "solid" | "dashed" | "dotted";
+  dividerStyle?: "none" | "solid" | "dashed";
+  contactLayout?: "inline" | "stacked" | "compact";
 };
 
 export type ResumeStore = {

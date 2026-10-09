@@ -2,7 +2,18 @@
 // @ts-nocheck
 import { Fragment } from "react";
 import type { ResumeData, ThemeConfig } from "@/types/resume";
-import { Mail, Phone, MapPin, Globe, Briefcase, Terminal } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Globe,
+  Briefcase,
+  Terminal,
+  GraduationCap,
+  Lightbulb,
+  User,
+  Star,
+} from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 type LayoutType =
@@ -328,6 +339,19 @@ export function TemplateEngine({
     hideDates: themeConfig?.hideDates || false,
     pageMargin:
       themeConfig?.pageMargin !== undefined ? themeConfig.pageMargin : 32, // Default 32px padding/margin
+    boxBackgroundColor:
+      themeConfig?.boxBackgroundColor || "bg-slate-50 dark:bg-[#111113]",
+    hideSectionIcons: themeConfig?.hideSectionIcons || false,
+    timelineStyle: themeConfig?.timelineStyle || "solid",
+    iconShape: themeConfig?.iconShape || "circle",
+    iconSize: themeConfig?.iconSize || "md",
+    letterSpacing: themeConfig?.letterSpacing || "normal",
+    lineHeight: themeConfig?.lineHeight || "normal",
+    headingUppercase: themeConfig?.headingUppercase !== false, // default true
+    skillStyle: themeConfig?.skillStyle || "badge",
+    timelineLineStyle: themeConfig?.timelineLineStyle || "solid",
+    dividerStyle: themeConfig?.dividerStyle || "solid",
+    contactLayout: themeConfig?.contactLayout || "inline",
   };
 
   const colorClasses = {
@@ -568,45 +592,106 @@ export function TemplateEngine({
   };
 
   const renderSectionHeader = (title: string, customClasses?: string) => {
+    let Icon = Star;
+    if (title.toLowerCase().includes("experience")) Icon = Briefcase;
+    else if (title.toLowerCase().includes("education")) Icon = GraduationCap;
+    else if (title.toLowerCase().includes("skill")) Icon = Lightbulb;
+    else if (title.toLowerCase().includes("project")) Icon = Terminal;
+    else if (
+      title.toLowerCase().includes("summary") ||
+      title.toLowerCase().includes("profile")
+    )
+      Icon = User;
+
     switch (config.sectionStyle) {
-      case "badge":
+      case "badge": {
+        const iconSizeClass =
+          config.iconSize === "sm"
+            ? "w-5 h-5"
+            : config.iconSize === "lg"
+              ? "w-9 h-9"
+              : "w-7 h-7";
+        const iconInnerClass =
+          config.iconSize === "sm"
+            ? "w-3 h-3"
+            : config.iconSize === "lg"
+              ? "w-5 h-5"
+              : "w-4 h-4";
+        const iconShapeClass =
+          config.iconShape === "square"
+            ? "rounded-md"
+            : config.iconShape === "none"
+              ? "bg-transparent text-current"
+              : "rounded-full";
+        const headingCase =
+          config.headingUppercase !== false ? "uppercase" : "";
+        const letterSpacingClass =
+          config.letterSpacing === "tight"
+            ? "tracking-tight"
+            : config.letterSpacing === "wide"
+              ? "tracking-widest"
+              : "tracking-wider";
         return (
           <h3
-            className={`text-lg font-bold uppercase tracking-wider mb-4 flex items-center gap-3 ${fontClasses[config.headingFont]} ${customClasses || ""}`}
+            className={`text-lg font-bold ${headingCase} ${letterSpacingClass} mb-4 flex items-center gap-3 ${fontClasses[config.headingFont]} ${customClasses || ""}`}
           >
-            <span
-              className={`${accentClasses.bg} text-white px-3 py-1 rounded-full text-xs font-sans`}
-            >
-              ◆
-            </span>
+            {!config.hideSectionIcons && (
+              <span
+                className={`${config.iconShape === "none" ? "" : accentClasses.bg} text-white ${iconSizeClass} ${iconShapeClass} flex items-center justify-center shrink-0`}
+              >
+                <Icon className={iconInnerClass} />
+              </span>
+            )}
             {title}
           </h3>
         );
-      case "boxed":
+      }
+      case "boxed": {
+        const headingCase =
+          config.headingUppercase !== false ? "uppercase" : "";
         return (
           <h3
-            className={`text-xl font-bold uppercase mb-4 ${accentClasses.bg} text-white p-2 rounded ${fontClasses[config.headingFont]} ${customClasses || ""}`}
+            className={`text-xl font-bold ${headingCase} mb-4 ${accentClasses.bg} text-white p-2 rounded ${fontClasses[config.headingFont]} ${customClasses || ""}`}
           >
             {title}
           </h3>
         );
-      case "underline":
+      }
+      case "underline": {
+        const headingCase =
+          config.headingUppercase !== false ? "uppercase" : "";
+        const lsClass =
+          config.letterSpacing === "tight"
+            ? "tracking-tight"
+            : config.letterSpacing === "wide"
+              ? "tracking-widest"
+              : "tracking-wide";
         return (
           <h3
-            className={`text-xl font-bold uppercase mb-4 border-b-2 ${accentClasses.border} pb-1 ${fontClasses[config.headingFont]} ${customClasses || ""}`}
+            className={`text-xl font-bold ${headingCase} ${lsClass} mb-4 border-b-2 ${accentClasses.border} pb-1 ${fontClasses[config.headingFont]} ${customClasses || ""}`}
           >
             {title}
           </h3>
         );
+      }
       case "minimal":
-      default:
+      default: {
+        const headingCase =
+          config.headingUppercase !== false ? "uppercase" : "";
+        const lsClass =
+          config.letterSpacing === "tight"
+            ? "tracking-tight"
+            : config.letterSpacing === "wide"
+              ? "tracking-widest"
+              : "tracking-widest";
         return (
           <h3
-            className={`text-xl font-bold tracking-widest uppercase mb-4 ${accentClasses.text} ${fontClasses[config.headingFont]} ${customClasses || ""}`}
+            className={`text-xl font-bold ${lsClass} ${headingCase} mb-4 ${accentClasses.text} ${fontClasses[config.headingFont]} ${customClasses || ""}`}
           >
             {title}
           </h3>
         );
+      }
     }
   };
 
@@ -623,14 +708,19 @@ export function TemplateEngine({
             className={`${sectionSpacing} print:break-inside-avoid`}
           >
             {renderSectionHeader(section.title)}
-            <div className="relative border-l ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-6">
+            <div
+              className={`relative border-l ml-3 mt-4 ${config.timelineLineStyle === "dashed" ? "border-dashed" : config.timelineLineStyle === "dotted" ? "border-dotted" : "border-solid"} border-slate-200 dark:border-[#27272a] space-y-6`}
+            >
               {section.items.map((item) => (
                 <div
                   key={item.id}
                   className="relative pl-6 print:break-inside-avoid"
                 >
                   <div
-                    className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`}
+                    className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${config.timelineStyle === "hollow" ? `border-2 ${accentClasses.border} bg-transparent` : accentClasses.bg}`}
+                    style={{
+                      boxShadow: `0 0 0 4px ${config.bgColor || "#FFFFFF"}`,
+                    }}
                   />
                   <div className="flex flex-col mb-1.5">
                     <h4 className="font-bold text-[1.05rem] leading-snug text-slate-900 dark:text-white">
@@ -668,7 +758,7 @@ export function TemplateEngine({
             {section.items.map((item) => (
               <div
                 key={item.id}
-                className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? "bg-slate-50 dark:bg-[#111113] p-4 rounded-xl" : ""}`}
+                className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? `${config.boxBackgroundColor || "bg-slate-50 dark:bg-[#111113]"} p-4 rounded-xl` : ""}`}
               >
                 <div className="flex justify-between items-baseline mb-1">
                   <h4 className="font-bold text-lg">{item.name}</h4>
@@ -757,14 +847,19 @@ export function TemplateEngine({
       return (
         <section className={sectionSpacing}>
           {renderSectionHeader("Experience")}
-          <div className="relative border-l ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-6">
+          <div
+            className={`relative border-l ml-3 mt-4 ${config.timelineLineStyle === "dashed" ? "border-dashed" : config.timelineLineStyle === "dotted" ? "border-dotted" : "border-solid"} border-slate-200 dark:border-[#27272a] space-y-6`}
+          >
             {sortedExperience.map((exp) => (
               <div
                 key={exp.id}
                 className="relative pl-6 print:break-inside-avoid"
               >
                 <div
-                  className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`}
+                  className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${config.timelineStyle === "hollow" ? `border-2 ${accentClasses.border} bg-transparent` : accentClasses.bg}`}
+                  style={{
+                    boxShadow: `0 0 0 4px ${config.bgColor || "#FFFFFF"}`,
+                  }}
                 />
                 <div className="flex flex-col mb-1.5">
                   <h4 className="font-bold text-[1.05rem] leading-snug text-slate-900 dark:text-white">
@@ -804,7 +899,7 @@ export function TemplateEngine({
           {sortedExperience.map((exp) => (
             <div
               key={exp.id}
-              className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? "bg-slate-50 dark:bg-[#111113] p-4 rounded-xl" : ""}`}
+              className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? `${config.boxBackgroundColor || "bg-slate-50 dark:bg-[#111113]"} p-4 rounded-xl` : ""}`}
             >
               <div className="flex justify-between items-baseline mb-1">
                 <h4 className="font-bold text-lg">
@@ -835,14 +930,19 @@ export function TemplateEngine({
       return (
         <section className={sectionSpacing}>
           {renderSectionHeader("Education")}
-          <div className="relative border-l ml-3 mt-4 border-slate-200 dark:border-[#27272a] space-y-6">
+          <div
+            className={`relative border-l ml-3 mt-4 ${config.timelineLineStyle === "dashed" ? "border-dashed" : config.timelineLineStyle === "dotted" ? "border-dotted" : "border-solid"} border-slate-200 dark:border-[#27272a] space-y-6`}
+          >
             {sortedEducation.map((edu) => (
               <div
                 key={edu.id}
                 className="relative pl-6 print:break-inside-avoid"
               >
                 <div
-                  className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${accentClasses.bg} ring-4 ring-white dark:ring-[#09090b]`}
+                  className={`absolute w-2.5 h-2.5 rounded-full -left-[5.5px] top-2 ${config.timelineStyle === "hollow" ? `border-2 ${accentClasses.border} bg-transparent` : accentClasses.bg}`}
+                  style={{
+                    boxShadow: `0 0 0 4px ${config.bgColor || "#FFFFFF"}`,
+                  }}
                 />
                 <div className="flex flex-col mb-1">
                   <h4 className="font-bold text-[1.05rem] leading-snug text-slate-900 dark:text-white">
@@ -879,7 +979,7 @@ export function TemplateEngine({
           {sortedEducation.map((edu) => (
             <div
               key={edu.id}
-              className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? "bg-slate-50 dark:bg-[#111113] p-4 rounded-xl" : ""}`}
+              className={`print:break-inside-avoid ${config.sectionStyle === "boxed" ? `${config.boxBackgroundColor || "bg-slate-50 dark:bg-[#111113]"} p-4 rounded-xl` : ""}`}
             >
               <h4 className="font-bold">{edu.degree}</h4>
               <div className="flex justify-between text-sm mt-1">
@@ -902,21 +1002,37 @@ export function TemplateEngine({
 
   const renderSkills = () => {
     if (!data.skills || data.skills.length === 0) return null;
+
+    const skillStyle = config.skillStyle || "badge";
+
+    const getSkillClass = () => {
+      if (skillStyle === "list")
+        return "text-sm py-1 text-slate-700 dark:text-slate-300 border-b border-slate-100 dark:border-zinc-800 last:border-b-0";
+      if (skillStyle === "grid")
+        return `px-3 py-2 text-sm font-medium text-center rounded-lg border ${accentClasses.border} ${accentClasses.text} bg-transparent`;
+      if (skillStyle === "tag")
+        return `text-xs font-semibold px-2 py-0.5 rounded ${accentClasses.text} bg-transparent border ${accentClasses.border} border-opacity-40`;
+      // badge (default) — use section style for coloring
+      return config.sectionStyle === "badge"
+        ? `${accentClasses.bg} text-white px-3 py-1 rounded-full text-sm font-medium`
+        : config.sectionStyle === "boxed"
+          ? "bg-slate-100 text-slate-800 px-3 py-1 rounded text-sm font-medium border border-slate-200"
+          : "bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm";
+    };
+
+    const containerClass =
+      skillStyle === "list"
+        ? "divide-y divide-slate-100 dark:divide-zinc-800"
+        : skillStyle === "grid"
+          ? "grid grid-cols-2 sm:grid-cols-3 gap-2"
+          : "flex flex-wrap gap-2";
+
     return (
       <section className={`${sectionSpacing} print:break-inside-avoid`}>
         {renderSectionHeader("Skills")}
-        <div className="flex flex-wrap gap-2">
+        <div className={containerClass}>
           {data.skills.map((skill) => (
-            <span
-              key={skill.id}
-              className={
-                config.sectionStyle === "badge"
-                  ? `${accentClasses.bg} text-white px-3 py-1 rounded-full text-sm font-medium`
-                  : config.sectionStyle === "boxed"
-                    ? "bg-slate-100 text-slate-800 px-3 py-1 rounded text-sm font-medium border border-slate-200"
-                    : "bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm"
-              }
-            >
+            <span key={skill.id} className={getSkillClass()}>
               {skill.name}
             </span>
           ))}
