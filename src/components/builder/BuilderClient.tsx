@@ -35,6 +35,7 @@ import {
   exportToJsonResume,
   importFromJsonResume,
 } from "@/lib/jsonResumeConverter";
+import { downloadDocxResume } from "@/lib/docxResumeGenerator";
 
 const Preview = dynamic(
   () => import("@/components/builder/Preview").then((mod) => mod.Preview),
@@ -68,6 +69,10 @@ export function BuilderClient() {
   const [showProfiles, setShowProfiles] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [previewMode, setPreviewMode] = useState<"resume" | "cover-letter">(
+    "resume",
+  );
+  const [isExportingWord, setIsExportingWord] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [hasHydrated, setHasHydrated] = useState(false);
 
@@ -129,6 +134,23 @@ export function BuilderClient() {
     setTimeout(() => {
       window.print();
     }, 250);
+  };
+
+  const handleDownloadWord = async () => {
+    try {
+      setIsExportingWord(true);
+      const data = useResumeStore.getState().data;
+      toast.info("Generating Word (.docx) Document... 📝", {
+        description: "Formatting clean ATS headers, tables, and bullet points.",
+      });
+      await downloadDocxResume(data);
+      toast.success("Word Document (.docx) downloaded successfully!");
+    } catch (err) {
+      console.error("Word export error:", err);
+      toast.error("Failed to generate Word document. Please try again.");
+    } finally {
+      setIsExportingWord(false);
+    }
   };
 
   const handleBack = () => {
@@ -291,17 +313,86 @@ export function BuilderClient() {
           !showPreviewMobile ? "hidden md:block" : "block"
         }`}
       >
-        {/* Top actions (Undo, Redo, Download, Mobile Back) */}
-        <div className="absolute top-4 right-4 md:top-8 md:right-8 z-20 flex gap-2 sm:gap-3 print:hidden">
+        {/* MOBILE PREVIEW TOP APP BAR (Dedicated, non-overlapping) */}
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-3 flex items-center justify-between shadow-sm print:hidden">
+          {/* Back to Edit Button */}
+          <Button
+            onClick={() => setShowPreviewMobile(false)}
+            variant="ghost"
+            size="sm"
+            className="h-9 px-2.5 rounded-full text-zinc-700 dark:text-zinc-200 font-semibold text-xs hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" /> Edit
+          </Button>
+
+          {/* Segmented Resume / Cover Letter Control */}
+          <div className="bg-zinc-100 dark:bg-zinc-800 p-0.5 rounded-full flex items-center border border-zinc-200 dark:border-zinc-700">
+            <button
+              onClick={() => setPreviewMode("resume")}
+              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                previewMode === "resume"
+                  ? "bg-indigo-600 text-white shadow-sm"
+                  : "text-zinc-600 dark:text-zinc-400"
+              }`}
+            >
+              Resume
+            </button>
+            <button
+              onClick={() => setPreviewMode("cover-letter")}
+              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                previewMode === "cover-letter"
+                  ? "bg-indigo-600 text-white shadow-sm"
+                  : "text-zinc-600 dark:text-zinc-400"
+              }`}
+            >
+              Cover Letter
+            </button>
+          </div>
+
+          {/* Mobile Action Buttons: Undo/Redo/Download */}
+          <div className="flex items-center gap-1">
+            <Button
+              onClick={() => undo()}
+              disabled={pastStates.length === 0}
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-zinc-600 dark:text-zinc-300"
+              title="Undo"
+            >
+              <Undo2 className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              onClick={() => redo()}
+              disabled={futureStates.length === 0}
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-zinc-600 dark:text-zinc-300"
+              title="Redo"
+            >
+              <Redo2 className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              onClick={handleDownload}
+              size="sm"
+              className="h-8 px-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-sm"
+              title="Download PDF"
+            >
+              <Download className="h-3 w-3 mr-1" /> PDF
+            </Button>
+          </div>
+        </div>
+
+        {/* DESKTOP TOP ACTIONS (Undo, Redo, History, Word Export, PDF Export) */}
+        <div className="hidden md:flex absolute top-8 right-8 z-20 gap-2 sm:gap-3 print:hidden">
           <Button
             onClick={() => undo()}
             disabled={pastStates.length === 0}
             variant="outline"
             size="icon"
-            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-10 w-10 sm:h-12 sm:w-12"
+            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11"
             title="Undo"
           >
-            <Undo2 className="h-4 w-4 sm:h-5 sm:w-5" />
+            <Undo2 className="h-4 w-4" />
           </Button>
 
           <Button
@@ -309,56 +400,48 @@ export function BuilderClient() {
             disabled={futureStates.length === 0}
             variant="outline"
             size="icon"
-            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-10 w-10 sm:h-12 sm:w-12"
+            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11"
             title="Redo"
           >
-            <Redo2 className="h-4 w-4 sm:h-5 sm:w-5" />
+            <Redo2 className="h-4 w-4" />
           </Button>
 
           <Button
             onClick={() => setShowHistory(true)}
             variant="outline"
             size="icon"
-            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-10 w-10 sm:h-12 sm:w-12 text-zinc-600 dark:text-zinc-300"
+            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11 text-zinc-600 dark:text-zinc-300"
             title="Session History Timeline"
           >
-            <History className="h-4 w-4 sm:h-5 sm:w-5" />
+            <History className="h-4 w-4" />
           </Button>
 
           <Button
-            onClick={() => setShowPreviewMobile(false)}
+            onClick={handleDownloadWord}
+            disabled={isExportingWord}
             variant="outline"
-            className="md:hidden rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-10 sm:h-12 px-4 sm:px-6"
+            size="lg"
+            className="rounded-full bg-white dark:bg-[#09090b] hover:bg-zinc-50 dark:hover:bg-zinc-800 shadow-md border-zinc-200 dark:border-[#27272a] h-11 px-5 font-semibold text-blue-600 dark:text-blue-400"
+            title="Download editable Microsoft Word .docx file"
           >
-            <ChevronLeft className="mr-2 h-4 w-4" /> Edit
+            <FileText className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
+            {isExportingWord ? "Exporting..." : "Word (.docx)"}
           </Button>
 
-          {/* Desktop small button, Mobile hidden */}
-          <div className="hidden lg:block xl:hidden">
-            <Button
-              onClick={handleDownload}
-              size="sm"
-              className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm border-0"
-            >
-              <Download className="mr-2 h-3 w-3" /> PDF
-            </Button>
-          </div>
-          {/* Desktop large button, Mobile large button */}
-          <div className="lg:hidden xl:block">
-            <Button
-              onClick={handleDownload}
-              size="lg"
-              className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg border-0 h-12 px-6 font-semibold"
-            >
-              <Download className="mr-2 h-4 w-4" /> Download PDF
-            </Button>
-          </div>
+          <Button
+            onClick={handleDownload}
+            size="lg"
+            className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg border-0 h-11 px-6 font-semibold"
+            title="Print or Save as PDF"
+          >
+            <Download className="mr-2 h-4 w-4" /> Download PDF
+          </Button>
         </div>
 
         {/* The PDF Preview container */}
-        <div className="h-full w-full overflow-y-auto print:h-auto print:overflow-visible p-4 md:p-8 flex justify-center print:!p-0 pb-32 print:pb-0">
+        <div className="h-full w-full overflow-y-auto print:h-auto print:overflow-visible p-0 md:p-8 flex justify-center print:!p-0 pb-20 md:pb-32 print:pb-0">
           <div className="w-full max-w-[794px] print:max-w-none transition-all duration-300 print:h-auto">
-            <Preview />
+            <Preview mode={previewMode} onModeChange={setPreviewMode} />
           </div>
         </div>
       </div>

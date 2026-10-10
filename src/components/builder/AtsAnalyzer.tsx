@@ -294,14 +294,14 @@ export function AtsAnalyzer() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 print:hidden flex flex-col items-end">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 print:hidden flex flex-col items-end">
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="mb-4 w-80 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl rounded-2xl overflow-hidden flex flex-col max-h-[60vh]"
+            className="mb-3 w-72 sm:w-80 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl rounded-2xl overflow-hidden flex flex-col max-h-[60vh]"
           >
             <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50 dark:bg-zinc-900/50">
               <h3 className="font-semibold text-sm flex items-center gap-2">
@@ -368,42 +368,42 @@ export function AtsAnalyzer() {
         )}
       </AnimatePresence>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <button
           onClick={handleAutoPolish}
-          className="h-12 px-4 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg flex items-center gap-2 font-medium text-xs transition-transform hover:scale-105 active:scale-95"
+          className="h-10 w-10 sm:h-12 sm:w-auto sm:px-4 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg flex items-center justify-center gap-2 font-medium text-xs transition-transform hover:scale-105 active:scale-95"
           title="Scan and standardize technical buzzwords, capitalization, and punctuation"
         >
-          <Wand2 className="w-4 h-4 text-emerald-500" />
+          <Wand2 className="w-4 h-4 text-emerald-500 shrink-0" />
           <span className="hidden sm:inline">Polish & Fix</span>
         </button>
 
         <button
           onClick={() => setShowJDMatcher(true)}
-          className="h-12 px-4 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg flex items-center gap-2 font-medium text-xs transition-transform hover:scale-105 active:scale-95"
+          className="h-10 w-10 sm:h-12 sm:w-auto sm:px-4 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg flex items-center justify-center gap-2 font-medium text-xs transition-transform hover:scale-105 active:scale-95"
           title="Paste Job Description to check ATS match & keywords"
         >
-          <Target className="w-4 h-4 text-indigo-500" />
+          <Target className="w-4 h-4 text-indigo-500 shrink-0" />
           <span className="hidden sm:inline">Job Matcher</span>
         </button>
 
         <button
           onClick={() => setShowInterviewPrep(true)}
-          className="h-12 px-4 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg flex items-center gap-2 font-medium text-xs transition-transform hover:scale-105 active:scale-95"
+          className="h-10 w-10 sm:h-12 sm:w-auto sm:px-4 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg flex items-center justify-center gap-2 font-medium text-xs transition-transform hover:scale-105 active:scale-95"
           title="Generate top 5 interview questions from your resume"
         >
-          <HelpCircle className="w-4 h-4 text-purple-500" />
+          <HelpCircle className="w-4 h-4 text-purple-500 shrink-0" />
           <span className="hidden sm:inline">Interview Prep</span>
         </button>
 
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="h-12 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg flex items-center gap-2 font-medium transition-transform hover:scale-105 active:scale-95"
+          className="h-10 px-3 sm:h-12 sm:px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg flex items-center gap-1.5 sm:gap-2 font-medium transition-transform hover:scale-105 active:scale-95"
         >
-          <Activity className="w-5 h-5" />
-          <span className="hidden sm:inline">ATS Score</span>
+          <Activity className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+          <span className="hidden sm:inline text-xs sm:text-sm">ATS Score</span>
           <span
-            className={`px-2 py-0.5 rounded-full text-xs font-bold bg-white/20`}
+            className={`px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-white/20`}
           >
             {score}
           </span>
