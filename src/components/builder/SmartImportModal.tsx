@@ -65,6 +65,11 @@ export function SmartImportModal({ isOpen, onClose }: SmartImportModalProps) {
       return;
     }
 
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size exceeds 10MB limit.");
+      return;
+    }
+
     try {
       setIsProcessing(true);
       setStatusMessage("Extracting text from PDF via on-device PDF engine...");
@@ -91,6 +96,11 @@ export function SmartImportModal({ isOpen, onClose }: SmartImportModalProps) {
   const handleParseLinkedInText = async () => {
     if (!linkedinText.trim()) {
       toast.error("Please paste your LinkedIn profile text or resume text.");
+      return;
+    }
+
+    if (linkedinText.length > 100_000) {
+      toast.error("Text exceeds maximum allowed length of 100,000 characters.");
       return;
     }
 

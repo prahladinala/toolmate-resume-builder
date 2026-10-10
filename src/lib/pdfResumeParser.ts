@@ -1,11 +1,37 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ResumeData, Experience, Education, Skill } from "@/types/resume";
 
+export const MAX_PDF_FILE_SIZE = 10 * 1024 * 1024; // 10MB limit
+export const MAX_RAW_TEXT_LENGTH = 100_000; // 100K char limit to prevent ReDoS
+
 /**
  * Extracts plain text from an uploaded PDF file in the browser using pdfjs-dist.
+ * Includes defensive file size and magic-byte header validation.
  */
 export async function extractTextFromPdf(file: File): Promise<string> {
+  if (file.size > MAX_PDF_FILE_SIZE) {
+    throw new Error("File exceeds maximum allowed size of 10MB.");
+  }
+
   const arrayBuffer = await file.arrayBuffer();
+
+  // Validate PDF binary magic header (%PDF-)
+  if (arrayBuffer.byteLength < 5) {
+    throw new Error("File is too small to be a valid PDF.");
+  }
+  const header = new Uint8Array(arrayBuffer.slice(0, 5));
+  const isPdfHeader =
+    header[0] === 0x25 && // %
+    header[1] === 0x50 && // P
+    header[2] === 0x44 && // D
+    header[3] === 0x46 && // F
+    header[4] === 0x2d; // -
+
+  if (!isPdfHeader) {
+    throw new Error(
+      "Invalid PDF file signature. The uploaded file is not a valid PDF document.",
+    );
+  }
 
   // Dynamically import pdfjs-dist to avoid SSR / node bundling issues
   const pdfjs = await import("pdfjs-dist");
@@ -21,8 +47,10 @@ export async function extractTextFromPdf(file: File): Promise<string> {
   const pdfDoc = await loadingTask.promise;
 
   let extractedText = "";
+  // Defense: Limit parsing to at most 25 pages to prevent resource exhaustion
+  const maxPages = Math.min(pdfDoc.numPages, 25);
 
-  for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+  for (let pageNum = 1; pageNum <= maxPages; pageNum++) {
     const page = await pdfDoc.getPage(pageNum);
     const textContent = await page.getTextContent();
     const pageStrings = textContent.items
@@ -42,6 +70,9 @@ export async function parseResumeText(rawText: string): Promise<ResumeData> {
   if (!rawText || rawText.trim().length === 0) {
     throw new Error("No text provided to parse.");
   }
+
+  // Bound text length to prevent ReDoS on huge pastes
+  const boundedText = rawText.slice(0, MAX_RAW_TEXT_LENGTH);
 
   // 1. Try On-Device Gemini Nano
   try {
@@ -106,7 +137,7 @@ export async function parseResumeText(rawText: string): Promise<ResumeData> {
 }
 
 Resume Text:
-${rawText.slice(0, 5000)}`;
+${boundedText.slice(0, 5000)}`;
 
       const response = await session.prompt(prompt);
       session.destroy?.();
@@ -127,7 +158,7 @@ ${rawText.slice(0, 5000)}`;
   }
 
   // 2. Fallback Heuristic & Regular Expression Parser
-  return parseWithHeuristics(rawText);
+  return parseWithHeuristics(boundedText);
 }
 
 /**

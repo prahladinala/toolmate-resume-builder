@@ -43,6 +43,35 @@ const fontClasses = {
   mono: "font-mono",
 };
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function sanitizeUrl(url?: string): string {
+  if (!url) return "#";
+  const trimmed = url.trim();
+  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) {
+    return trimmed;
+  }
+  try {
+    const parsed = new URL(trimmed);
+    if (["http:", "https:", "mailto:", "tel:"].includes(parsed.protocol)) {
+      return trimmed;
+    }
+    return "#";
+  } catch {
+    if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) {
+      return `https://${trimmed}`;
+    }
+    return "#";
+  }
+}
+
 function parseMarkdown(text: string) {
   if (!text) return null;
   // Handle basic markdown: **bold**, *italic*, - bullet points
@@ -50,7 +79,9 @@ function parseMarkdown(text: string) {
   return (
     <div className="space-y-1 mt-2">
       {lines.map((line, i) => {
-        let parsed = line;
+        // Sanitize untrusted user input against XSS before applying markup
+        const safeLine = escapeHtml(line);
+        let parsed = safeLine;
         // Bold
         parsed = parsed.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
         // Italic
@@ -559,10 +590,19 @@ export const TemplateEngine = memo(function TemplateEngine({
       config.hidePhoto
     )
       return null;
+
+    // Strict defense: Ensure image is a valid data:image or https: scheme
+    const trimmedPhoto = personalInfo.photoBase64.trim();
+    const isSafeImage =
+      trimmedPhoto.startsWith("data:image/") ||
+      trimmedPhoto.startsWith("https://") ||
+      trimmedPhoto.startsWith("/");
+    if (!isSafeImage) return null;
+
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={personalInfo.photoBase64}
+        src={trimmedPhoto}
         alt="Profile"
         className={`w-32 h-32 object-cover ${config.layout === "split-header" ? "rounded-xl shadow-lg" : "rounded-full border-4"} border-white shadow-md`}
       />
@@ -1112,7 +1152,7 @@ export const TemplateEngine = memo(function TemplateEngine({
                 <div className="flex gap-3 text-sm font-semibold opacity-70">
                   {proj.url && (
                     <a
-                      href={proj.url}
+                      href={sanitizeUrl(proj.url)}
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center gap-1 hover:underline"
@@ -1122,7 +1162,7 @@ export const TemplateEngine = memo(function TemplateEngine({
                   )}
                   {proj.github && (
                     <a
-                      href={proj.github}
+                      href={sanitizeUrl(proj.github)}
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center gap-1 hover:underline"
