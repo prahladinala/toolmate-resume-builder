@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  ChevronLeft,
-  Upload,
-  Save,
-} from "lucide-react";
+import { ChevronLeft, Upload, Save, Layers } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface BuilderSidebarProps {
@@ -14,6 +10,7 @@ interface BuilderSidebarProps {
   handleBack: () => void;
   importJSON: (e: React.ChangeEvent<HTMLInputElement>) => void;
   exportJSON: () => void;
+  onOpenProfiles?: () => void;
 }
 
 export function BuilderSidebar({
@@ -23,6 +20,7 @@ export function BuilderSidebar({
   handleBack,
   importJSON,
   exportJSON,
+  onOpenProfiles,
 }: BuilderSidebarProps) {
   return (
     <nav className="hidden md:flex w-[88px] h-full flex-col items-center py-8 border-r border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b] shrink-0 justify-between z-30 print:hidden">
@@ -62,6 +60,13 @@ export function BuilderSidebar({
       </div>
 
       <div className="flex flex-col gap-3 w-full items-center">
+        <button
+          onClick={onOpenProfiles}
+          className="h-10 w-10 rounded-full border border-blue-200 dark:border-blue-900/60 bg-blue-50/50 dark:bg-blue-950/20 flex items-center justify-center hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors text-blue-600 dark:text-blue-400"
+          title="Manage Resume Profiles & Versions"
+        >
+          <Layers className="h-4 w-4" />
+        </button>
         <div className="relative group">
           <input
             type="file"

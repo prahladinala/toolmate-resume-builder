@@ -26,6 +26,7 @@ import { useResumeStore } from "@/store/useResumeStore";
 import { BuilderSidebar } from "./ui/BuilderSidebar";
 import { BuilderMobileNav } from "./ui/BuilderMobileNav";
 import { BuilderFormContainer } from "./ui/BuilderFormContainer";
+import { ResumeProfileModal } from "./ResumeProfileModal";
 
 const Preview = dynamic(
   () => import("@/components/builder/Preview").then((mod) => mod.Preview),
@@ -55,6 +56,7 @@ export function BuilderClient() {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const [showPreviewMobile, setShowPreviewMobile] = useState(false);
+  const [showProfiles, setShowProfiles] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [hasHydrated, setHasHydrated] = useState(false);
 
@@ -207,6 +209,12 @@ export function BuilderClient() {
         handleBack={handleBack}
         importJSON={importJSON}
         exportJSON={exportJSON}
+        onOpenProfiles={() => setShowProfiles(true)}
+      />
+
+      <ResumeProfileModal
+        isOpen={showProfiles}
+        onClose={() => setShowProfiles(false)}
       />
 
       {/* MIDDLE: Form Panel (Desktop & Mobile) */}

@@ -92,6 +92,14 @@ export function AtsAnalyzer() {
       const buzzwords =
         /\b(hard worker|team player|think outside the box|synergy|detail oriented|go-getter|self-starter)\b/i;
 
+      let repeatedVerbWarning: string | null = null;
+      let hasPassiveVoice = false;
+
+      // Track verb repetitions across all bullets
+      const verbCounts: Record<string, number> = {};
+      const passiveVoiceRegex =
+        /\b(was|were|been|being)\s+(developed|created|assigned|given|tasked|made|asked)\b/i;
+
       data.experience.forEach((exp) => {
         if (!exp.startDate || (!exp.endDate && !exp.current)) {
           missingDates = true;
@@ -104,8 +112,45 @@ export function AtsAnalyzer() {
           if (actionVerbs.test(exp.description)) hasActionVerbs = true;
           if (pronouns.test(exp.description)) hasPronouns = true;
           if (buzzwords.test(exp.description)) hasBuzzwords = true;
+          if (passiveVoiceRegex.test(exp.description)) hasPassiveVoice = true;
+
+          // Split bullets to find leading verbs
+          const bullets = exp.description.split(/\n+/);
+          bullets.forEach((b) => {
+            const firstWord = b
+              .replace(/^[-*•\d.]+\s*/, "")
+              .trim()
+              .split(/\s+/)[0]
+              ?.toLowerCase();
+            if (
+              firstWord &&
+              firstWord.length > 3 &&
+              actionVerbs.test(firstWord)
+            ) {
+              verbCounts[firstWord] = (verbCounts[firstWord] || 0) + 1;
+              if (verbCounts[firstWord] >= 3) {
+                repeatedVerbWarning = firstWord;
+              }
+            }
+          });
         }
       });
+
+      if (repeatedVerbWarning) {
+        newScore -= 5;
+        newFeedback.push({
+          type: "warning",
+          text: `Action verb "${repeatedVerbWarning}" repeated 3+ times. Diversify with synonyms.`,
+        });
+      }
+
+      if (hasPassiveVoice) {
+        newScore -= 5;
+        newFeedback.push({
+          type: "warning",
+          text: "Passive voice detected (e.g. 'was tasked with'). Use direct active verbs.",
+        });
+      }
 
       if (!hasMetrics) {
         newScore -= 10;
