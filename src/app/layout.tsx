@@ -87,6 +87,9 @@ export const metadata: Metadata = {
       "Create high-scoring, ATS-compliant resumes with 18+ templates, vector PDF & editable Word export. 100% free and local.",
     creator: "@prahladinala",
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+  },
 };
 
 import { ThemeProvider } from "@/components/ThemeProvider";

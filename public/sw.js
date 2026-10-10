@@ -36,7 +36,7 @@ define(["./workbox-4754cb34"], function (e) {
       [
         {
           url: "/_next/app-build-manifest.json",
-          revision: "4e15f1ce6dfe794c7bf2a2086e6331d7",
+          revision: "79fef89b2c231bce73995fcea71f0e32",
         },
         {
           url: "/_next/static/chunks/1255-b8cf77ab14370e57.js",
@@ -331,11 +331,11 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "65850a373e258f1c897a2b3d75eb74de",
         },
         {
-          url: "/_next/static/sdigtenm7_WNmivH477AY/_buildManifest.js",
+          url: "/_next/static/nLF5JTvOgk8MLbnrNWXGR/_buildManifest.js",
           revision: "62afe58274397459d158c970a7a34d35",
         },
         {
-          url: "/_next/static/sdigtenm7_WNmivH477AY/_ssgManifest.js",
+          url: "/_next/static/nLF5JTvOgk8MLbnrNWXGR/_ssgManifest.js",
           revision: "b6652df95db52feb4daf4eca35380933",
         },
         { url: "/file.svg", revision: "d09f95206c3fa0bb9bd9fefabfd0ea71" },
