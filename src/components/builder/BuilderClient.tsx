@@ -13,7 +13,6 @@ import {
   Cpu,
   Code,
   Palette,
-  ChevronLeft,
   Download,
   Undo2,
   Redo2,
@@ -26,11 +25,11 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useResumeStore } from "@/store/useResumeStore";
 
 import { BuilderSidebar } from "./ui/BuilderSidebar";
-import { BuilderMobileNav } from "./ui/BuilderMobileNav";
 import { BuilderFormContainer } from "./ui/BuilderFormContainer";
 import { ResumeProfileModal } from "./ResumeProfileModal";
 import { SmartImportModal } from "./SmartImportModal";
 import { HistoryDrawerModal } from "./HistoryDrawerModal";
+import { MobileAppShell } from "./mobile/MobileAppShell";
 import {
   exportToJsonResume,
   importFromJsonResume,
@@ -65,7 +64,6 @@ const STEPS = [
 export function BuilderClient() {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(0);
-  const [showPreviewMobile, setShowPreviewMobile] = useState(false);
   const [showProfiles, setShowProfiles] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -247,18 +245,124 @@ export function BuilderClient() {
   }
 
   return (
-    <div className="flex h-screen w-full bg-[#fafafa] dark:bg-[#111113] overflow-hidden font-sans print:h-auto print:overflow-visible">
-      <BuilderSidebar
-        steps={STEPS}
-        activeStep={activeStep}
-        setActiveStep={setActiveStep}
-        handleBack={handleBack}
-        importJSON={importJSON}
-        exportJSON={exportJSON}
-        onOpenProfiles={() => setShowProfiles(true)}
-        onOpenImport={() => setShowImport(true)}
-        onOpenHistory={() => setShowHistory(true)}
-      />
+    <>
+      {/* 1. 100% NATIVE MOBILE APP SHELL (Mobile screens < 768px) */}
+      <div className="md:hidden h-screen w-full overflow-hidden print:hidden">
+        <MobileAppShell
+          activeStep={activeStep}
+          setActiveStep={setActiveStep}
+          handleBack={handleBack}
+          undo={() => undo()}
+          redo={() => redo()}
+          canUndo={pastStates.length > 0}
+          canRedo={futureStates.length > 0}
+          onOpenProfiles={() => setShowProfiles(true)}
+          onOpenImport={() => setShowImport(true)}
+          onOpenHistory={() => setShowHistory(true)}
+          handleDownload={handleDownload}
+          handleDownloadWord={handleDownloadWord}
+          exportJSON={exportJSON}
+          isOnline={isOnline}
+        />
+      </div>
+
+      {/* 2. DESKTOP WORKSTATION (Desktop & Tablet screens >= 768px) */}
+      <div className="hidden md:flex h-screen w-full bg-[#fafafa] dark:bg-[#111113] overflow-hidden font-sans print:h-auto print:overflow-visible">
+        <BuilderSidebar
+          steps={STEPS}
+          activeStep={activeStep}
+          setActiveStep={setActiveStep}
+          handleBack={handleBack}
+          importJSON={importJSON}
+          exportJSON={exportJSON}
+          onOpenProfiles={() => setShowProfiles(true)}
+          onOpenImport={() => setShowImport(true)}
+          onOpenHistory={() => setShowHistory(true)}
+        />
+
+        {/* MIDDLE: Form Panel (Desktop) */}
+        <div className="w-[450px] lg:w-[480px] h-full flex flex-col border-r border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b] text-zinc-900 dark:text-[#fafafa] shrink-0 transition-all z-20 print:hidden shadow-2xl">
+          <div className="hidden md:flex h-[72px] items-center justify-between px-8 border-b border-zinc-200 dark:border-[#27272a] shrink-0 bg-white dark:bg-[#09090b]">
+            <h2 className="text-xl font-bold tracking-tight">
+              {STEPS[activeStep].label}
+            </h2>
+            {!isOnline && (
+              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-500/20">
+                <WifiOff className="w-3.5 h-3.5" />
+                Working Offline
+              </div>
+            )}
+          </div>
+
+          <BuilderFormContainer activeStep={activeStep} />
+        </div>
+
+        {/* RIGHT: Live Preview Panel (Desktop) */}
+        <div className="flex-1 h-full relative bg-zinc-100 dark:bg-[#111113] print:bg-white print:!m-0 print:!p-0 print:static print:h-auto print:!block">
+          {/* DESKTOP TOP ACTIONS (Undo, Redo, History, Word Export, PDF Export) */}
+          <div className="hidden md:flex absolute top-8 right-8 z-20 gap-2 sm:gap-3 print:hidden">
+            <Button
+              onClick={() => undo()}
+              disabled={pastStates.length === 0}
+              variant="outline"
+              size="icon"
+              className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11"
+              title="Undo"
+            >
+              <Undo2 className="h-4 w-4" />
+            </Button>
+
+            <Button
+              onClick={() => redo()}
+              disabled={futureStates.length === 0}
+              variant="outline"
+              size="icon"
+              className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11"
+              title="Redo"
+            >
+              <Redo2 className="h-4 w-4" />
+            </Button>
+
+            <Button
+              onClick={() => setShowHistory(true)}
+              variant="outline"
+              size="icon"
+              className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11 text-zinc-600 dark:text-zinc-300"
+              title="Session History Timeline"
+            >
+              <History className="h-4 w-4" />
+            </Button>
+
+            <Button
+              onClick={handleDownloadWord}
+              disabled={isExportingWord}
+              variant="outline"
+              size="lg"
+              className="rounded-full bg-white dark:bg-[#09090b] hover:bg-zinc-50 dark:hover:bg-zinc-800 shadow-md border-zinc-200 dark:border-[#27272a] h-11 px-5 font-semibold text-blue-600 dark:text-blue-400"
+              title="Download editable Microsoft Word .docx file"
+            >
+              <FileText className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
+              {isExportingWord ? "Exporting..." : "Word (.docx)"}
+            </Button>
+
+            <Button
+              onClick={handleDownload}
+              size="lg"
+              className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg border-0 h-11 px-6 font-semibold"
+              title="Print or Save as PDF"
+            >
+              <Download className="mr-2 h-4 w-4" /> Download PDF
+            </Button>
+          </div>
+
+          {/* The PDF Preview container */}
+          <div className="h-full w-full overflow-y-auto print:h-auto print:overflow-visible p-8 flex justify-center print:!p-0 pb-32 print:pb-0">
+            <div className="w-full max-w-[794px] print:max-w-none transition-all duration-300 print:h-auto">
+              <Preview mode={previewMode} onModeChange={setPreviewMode} />
+            </div>
+          </div>
+        </div>
+      </div>
 
       <ResumeProfileModal
         isOpen={showProfiles}
@@ -274,177 +378,6 @@ export function BuilderClient() {
         isOpen={showHistory}
         onClose={() => setShowHistory(false)}
       />
-
-      {/* MIDDLE: Form Panel (Desktop & Mobile) */}
-      <div
-        className={`w-full md:w-[450px] lg:w-[480px] h-full flex flex-col border-r border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b] text-zinc-900 dark:text-[#fafafa] shrink-0 transition-all z-20 print:hidden shadow-2xl ${
-          showPreviewMobile ? "hidden md:flex" : "flex"
-        }`}
-      >
-        <BuilderMobileNav
-          steps={STEPS}
-          activeStep={activeStep}
-          setActiveStep={setActiveStep}
-          handleBack={handleBack}
-          setShowPreviewMobile={setShowPreviewMobile}
-          onOpenImport={() => setShowImport(true)}
-          onOpenHistory={() => setShowHistory(true)}
-        />
-
-        {/* Desktop Header for the Form Panel */}
-        <div className="hidden md:flex h-[72px] items-center justify-between px-8 border-b border-zinc-200 dark:border-[#27272a] shrink-0 bg-white dark:bg-[#09090b]">
-          <h2 className="text-xl font-bold tracking-tight">
-            {STEPS[activeStep].label}
-          </h2>
-          {!isOnline && (
-            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-500/20">
-              <WifiOff className="w-3.5 h-3.5" />
-              Working Offline
-            </div>
-          )}
-        </div>
-
-        <BuilderFormContainer activeStep={activeStep} />
-      </div>
-
-      {/* RIGHT: Live Preview Panel */}
-      <div
-        className={`flex-1 h-full relative bg-zinc-100 dark:bg-[#111113] print:bg-white print:!m-0 print:!p-0 print:static print:h-auto print:!block ${
-          !showPreviewMobile ? "hidden md:block" : "block"
-        }`}
-      >
-        {/* MOBILE PREVIEW TOP APP BAR (Dedicated, non-overlapping) */}
-        <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-3 flex items-center justify-between shadow-sm print:hidden">
-          {/* Back to Edit Button */}
-          <Button
-            onClick={() => setShowPreviewMobile(false)}
-            variant="ghost"
-            size="sm"
-            className="h-9 px-2.5 rounded-full text-zinc-700 dark:text-zinc-200 font-semibold text-xs hover:bg-zinc-100 dark:hover:bg-zinc-800"
-          >
-            <ChevronLeft className="mr-1 h-4 w-4" /> Edit
-          </Button>
-
-          {/* Segmented Resume / Cover Letter Control */}
-          <div className="bg-zinc-100 dark:bg-zinc-800 p-0.5 rounded-full flex items-center border border-zinc-200 dark:border-zinc-700">
-            <button
-              onClick={() => setPreviewMode("resume")}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
-                previewMode === "resume"
-                  ? "bg-indigo-600 text-white shadow-sm"
-                  : "text-zinc-600 dark:text-zinc-400"
-              }`}
-            >
-              Resume
-            </button>
-            <button
-              onClick={() => setPreviewMode("cover-letter")}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
-                previewMode === "cover-letter"
-                  ? "bg-indigo-600 text-white shadow-sm"
-                  : "text-zinc-600 dark:text-zinc-400"
-              }`}
-            >
-              Cover Letter
-            </button>
-          </div>
-
-          {/* Mobile Action Buttons: Undo/Redo/Download */}
-          <div className="flex items-center gap-1">
-            <Button
-              onClick={() => undo()}
-              disabled={pastStates.length === 0}
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-zinc-600 dark:text-zinc-300"
-              title="Undo"
-            >
-              <Undo2 className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-              onClick={() => redo()}
-              disabled={futureStates.length === 0}
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-zinc-600 dark:text-zinc-300"
-              title="Redo"
-            >
-              <Redo2 className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-              onClick={handleDownload}
-              size="sm"
-              className="h-8 px-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-sm"
-              title="Download PDF"
-            >
-              <Download className="h-3 w-3 mr-1" /> PDF
-            </Button>
-          </div>
-        </div>
-
-        {/* DESKTOP TOP ACTIONS (Undo, Redo, History, Word Export, PDF Export) */}
-        <div className="hidden md:flex absolute top-8 right-8 z-20 gap-2 sm:gap-3 print:hidden">
-          <Button
-            onClick={() => undo()}
-            disabled={pastStates.length === 0}
-            variant="outline"
-            size="icon"
-            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11"
-            title="Undo"
-          >
-            <Undo2 className="h-4 w-4" />
-          </Button>
-
-          <Button
-            onClick={() => redo()}
-            disabled={futureStates.length === 0}
-            variant="outline"
-            size="icon"
-            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11"
-            title="Redo"
-          >
-            <Redo2 className="h-4 w-4" />
-          </Button>
-
-          <Button
-            onClick={() => setShowHistory(true)}
-            variant="outline"
-            size="icon"
-            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11 text-zinc-600 dark:text-zinc-300"
-            title="Session History Timeline"
-          >
-            <History className="h-4 w-4" />
-          </Button>
-
-          <Button
-            onClick={handleDownloadWord}
-            disabled={isExportingWord}
-            variant="outline"
-            size="lg"
-            className="rounded-full bg-white dark:bg-[#09090b] hover:bg-zinc-50 dark:hover:bg-zinc-800 shadow-md border-zinc-200 dark:border-[#27272a] h-11 px-5 font-semibold text-blue-600 dark:text-blue-400"
-            title="Download editable Microsoft Word .docx file"
-          >
-            <FileText className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
-            {isExportingWord ? "Exporting..." : "Word (.docx)"}
-          </Button>
-
-          <Button
-            onClick={handleDownload}
-            size="lg"
-            className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg border-0 h-11 px-6 font-semibold"
-            title="Print or Save as PDF"
-          >
-            <Download className="mr-2 h-4 w-4" /> Download PDF
-          </Button>
-        </div>
-
-        {/* The PDF Preview container */}
-        <div className="h-full w-full overflow-y-auto print:h-auto print:overflow-visible p-0 md:p-8 flex justify-center print:!p-0 pb-20 md:pb-32 print:pb-0">
-          <div className="w-full max-w-[794px] print:max-w-none transition-all duration-300 print:h-auto">
-            <Preview mode={previewMode} onModeChange={setPreviewMode} />
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
