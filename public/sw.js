@@ -22,9 +22,9 @@ if (!self.define) {
       location.href;
     if (s[i]) return;
     let n = {};
-    const r = (e) => a(e, i),
-      d = { module: { uri: i }, exports: n, require: r };
-    s[i] = Promise.all(c.map((e) => d[e] || r(e))).then((e) => (t(...e), n));
+    const d = (e) => a(e, i),
+      r = { module: { uri: i }, exports: n, require: d };
+    s[i] = Promise.all(c.map((e) => r[e] || d(e))).then((e) => (t(...e), n));
   };
 }
 define(["./workbox-4754cb34"], function (e) {
@@ -36,7 +36,7 @@ define(["./workbox-4754cb34"], function (e) {
       [
         {
           url: "/_next/app-build-manifest.json",
-          revision: "85efe88f4b7eb5d76218b33e7373e16e",
+          revision: "8862ddf32a0d1c1ffc81a8cef8144ae4",
         },
         {
           url: "/_next/static/chunks/112-bedd88c35a6d974f.js",
@@ -135,8 +135,8 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "b05f28c964559e78",
         },
         {
-          url: "/_next/static/chunks/app/builder/page-cb56e7eab99b3ba1.js",
-          revision: "cb56e7eab99b3ba1",
+          url: "/_next/static/chunks/app/builder/page-37dbc335b3afcd16.js",
+          revision: "37dbc335b3afcd16",
         },
         {
           url: "/_next/static/chunks/app/error-2813a774e6a1d57a.js",
@@ -219,6 +219,14 @@ define(["./workbox-4754cb34"], function (e) {
           revision: "535d4d8d2ce4bf59",
         },
         {
+          url: "/_next/static/iTVsZnxEUSxpodYkTQGA8/_buildManifest.js",
+          revision: "1f4876b332994a555e81d20dcae6bb96",
+        },
+        {
+          url: "/_next/static/iTVsZnxEUSxpodYkTQGA8/_ssgManifest.js",
+          revision: "b6652df95db52feb4daf4eca35380933",
+        },
+        {
           url: "/_next/static/media/013b72fa676f92e0-s.woff2",
           revision: "bc06a1ea50382b6956e53aeb91c889c1",
         },
@@ -269,14 +277,6 @@ define(["./workbox-4754cb34"], function (e) {
         {
           url: "/_next/static/media/e4af272ccee01ff0-s.p.woff2",
           revision: "65850a373e258f1c897a2b3d75eb74de",
-        },
-        {
-          url: "/_next/static/sCrrFjdVrEP3B9MWMzBPS/_buildManifest.js",
-          revision: "1f4876b332994a555e81d20dcae6bb96",
-        },
-        {
-          url: "/_next/static/sCrrFjdVrEP3B9MWMzBPS/_ssgManifest.js",
-          revision: "b6652df95db52feb4daf4eca35380933",
         },
         { url: "/file.svg", revision: "d09f95206c3fa0bb9bd9fefabfd0ea71" },
         { url: "/globe.svg", revision: "2aaafa6a49b6563925fe440891e32717" },

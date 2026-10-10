@@ -158,11 +158,11 @@ export function BuilderClient() {
   const handleDownloadWord = async () => {
     try {
       setIsExportingWord(true);
-      const data = useResumeStore.getState().data;
+      const { data, activeTemplate, themeConfig } = useResumeStore.getState();
       toast.info("Generating Word (.docx) Document... 📝", {
-        description: "Formatting clean ATS headers, tables, and bullet points.",
+        description: `Applying ${(activeTemplate || "modern").toUpperCase()} template layout, colors & typography.`,
       });
-      await downloadDocxResume(data);
+      await downloadDocxResume(data, activeTemplate || "dev-1", themeConfig);
       toast.success("Word Document (.docx) downloaded successfully!");
     } catch (err) {
       console.error("Word export error:", err);
