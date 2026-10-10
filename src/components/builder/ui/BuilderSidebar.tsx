@@ -1,6 +1,13 @@
 "use client";
 
-import { ChevronLeft, Upload, Save, Layers } from "lucide-react";
+import {
+  ChevronLeft,
+  Upload,
+  Save,
+  Layers,
+  Sparkles,
+  History,
+} from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface BuilderSidebarProps {
@@ -11,6 +18,8 @@ interface BuilderSidebarProps {
   importJSON: (e: React.ChangeEvent<HTMLInputElement>) => void;
   exportJSON: () => void;
   onOpenProfiles?: () => void;
+  onOpenImport?: () => void;
+  onOpenHistory?: () => void;
 }
 
 export function BuilderSidebar({
@@ -21,6 +30,8 @@ export function BuilderSidebar({
   importJSON,
   exportJSON,
   onOpenProfiles,
+  onOpenImport,
+  onOpenHistory,
 }: BuilderSidebarProps) {
   return (
     <nav className="hidden md:flex w-[88px] h-full flex-col items-center py-8 border-r border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b] shrink-0 justify-between z-30 print:hidden">
@@ -60,6 +71,20 @@ export function BuilderSidebar({
       </div>
 
       <div className="flex flex-col gap-3 w-full items-center">
+        <button
+          onClick={onOpenImport}
+          className="h-10 w-10 rounded-full border border-purple-200 dark:border-purple-900/60 bg-purple-50/50 dark:bg-purple-950/20 flex items-center justify-center hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors text-purple-600 dark:text-purple-400"
+          title="Import Resume (PDF, LinkedIn, or Starters)"
+        >
+          <Sparkles className="h-4 w-4" />
+        </button>
+        <button
+          onClick={onOpenHistory}
+          className="h-10 w-10 rounded-full border border-zinc-200 dark:border-[#27272a] flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-[#27272a] transition-colors text-zinc-500 dark:text-[#a1a1aa] hover:text-zinc-900 dark:hover:text-[#fafafa]"
+          title="Edit History Timeline"
+        >
+          <History className="h-4 w-4" />
+        </button>
         <button
           onClick={onOpenProfiles}
           className="h-10 w-10 rounded-full border border-blue-200 dark:border-blue-900/60 bg-blue-50/50 dark:bg-blue-950/20 flex items-center justify-center hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors text-blue-600 dark:text-blue-400"

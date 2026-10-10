@@ -12,12 +12,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { GripVertical, Plus, Trash2, BarChart2 } from "lucide-react";
+import { GripVertical, Plus, Trash2, BarChart2, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PowerVerbs } from "../PowerVerbs";
 import { AIHelper } from "../AIHelper";
 import { AISuggestions } from "../AISuggestions";
 import { BulletQuantifierModal } from "../BulletQuantifierModal";
+import { detectWeakActionVerbs, replaceWeakVerb } from "@/lib/actionVerbs";
 import {
   DndContext,
   closestCenter,
@@ -213,6 +214,50 @@ function SortableExperienceItem({
             {...register(`experiences.${index}.description`)}
           />
           <div id={`exp-${index}-ai-options`} />
+          {(() => {
+            const desc = watch(`experiences.${index}.description`) || "";
+            const weakVerbs = detectWeakActionVerbs(desc);
+            if (weakVerbs.length === 0) return null;
+            return (
+              <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 text-xs space-y-1.5 animate-in fade-in duration-200">
+                <div className="flex items-center gap-1.5 font-semibold text-amber-800 dark:text-amber-300">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                  <span>Weak Action Verb Detected:</span>
+                </div>
+                {weakVerbs.map((wv, i) => (
+                  <div
+                    key={i}
+                    className="flex flex-wrap items-center gap-1.5 text-zinc-700 dark:text-zinc-300"
+                  >
+                    <span className="line-through text-amber-700 dark:text-amber-400 font-mono">
+                      &quot;{wv.phrase}&quot;
+                    </span>
+                    <span className="text-zinc-400 text-[11px]">
+                      → Replace with:
+                    </span>
+                    {wv.suggestions.slice(0, 4).map((sug) => (
+                      <button
+                        key={sug}
+                        type="button"
+                        onClick={() => {
+                          const current =
+                            watch(`experiences.${index}.description`) || "";
+                          setValue(
+                            `experiences.${index}.description`,
+                            replaceWeakVerb(current, wv.phrase, sug),
+                            { shouldValidate: true },
+                          );
+                        }}
+                        className="px-2 py-0.5 rounded-md bg-white dark:bg-zinc-800 border border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/50 font-medium text-[11px] transition-colors shadow-2xs"
+                      >
+                        +{sug}
+                      </button>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
           <BulletQuantifierModal
             isOpen={showQuantifier}
             onClose={() => setShowQuantifier(false)}

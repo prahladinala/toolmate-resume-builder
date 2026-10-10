@@ -34,7 +34,9 @@ import {
   Star,
   Columns,
   LayoutList,
+  ShieldCheck,
 } from "lucide-react";
+import { checkContrast } from "@/lib/contrastChecker";
 
 function getSectionIcon(id: string) {
   if (id === "summary") return User;
@@ -175,25 +177,45 @@ function SortableSectionItem({
   );
 }
 const COLORS = [
-  { id: "zinc-900", label: "Zinc", class: "bg-zinc-900" },
-  { id: "slate-800", label: "Slate", class: "bg-slate-800" },
-  { id: "gray-900", label: "Gray", class: "bg-gray-900" },
-  { id: "neutral-800", label: "Neutral", class: "bg-neutral-800" },
-  { id: "stone-700", label: "Stone", class: "bg-stone-700" },
-  { id: "red-500", label: "Red", class: "bg-red-500" },
-  { id: "orange-500", label: "Orange", class: "bg-orange-500" },
-  { id: "amber-600", label: "Amber", class: "bg-amber-600" },
-  { id: "emerald-500", label: "Emerald", class: "bg-emerald-500" },
-  { id: "emerald-600", label: "Green", class: "bg-emerald-600" },
-  { id: "teal-600", label: "Teal", class: "bg-teal-600" },
-  { id: "cyan-600", label: "Cyan", class: "bg-cyan-600" },
-  { id: "sky-600", label: "Sky", class: "bg-sky-600" },
-  { id: "blue-600", label: "Blue", class: "bg-blue-600" },
-  { id: "indigo-500", label: "Indigo", class: "bg-indigo-500" },
-  { id: "purple-600", label: "Purple", class: "bg-purple-600" },
-  { id: "fuchsia-500", label: "Fuchsia", class: "bg-fuchsia-500" },
-  { id: "pink-500", label: "Pink", class: "bg-pink-500" },
-  { id: "rose-500", label: "Rose", class: "bg-rose-500" },
+  { id: "zinc-900", label: "Zinc", class: "bg-zinc-900", hex: "#18181b" },
+  { id: "slate-800", label: "Slate", class: "bg-slate-800", hex: "#1e293b" },
+  { id: "gray-900", label: "Gray", class: "bg-gray-900", hex: "#111827" },
+  {
+    id: "neutral-800",
+    label: "Neutral",
+    class: "bg-neutral-800",
+    hex: "#262626",
+  },
+  { id: "stone-700", label: "Stone", class: "bg-stone-700", hex: "#44403c" },
+  { id: "red-500", label: "Red", class: "bg-red-500", hex: "#ef4444" },
+  { id: "orange-500", label: "Orange", class: "bg-orange-500", hex: "#f97316" },
+  { id: "amber-600", label: "Amber", class: "bg-amber-600", hex: "#d97706" },
+  {
+    id: "emerald-500",
+    label: "Emerald",
+    class: "bg-emerald-500",
+    hex: "#10b981",
+  },
+  {
+    id: "emerald-600",
+    label: "Green",
+    class: "bg-emerald-600",
+    hex: "#059669",
+  },
+  { id: "teal-600", label: "Teal", class: "bg-teal-600", hex: "#0d9488" },
+  { id: "cyan-600", label: "Cyan", class: "bg-cyan-600", hex: "#0891b2" },
+  { id: "sky-600", label: "Sky", class: "bg-sky-600", hex: "#0284c7" },
+  { id: "blue-600", label: "Blue", class: "bg-blue-600", hex: "#2563eb" },
+  { id: "indigo-500", label: "Indigo", class: "bg-indigo-500", hex: "#6366f1" },
+  { id: "purple-600", label: "Purple", class: "bg-purple-600", hex: "#9333ea" },
+  {
+    id: "fuchsia-500",
+    label: "Fuchsia",
+    class: "bg-fuchsia-500",
+    hex: "#d946ef",
+  },
+  { id: "pink-500", label: "Pink", class: "bg-pink-500", hex: "#ec4899" },
+  { id: "rose-500", label: "Rose", class: "bg-rose-500", hex: "#f43f5e" },
 ];
 
 const FONTS = [
@@ -524,9 +546,16 @@ export function StyleForm() {
       </div>
 
       <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-[#27272a]">
-        <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
-          Accent Color (Primary Elements)
-        </Label>
+        <div className="flex items-center justify-between">
+          <Label className="text-sm font-semibold text-zinc-900 dark:text-[#fafafa]">
+            Accent Color & Palette
+          </Label>
+          <span className="text-[11px] text-zinc-400 font-medium">
+            Presets & Custom HEX
+          </span>
+        </div>
+
+        {/* Preset Swatches */}
         <div className="grid grid-cols-5 sm:grid-cols-7 gap-3">
           {COLORS.map((color) => (
             <button
@@ -537,7 +566,7 @@ export function StyleForm() {
                   ? "border-white scale-110 ring-2 ring-white/20"
                   : "border-transparent"
               }`}
-              title={color.label}
+              title={`${color.label} (${color.hex})`}
             >
               {themeConfig?.accentColor === color.id && (
                 <div className="w-2 h-2 bg-white rounded-full" />
@@ -545,6 +574,85 @@ export function StyleForm() {
             </button>
           ))}
         </div>
+
+        {/* Custom HEX Picker & WCAG Contrast Check */}
+        {(() => {
+          const currentAccent = themeConfig?.accentColor || "zinc-900";
+          const currentBg = themeConfig?.backgroundColor || "#FFFFFF";
+          const matchedPreset = COLORS.find((c) => c.id === currentAccent);
+          const activeHex = currentAccent.startsWith("#")
+            ? currentAccent
+            : matchedPreset?.hex || "#18181b";
+
+          const contrast = checkContrast(activeHex, currentBg);
+
+          return (
+            <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-[#27272a] bg-zinc-50/50 dark:bg-[#18181b]/30 space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-8 h-8 rounded-lg border border-zinc-300 dark:border-zinc-700 shadow-2xs shrink-0"
+                    style={{ backgroundColor: activeHex }}
+                  />
+                  <div>
+                    <span className="text-xs font-semibold text-zinc-900 dark:text-white block">
+                      Custom HEX Color
+                    </span>
+                    <span className="text-[10px] text-zinc-400 font-mono">
+                      {activeHex.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={activeHex}
+                    onChange={(e) =>
+                      updateThemeConfig({ accentColor: e.target.value })
+                    }
+                    className="w-8 h-8 rounded-lg cursor-pointer border border-zinc-200 dark:border-zinc-700 p-0.5 bg-white dark:bg-zinc-800"
+                    title="Open Color Wheel"
+                  />
+                  <input
+                    type="text"
+                    value={activeHex}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val.startsWith("#") || val.length <= 7) {
+                        updateThemeConfig({ accentColor: val });
+                      }
+                    }}
+                    placeholder="#18181B"
+                    maxLength={7}
+                    className="w-24 text-xs font-mono uppercase px-2 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  />
+                </div>
+              </div>
+
+              {/* WCAG Contrast Ratio Live Badge */}
+              <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span className="text-zinc-600 dark:text-zinc-300 font-medium">
+                    WCAG 2.1 Contrast:
+                  </span>
+                  <span className="font-bold text-zinc-900 dark:text-white">
+                    {contrast.ratioText}
+                  </span>
+                </div>
+                <span
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${contrast.ratingColor}`}
+                >
+                  {contrast.rating} {contrast.isAaPassed ? "Pass" : "Warning"}
+                </span>
+              </div>
+              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-tight">
+                {contrast.message}
+              </p>
+            </div>
+          );
+        })()}
       </div>
 
       <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-[#27272a]">

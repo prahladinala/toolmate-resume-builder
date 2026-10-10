@@ -9,8 +9,11 @@ import {
   XCircle,
   Target,
   HelpCircle,
+  Wand2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
+import { polishEntireResume } from "@/lib/resumePolish";
 import { JDMatcherModal } from "./JDMatcherModal";
 import { InterviewPrepModal } from "./InterviewPrepModal";
 
@@ -276,6 +279,20 @@ export function AtsAnalyzer() {
     );
   }, [data]);
 
+  const handleAutoPolish = () => {
+    const { polishedData, totalFixes } = polishEntireResume(data);
+    if (totalFixes > 0) {
+      useResumeStore.setState({ data: polishedData });
+      toast.success(
+        `Polished & standardized ${totalFixes} technical term casing & spacing issues across your resume!`,
+      );
+    } else {
+      toast.info(
+        "All technical terms, capitalization, and bullet points are already standardized!",
+      );
+    }
+  };
+
   return (
     <div className="fixed bottom-6 right-6 z-50 print:hidden flex flex-col items-end">
       <AnimatePresence>
@@ -319,6 +336,16 @@ export function AtsAnalyzer() {
               <button
                 onClick={() => {
                   setIsOpen(false);
+                  handleAutoPolish();
+                }}
+                className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium flex items-center justify-center gap-2 shadow-sm transition-all"
+              >
+                <Wand2 className="w-3.5 h-3.5" />
+                Spellcheck & Polish Tech Terms
+              </button>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
                   setShowJDMatcher(true);
                 }}
                 className="w-full py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium flex items-center justify-center gap-2 shadow-sm transition-all"
@@ -342,6 +369,15 @@ export function AtsAnalyzer() {
       </AnimatePresence>
 
       <div className="flex items-center gap-2">
+        <button
+          onClick={handleAutoPolish}
+          className="h-12 px-4 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg flex items-center gap-2 font-medium text-xs transition-transform hover:scale-105 active:scale-95"
+          title="Scan and standardize technical buzzwords, capitalization, and punctuation"
+        >
+          <Wand2 className="w-4 h-4 text-emerald-500" />
+          <span className="hidden sm:inline">Polish & Fix</span>
+        </button>
+
         <button
           onClick={() => setShowJDMatcher(true)}
           className="h-12 px-4 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg flex items-center gap-2 font-medium text-xs transition-transform hover:scale-105 active:scale-95"

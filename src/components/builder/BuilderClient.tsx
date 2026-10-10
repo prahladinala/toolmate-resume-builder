@@ -19,6 +19,7 @@ import {
   Redo2,
   WifiOff,
   Target,
+  History,
 } from "lucide-react";
 import { useStore } from "zustand";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -28,6 +29,8 @@ import { BuilderSidebar } from "./ui/BuilderSidebar";
 import { BuilderMobileNav } from "./ui/BuilderMobileNav";
 import { BuilderFormContainer } from "./ui/BuilderFormContainer";
 import { ResumeProfileModal } from "./ResumeProfileModal";
+import { SmartImportModal } from "./SmartImportModal";
+import { HistoryDrawerModal } from "./HistoryDrawerModal";
 import {
   exportToJsonResume,
   importFromJsonResume,
@@ -63,6 +66,8 @@ export function BuilderClient() {
   const [activeStep, setActiveStep] = useState(0);
   const [showPreviewMobile, setShowPreviewMobile] = useState(false);
   const [showProfiles, setShowProfiles] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [hasHydrated, setHasHydrated] = useState(false);
 
@@ -229,11 +234,23 @@ export function BuilderClient() {
         importJSON={importJSON}
         exportJSON={exportJSON}
         onOpenProfiles={() => setShowProfiles(true)}
+        onOpenImport={() => setShowImport(true)}
+        onOpenHistory={() => setShowHistory(true)}
       />
 
       <ResumeProfileModal
         isOpen={showProfiles}
         onClose={() => setShowProfiles(false)}
+      />
+
+      <SmartImportModal
+        isOpen={showImport}
+        onClose={() => setShowImport(false)}
+      />
+
+      <HistoryDrawerModal
+        isOpen={showHistory}
+        onClose={() => setShowHistory(false)}
       />
 
       {/* MIDDLE: Form Panel (Desktop & Mobile) */}
@@ -248,6 +265,8 @@ export function BuilderClient() {
           setActiveStep={setActiveStep}
           handleBack={handleBack}
           setShowPreviewMobile={setShowPreviewMobile}
+          onOpenImport={() => setShowImport(true)}
+          onOpenHistory={() => setShowHistory(true)}
         />
 
         {/* Desktop Header for the Form Panel */}
@@ -294,6 +313,16 @@ export function BuilderClient() {
             title="Redo"
           >
             <Redo2 className="h-4 w-4 sm:h-5 sm:w-5" />
+          </Button>
+
+          <Button
+            onClick={() => setShowHistory(true)}
+            variant="outline"
+            size="icon"
+            className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-10 w-10 sm:h-12 sm:w-12 text-zinc-600 dark:text-zinc-300"
+            title="Session History Timeline"
+          >
+            <History className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
 
           <Button
