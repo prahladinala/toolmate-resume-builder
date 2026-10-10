@@ -18,6 +18,7 @@ import {
   Undo2,
   Redo2,
   WifiOff,
+  Target,
 } from "lucide-react";
 import { useStore } from "zustand";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -53,6 +54,7 @@ const STEPS = [
   { id: "projects", label: "Projects", icon: Code },
   { id: "custom", label: "Custom", icon: FileText },
   { id: "cover-letter", label: "Cover Letter", icon: FileText },
+  { id: "job-match", label: "Job Match", icon: Target },
   { id: "style", label: "Style", icon: Palette },
 ];
 

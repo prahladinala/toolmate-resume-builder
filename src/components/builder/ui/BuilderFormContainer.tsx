@@ -10,12 +10,15 @@ import { EducationForm } from "@/components/builder/forms/EducationForm";
 import { StyleForm } from "@/components/builder/forms/StyleForm";
 import { CustomSectionForm } from "@/components/builder/forms/CustomSectionForm";
 import { CoverLetterForm } from "@/components/builder/forms/CoverLetterForm";
+import { JobMatcherForm } from "@/components/builder/forms/JobMatcherForm";
 
 interface BuilderFormContainerProps {
   activeStep: number;
 }
 
-export function BuilderFormContainer({ activeStep }: BuilderFormContainerProps) {
+export function BuilderFormContainer({
+  activeStep,
+}: BuilderFormContainerProps) {
   return (
     <div className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth no-scrollbar">
       <AnimatePresence mode="wait">
@@ -35,7 +38,8 @@ export function BuilderFormContainer({ activeStep }: BuilderFormContainerProps) 
           {activeStep === 5 && <ProjectsForm />}
           {activeStep === 6 && <CustomSectionForm />}
           {activeStep === 7 && <CoverLetterForm />}
-          {activeStep === 8 && <StyleForm />}
+          {activeStep === 8 && <JobMatcherForm />}
+          {activeStep === 9 && <StyleForm />}
         </motion.div>
       </AnimatePresence>
     </div>
