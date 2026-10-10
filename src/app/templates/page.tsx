@@ -168,6 +168,12 @@ export default function TemplatesPage() {
           >
             Builder
           </Link>
+          <Link
+            href="/interview-prep"
+            className="text-zinc-500 dark:text-[#a1a1aa] hover:text-zinc-900 dark:text-[#fafafa] transition-colors hidden sm:block"
+          >
+            Interview Prep
+          </Link>
           <ThemeToggle />
         </div>
       </nav>
