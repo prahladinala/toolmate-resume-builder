@@ -71,11 +71,10 @@ export function AIHelper({
         setParsedResult(parsed);
 
         if (parsed.options.length > 0) {
-          const recommended = parsed.options[parsed.recommendedIndex];
-          // Prefill ONLY the clean recommended text into input (NO Option headers/markdown)
-          onUpdate(recommended.text);
+          // Do NOT auto-overwrite user input without user consent.
+          // Display the parsed options card below the input so the user can review before & after.
           notify.aiSuccess(
-            `Prefilled input with Recommended ATS rewrite. Options shown below!`,
+            `Generated ${parsed.options.length} ATS-optimized options! Review and apply below.`,
           );
         } else {
           onUpdate(rawResult.trim());

@@ -365,9 +365,6 @@ export async function runChromeAIPrompt(
   promptText: string,
   options?: string | AIOptimizeOptions,
 ): Promise<string> {
-  const LM = getLanguageModelAPI();
-  let session: any = null;
-
   const sectionType: SectionContextType =
     typeof options === "object" && options.sectionType
       ? options.sectionType
@@ -387,54 +384,14 @@ export async function runChromeAIPrompt(
     customSystemPrompt ||
     "You are an expert ATS resume writer and career coach.";
 
-  try {
-    if (LM && typeof LM.create === "function") {
-      try {
-        session = await LM.create({ systemPrompt });
-      } catch {
-        try {
-          session = await LM.create({
-            initialPrompts: [{ role: "system", content: systemPrompt }],
-          });
-        } catch {
-          session = await LM.create();
-        }
-      }
-    } else {
-      const legacyAi = getLegacyAIApi();
-      if (legacyAi && typeof legacyAi.createTextSession === "function") {
-        session = await legacyAi.createTextSession();
-      } else {
-        throw new Error("No compatible Chrome Gemini Nano API found.");
-      }
-    }
+  const fullPrompt = buildOptimizedPrompt(
+    promptText,
+    sectionType,
+    tone,
+    customSystemPrompt,
+  );
 
-    if (!session || typeof session.prompt !== "function") {
-      throw new Error("Failed to initialize Gemini Nano prompt session.");
-    }
-
-    const fullPrompt = buildOptimizedPrompt(
-      promptText,
-      sectionType,
-      tone,
-      customSystemPrompt,
-    );
-
-    const result = await session.prompt(fullPrompt);
-
-    if (typeof session.destroy === "function") {
-      try {
-        session.destroy();
-      } catch {}
-    }
-
-    return typeof result === "string" ? result : String(result || "");
-  } catch (err: any) {
-    if (session && typeof session.destroy === "function") {
-      try {
-        session.destroy();
-      } catch {}
-    }
-    throw err;
-  }
+  // Use centralized AISessionManager for session pooling and reuse
+  const { aiSessionManager } = await import("@/lib/ai/sessionManager");
+  return await aiSessionManager.executePrompt(fullPrompt, { systemPrompt });
 }

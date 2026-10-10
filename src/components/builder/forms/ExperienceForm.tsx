@@ -18,6 +18,7 @@ import { PowerVerbs } from "../PowerVerbs";
 import { AIHelper } from "../AIHelper";
 import { AISuggestions } from "../AISuggestions";
 import { BulletQuantifierModal } from "../BulletQuantifierModal";
+import { AchievementAssistantModal } from "../AchievementAssistantModal";
 import { detectWeakActionVerbs, replaceWeakVerb } from "@/lib/actionVerbs";
 import { toast } from "sonner";
 import {
@@ -62,6 +63,8 @@ function SortableExperienceItem({
   } = useSortable({ id });
 
   const [showQuantifier, setShowQuantifier] = useState(false);
+  const [showAchievementAssistant, setShowAchievementAssistant] =
+    useState(false);
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -180,6 +183,17 @@ function SortableExperienceItem({
                 type="button"
                 variant="outline"
                 size="sm"
+                onClick={() => setShowAchievementAssistant(true)}
+                className="h-8 gap-1.5 text-xs text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-950/40"
+                title="Synthesize evidence-based achievements with STAR questionnaire"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                STAR Assistant
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
                 onClick={() => setShowQuantifier(true)}
                 className="h-8 gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
                 title="Add realistic metrics and percentage impact with Gemini Nano"
@@ -259,6 +273,28 @@ function SortableExperienceItem({
               </div>
             );
           })()}
+          <AchievementAssistantModal
+            isOpen={showAchievementAssistant}
+            onClose={() => setShowAchievementAssistant(false)}
+            currentText={watch(`experiences.${index}.description`) || ""}
+            onApply={(synthesizedText) => {
+              const currentDesc =
+                watch(`experiences.${index}.description`) || "";
+              if (!currentDesc.trim()) {
+                setValue(
+                  `experiences.${index}.description`,
+                  `- ${synthesizedText}`,
+                );
+              } else {
+                setValue(
+                  `experiences.${index}.description`,
+                  currentDesc +
+                    (currentDesc.endsWith("\n") ? "" : "\n") +
+                    `- ${synthesizedText}`,
+                );
+              }
+            }}
+          />
           <BulletQuantifierModal
             isOpen={showQuantifier}
             onClose={() => setShowQuantifier(false)}
