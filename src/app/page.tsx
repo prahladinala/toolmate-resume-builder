@@ -632,6 +632,18 @@ export default function Home() {
             >
               AI Interview Prep
             </Link>
+            <Link
+              href="/privacy"
+              className="hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms"
+              className="hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              Terms of Service
+            </Link>
             <a
               href="https://toolmate.co.in"
               target="_blank"

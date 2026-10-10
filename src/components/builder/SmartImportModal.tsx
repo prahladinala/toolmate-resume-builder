@@ -26,6 +26,7 @@ import { useResumeStore } from "@/store/useResumeStore";
 import { extractTextFromPdf, parseResumeText } from "@/lib/pdfResumeParser";
 import { STARTER_PROFILES, StarterProfile } from "@/lib/starterProfiles";
 import { ResumeData } from "@/types/resume";
+import { validateAndSanitizeResumeData } from "@/lib/validation";
 import { toast } from "sonner";
 
 interface SmartImportModalProps {
@@ -126,18 +127,27 @@ export function SmartImportModal({ isOpen, onClose }: SmartImportModalProps) {
 
   const applyParsedData = (parsed: ResumeData, merge: boolean = false) => {
     try {
+      const validation = validateAndSanitizeResumeData(parsed);
+      if (!validation.success || !validation.data) {
+        toast.error("Resume format validation failed", {
+          description: validation.error || "Malformed resume fields detected",
+        });
+        return;
+      }
+      const safeData = validation.data as ResumeData;
+
       if (merge) {
         // Merge personal info
-        updatePersonalInfo(parsed.personalInfo);
-        if (parsed.summary) updateSummary(parsed.summary);
+        updatePersonalInfo(safeData.personalInfo);
+        if (safeData.summary) updateSummary(safeData.summary);
 
         useResumeStore.setState((state) => ({
           data: {
             ...state.data,
-            experience: [...state.data.experience, ...parsed.experience],
-            education: [...state.data.education, ...parsed.education],
-            projects: [...state.data.projects, ...parsed.projects],
-            skills: [...state.data.skills, ...parsed.skills],
+            experience: [...state.data.experience, ...safeData.experience],
+            education: [...state.data.education, ...safeData.education],
+            projects: [...state.data.projects, ...safeData.projects],
+            skills: [...state.data.skills, ...safeData.skills],
           },
         }));
         toast.success("Merged into your current resume!");
@@ -145,7 +155,7 @@ export function SmartImportModal({ isOpen, onClose }: SmartImportModalProps) {
         // Replace
         useResumeStore.setState({
           data: {
-            ...parsed,
+            ...safeData,
             coverLetter: data.coverLetter,
           },
         });

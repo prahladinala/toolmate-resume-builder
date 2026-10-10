@@ -17,9 +17,8 @@ export function escapeHtml(str: string): string {
 export function sanitizeUrl(url?: string): string {
   if (!url) return "#";
   const trimmed = url.trim();
-  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) {
-    return trimmed;
-  }
+  if (trimmed.startsWith("//")) return "#";
+  if (trimmed.startsWith("/")) return trimmed;
   try {
     const parsed = new URL(trimmed);
     if (["http:", "https:", "mailto:", "tel:"].includes(parsed.protocol)) {
