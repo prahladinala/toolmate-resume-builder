@@ -129,6 +129,20 @@ const templates = [
     ats: 92,
     color: "bg-red-500",
   },
+  {
+    id: "latex-1",
+    name: "Academic LaTeX",
+    category: "developers",
+    ats: 100,
+    color: "bg-slate-800",
+  },
+  {
+    id: "consult-1",
+    name: "Consulting & Banking",
+    category: "corporate",
+    ats: 100,
+    color: "bg-zinc-900",
+  },
 ];
 
 export default function TemplatesPage() {

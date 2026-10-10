@@ -27,6 +27,10 @@ import { BuilderSidebar } from "./ui/BuilderSidebar";
 import { BuilderMobileNav } from "./ui/BuilderMobileNav";
 import { BuilderFormContainer } from "./ui/BuilderFormContainer";
 import { ResumeProfileModal } from "./ResumeProfileModal";
+import {
+  exportToJsonResume,
+  importFromJsonResume,
+} from "@/lib/jsonResumeConverter";
 
 const Preview = dynamic(
   () => import("@/components/builder/Preview").then((mod) => mod.Preview),
@@ -133,17 +137,19 @@ export function BuilderClient() {
   const exportJSON = () => {
     try {
       const data = useResumeStore.getState().data;
+      const jsonResume = exportToJsonResume(data);
       const dataStr =
         "data:text/json;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(data, null, 2));
+        encodeURIComponent(JSON.stringify(jsonResume, null, 2));
       const downloadAnchorNode = document.createElement("a");
       downloadAnchorNode.setAttribute("href", dataStr);
-      downloadAnchorNode.setAttribute("download", "resume-backup.json");
+      downloadAnchorNode.setAttribute("download", "resume-standard.json");
       document.body.appendChild(downloadAnchorNode);
       downloadAnchorNode.click();
       downloadAnchorNode.remove();
-      toast.success("Backup Exported! 💾", {
-        description: "Your resume data was downloaded as resume-backup.json.",
+      toast.success("JSON Resume Exported! 💾", {
+        description:
+          "Downloaded in official JSON Resume standard (jsonresume.org).",
       });
     } catch {
       toast.error("Export Failed", {
@@ -170,15 +176,26 @@ export function BuilderClient() {
           if (!json || typeof json !== "object") {
             throw new Error("Invalid structure");
           }
-          useResumeStore.setState({ data: json });
+
+          // Check if it's JSON Resume format (has basics) or native ToolMate format
+          let convertedData;
+          if (json.basics) {
+            convertedData = importFromJsonResume(json);
+          } else if (json.personalInfo) {
+            convertedData = json;
+          } else {
+            throw new Error("Unrecognized JSON format");
+          }
+
+          useResumeStore.setState({ data: convertedData });
           toast.success("Resume Imported! 🚀", {
             description:
-              "Your resume sections and styles have been successfully restored.",
+              "Your resume sections and details have been successfully restored.",
           });
         } catch {
-          toast.error("Invalid Resume Backup", {
+          toast.error("Invalid Resume File", {
             description:
-              "The JSON file appears corrupted or improperly formatted.",
+              "The file must be a standard JSON Resume or ToolMate backup file.",
           });
         }
       };

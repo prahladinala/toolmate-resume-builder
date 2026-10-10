@@ -295,6 +295,32 @@ export function TemplateEngine({
       sectionStyle: "boxed",
       showContactIcons: true,
     },
+
+    // Academic / LaTeX Style: High-density, classical academic serif, subtle rules
+    "latex-1": {
+      layout: "single-column",
+      headerAlign: "center",
+      imageAlign: "hidden",
+      fontFamily: "serif",
+      accentColor: "slate-800",
+      bgColor: "#FFFFFF",
+      textColor: "text-neutral-900",
+      sectionStyle: "underline",
+      showContactIcons: false,
+    },
+
+    // Consulting & Banking Style: High-density, professional borders, executive margins
+    "consult-1": {
+      layout: "single-column",
+      headerAlign: "left",
+      imageAlign: "hidden",
+      fontFamily: "sans",
+      accentColor: "zinc-900",
+      bgColor: "#FFFFFF",
+      textColor: "text-zinc-900",
+      sectionStyle: "minimal",
+      showContactIcons: true,
+    },
   };
 
   // Fallback to dev-1 if somehow an invalid ID is passed
