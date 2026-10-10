@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
-import { Fragment } from "react";
+import { Fragment, memo } from "react";
 import type { ResumeData, ThemeConfig } from "@/types/resume";
 import {
   Mail,
@@ -99,7 +99,7 @@ function getIcon(name: string, colorClass: string) {
   }
 }
 
-export function TemplateEngine({
+export const TemplateEngine = memo(function TemplateEngine({
   data,
   templateId,
   themeConfig,
@@ -1433,4 +1433,4 @@ export function TemplateEngine({
       </div>
     </div>
   );
-}
+});

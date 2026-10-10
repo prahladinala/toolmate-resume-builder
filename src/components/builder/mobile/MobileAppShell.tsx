@@ -25,13 +25,21 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useResumeStore } from "@/store/useResumeStore";
+import dynamic from "next/dynamic";
 import { BuilderFormContainer } from "../ui/BuilderFormContainer";
 import { Preview } from "../Preview";
 import { StyleForm } from "../forms/StyleForm";
-import { JDMatcherModal } from "../JDMatcherModal";
-import { InterviewPrepModal } from "../InterviewPrepModal";
-import { polishEntireResume } from "@/lib/resumePolish";
 import { toast } from "sonner";
+
+const JDMatcherModal = dynamic(
+  () => import("../JDMatcherModal").then((mod) => mod.JDMatcherModal),
+  { ssr: false },
+);
+
+const InterviewPrepModal = dynamic(
+  () => import("../InterviewPrepModal").then((mod) => mod.InterviewPrepModal),
+  { ssr: false },
+);
 
 export type MobileTab = "editor" | "design" | "preview" | "ai" | "export";
 
@@ -156,7 +164,8 @@ export function MobileAppShell({
 
   const { score: atsScore, checks: atsChecks } = calculateScore();
 
-  const handleAutoPolish = () => {
+  const handleAutoPolish = async () => {
+    const { polishEntireResume } = await import("@/lib/resumePolish");
     const { polishedData, totalFixes } = polishEntireResume(data);
     if (totalFixes > 0) {
       useResumeStore.setState({ data: polishedData });

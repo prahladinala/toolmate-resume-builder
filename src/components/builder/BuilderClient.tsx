@@ -27,17 +27,34 @@ import { useResumeStore } from "@/store/useResumeStore";
 
 import { BuilderSidebar } from "./ui/BuilderSidebar";
 import { BuilderFormContainer } from "./ui/BuilderFormContainer";
-import { ResumeProfileModal } from "./ResumeProfileModal";
-import { SmartImportModal } from "./SmartImportModal";
-import { HistoryDrawerModal } from "./HistoryDrawerModal";
-import { MobileAppShell } from "./mobile/MobileAppShell";
 import { PrintPortal } from "./PrintPortal";
-import {
-  exportToJsonResume,
-  importFromJsonResume,
-} from "@/lib/jsonResumeConverter";
-import { downloadDocxResume } from "@/lib/docxResumeGenerator";
-import { downloadDirectPdf } from "@/lib/pdfDownloader";
+
+const ResumeProfileModal = dynamic(
+  () => import("./ResumeProfileModal").then((mod) => mod.ResumeProfileModal),
+  { ssr: false },
+);
+
+const SmartImportModal = dynamic(
+  () => import("./SmartImportModal").then((mod) => mod.SmartImportModal),
+  { ssr: false },
+);
+
+const HistoryDrawerModal = dynamic(
+  () => import("./HistoryDrawerModal").then((mod) => mod.HistoryDrawerModal),
+  { ssr: false },
+);
+
+const MobileAppShell = dynamic(
+  () => import("./mobile/MobileAppShell").then((mod) => mod.MobileAppShell),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-screen w-full items-center justify-center bg-[#fafafa] dark:bg-[#111113]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+      </div>
+    ),
+  },
+);
 
 const Preview = dynamic(
   () => import("@/components/builder/Preview").then((mod) => mod.Preview),
@@ -145,6 +162,7 @@ export function BuilderClient() {
       toast.info("Generating PDF Document... 📄", {
         description: "Rendering high-resolution vector layout.",
       });
+      const { downloadDirectPdf } = await import("@/lib/pdfDownloader");
       await downloadDirectPdf(data);
       toast.success("PDF Downloaded successfully! 🎉");
     } catch (err) {
@@ -162,6 +180,7 @@ export function BuilderClient() {
       toast.info("Generating Word (.docx) Document... 📝", {
         description: `Applying ${(activeTemplate || "modern").toUpperCase()} template layout, colors & typography.`,
       });
+      const { downloadDocxResume } = await import("@/lib/docxResumeGenerator");
       await downloadDocxResume(data, activeTemplate || "dev-1", themeConfig);
       toast.success("Word Document (.docx) downloaded successfully!");
     } catch (err) {
@@ -182,9 +201,10 @@ export function BuilderClient() {
     }
   };
 
-  const exportJSON = () => {
+  const exportJSON = async () => {
     try {
       const data = useResumeStore.getState().data;
+      const { exportToJsonResume } = await import("@/lib/jsonResumeConverter");
       const jsonResume = exportToJsonResume(data);
       const dataStr =
         "data:text/json;charset=utf-8," +
@@ -218,12 +238,15 @@ export function BuilderClient() {
       }
 
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         try {
           const json = JSON.parse(event.target?.result as string);
           if (!json || typeof json !== "object") {
             throw new Error("Invalid structure");
           }
+
+          const { importFromJsonResume } =
+            await import("@/lib/jsonResumeConverter");
 
           // Check if it's JSON Resume format (has basics) or native ToolMate format
           let convertedData;

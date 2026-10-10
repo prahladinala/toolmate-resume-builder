@@ -13,9 +13,17 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { polishEntireResume } from "@/lib/resumePolish";
-import { JDMatcherModal } from "./JDMatcherModal";
-import { InterviewPrepModal } from "./InterviewPrepModal";
+import dynamic from "next/dynamic";
+
+const JDMatcherModal = dynamic(
+  () => import("./JDMatcherModal").then((mod) => mod.JDMatcherModal),
+  { ssr: false },
+);
+
+const InterviewPrepModal = dynamic(
+  () => import("./InterviewPrepModal").then((mod) => mod.InterviewPrepModal),
+  { ssr: false },
+);
 
 export function AtsAnalyzer() {
   const { data } = useResumeStore();
@@ -279,7 +287,8 @@ export function AtsAnalyzer() {
     );
   }, [data]);
 
-  const handleAutoPolish = () => {
+  const handleAutoPolish = async () => {
+    const { polishEntireResume } = await import("@/lib/resumePolish");
     const { polishedData, totalFixes } = polishEntireResume(data);
     if (totalFixes > 0) {
       useResumeStore.setState({ data: polishedData });
