@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Sparkles,
   Loader2,
@@ -23,11 +23,21 @@ interface JDMatcherModalProps {
 }
 
 export function JDMatcherModal({ isOpen, onClose }: JDMatcherModalProps) {
-  const { data, updateSummary, addSkill } = useResumeStore();
-  const [jdText, setJdText] = useState("");
+  const { data, updateSummary, addSkill, updateTargetJobDescription } =
+    useResumeStore();
+  const [jdText, setJdText] = useState(data.targetJobDescription || "");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<JDMatchResult | null>(null);
   const [showSetup, setShowSetup] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -75,7 +85,15 @@ export function JDMatcherModal({ isOpen, onClose }: JDMatcherModalProps) {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="jd-modal-title"
+        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+      >
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
           {/* Header */}
           <div className="p-5 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
@@ -84,7 +102,10 @@ export function JDMatcherModal({ isOpen, onClose }: JDMatcherModalProps) {
                 <Target className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                <h3
+                  id="jd-modal-title"
+                  className="font-semibold text-lg text-zinc-900 dark:text-zinc-100 flex items-center gap-2"
+                >
                   Target Job Description Matcher
                   <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
                     On-Device Nano
@@ -114,7 +135,10 @@ export function JDMatcherModal({ isOpen, onClose }: JDMatcherModalProps) {
                 <textarea
                   rows={8}
                   value={jdText}
-                  onChange={(e) => setJdText(e.target.value)}
+                  onChange={(e) => {
+                    setJdText(e.target.value);
+                    updateTargetJobDescription(e.target.value);
+                  }}
                   placeholder="Paste the job requirements, responsibilities, and required qualifications here..."
                   className="w-full p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/40 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-zinc-800 dark:text-zinc-200 resize-none"
                 />

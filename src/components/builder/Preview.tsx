@@ -12,6 +12,7 @@ interface PreviewProps {
   onModeChange?: (mode: "resume" | "cover-letter") => void;
   showPageBreaks?: boolean;
   onTogglePageBreaks?: () => void;
+  onNavigateStep?: (stepIndex: number) => void;
 }
 
 export function Preview({
@@ -19,6 +20,7 @@ export function Preview({
   onModeChange,
   showPageBreaks: propShowPageBreaks,
   onTogglePageBreaks,
+  onNavigateStep,
 }: PreviewProps = {}) {
   const { data, activeTemplate, themeConfig, updateThemeConfig } =
     useResumeStore();
@@ -165,7 +167,7 @@ export function Preview({
         </button>
       </div>
 
-      <AtsAnalyzer />
+      <AtsAnalyzer onNavigateStep={onNavigateStep} />
 
       {/* Mobile Interactive Zoom View */}
       <div className="md:hidden w-full h-[calc(100vh-56px)] overflow-hidden print:hidden relative flex flex-col items-center">

@@ -59,6 +59,7 @@ export type ResumeData = {
   };
   summary: string;
   coverLetter?: string;
+  targetJobDescription?: string;
   experience: Experience[];
   projects: Project[];
   education: Education[];
@@ -119,6 +120,7 @@ export type ResumeStore = {
   updatePersonalInfo: (info: Partial<ResumeData["personalInfo"]>) => void;
   updateSummary: (summary: string) => void;
   updateCoverLetter: (letter: string) => void;
+  updateTargetJobDescription: (jd: string) => void;
 
   // Experience
   addExperience: (exp: Experience) => void;

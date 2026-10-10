@@ -62,8 +62,13 @@ export function ResumeProfileModal({
   useEffect(() => {
     if (isOpen) {
       loadProfiles();
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") onClose();
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
     }
-  }, [isOpen, loadProfiles]);
+  }, [isOpen, loadProfiles, onClose]);
 
   const handleSaveCurrentAsActive = async () => {
     if (!activeId) return;
@@ -150,7 +155,15 @@ export function ResumeProfileModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="profiles-modal-title"
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+    >
       <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-xl max-h-[85vh] flex flex-col shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
         <div className="p-5 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
@@ -159,7 +172,10 @@ export function ResumeProfileModal({
               <Layers className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg text-zinc-900 dark:text-zinc-100">
+              <h3
+                id="profiles-modal-title"
+                className="font-semibold text-lg text-zinc-900 dark:text-zinc-100"
+              >
                 Targeted Resume Profiles
               </h3>
               <p className="text-xs text-zinc-500">

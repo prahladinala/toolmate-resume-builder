@@ -59,182 +59,191 @@ export const useResumeStore = create<ResumeStore>()(
   temporal(
     persist(
       (set) => ({
-      data: initialData,
-      activeTemplate: "dev-1" as ResumeTemplate,
-      themeConfig: {},
+        data: initialData,
+        activeTemplate: "dev-1" as ResumeTemplate,
+        themeConfig: {},
 
-      updateThemeConfig: (config) =>
-        set((state) => ({
-          themeConfig: { ...state.themeConfig, ...config },
-        })),
+        updateThemeConfig: (config) =>
+          set((state) => ({
+            themeConfig: { ...state.themeConfig, ...config },
+          })),
 
-      updatePersonalInfo: (info) =>
-        set((state) => ({
-          data: {
-            ...state.data,
-            personalInfo: { ...state.data.personalInfo, ...info },
-          },
-        })),
+        updatePersonalInfo: (info) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              personalInfo: { ...state.data.personalInfo, ...info },
+            },
+          })),
 
-      updateSummary: (summary) =>
-        set((state) => ({
-          data: { ...state.data, summary },
-        })),
+        updateSummary: (summary) =>
+          set((state) => ({
+            data: { ...state.data, summary },
+          })),
 
-      updateCoverLetter: (coverLetter) =>
-        set((state) => ({
-          data: { ...state.data, coverLetter },
-        })),
+        updateCoverLetter: (coverLetter) =>
+          set((state) => ({
+            data: { ...state.data, coverLetter },
+          })),
 
-      addExperience: (exp) =>
-        set((state) => ({
-          data: { ...state.data, experience: [...state.data.experience, exp] },
-        })),
+        updateTargetJobDescription: (targetJobDescription) =>
+          set((state) => ({
+            data: { ...state.data, targetJobDescription },
+          })),
 
-      updateExperience: (id, exp) =>
-        set((state) => ({
-          data: {
-            ...state.data,
-            experience: state.data.experience.map((e) =>
-              e.id === id ? { ...e, ...exp } : e,
-            ),
-          },
-        })),
+        addExperience: (exp) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              experience: [...state.data.experience, exp],
+            },
+          })),
 
-      removeExperience: (id) =>
-        set((state) => ({
-          data: {
-            ...state.data,
-            experience: state.data.experience.filter((e) => e.id !== id),
-          },
-        })),
+        updateExperience: (id, exp) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              experience: state.data.experience.map((e) =>
+                e.id === id ? { ...e, ...exp } : e,
+              ),
+            },
+          })),
 
-      reorderExperience: (startIndex, endIndex) =>
-        set((state) => {
-          const result = Array.from(state.data.experience);
-          const [removed] = result.splice(startIndex, 1);
-          result.splice(endIndex, 0, removed);
-          return { data: { ...state.data, experience: result } };
-        }),
+        removeExperience: (id) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              experience: state.data.experience.filter((e) => e.id !== id),
+            },
+          })),
 
-      addProject: (proj) =>
-        set((state) => ({
-          data: { ...state.data, projects: [...state.data.projects, proj] },
-        })),
+        reorderExperience: (startIndex, endIndex) =>
+          set((state) => {
+            const result = Array.from(state.data.experience);
+            const [removed] = result.splice(startIndex, 1);
+            result.splice(endIndex, 0, removed);
+            return { data: { ...state.data, experience: result } };
+          }),
 
-      updateProject: (id, proj) =>
-        set((state) => ({
-          data: {
-            ...state.data,
-            projects: state.data.projects.map((p) =>
-              p.id === id ? { ...p, ...proj } : p,
-            ),
-          },
-        })),
+        addProject: (proj) =>
+          set((state) => ({
+            data: { ...state.data, projects: [...state.data.projects, proj] },
+          })),
 
-      removeProject: (id) =>
-        set((state) => ({
-          data: {
-            ...state.data,
-            projects: state.data.projects.filter((p) => p.id !== id),
-          },
-        })),
+        updateProject: (id, proj) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              projects: state.data.projects.map((p) =>
+                p.id === id ? { ...p, ...proj } : p,
+              ),
+            },
+          })),
 
-      reorderProjects: (startIndex, endIndex) =>
-        set((state) => {
-          const result = Array.from(state.data.projects);
-          const [removed] = result.splice(startIndex, 1);
-          result.splice(endIndex, 0, removed);
-          return { data: { ...state.data, projects: result } };
-        }),
+        removeProject: (id) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              projects: state.data.projects.filter((p) => p.id !== id),
+            },
+          })),
 
-      addEducation: (edu) =>
-        set((state) => ({
-          data: { ...state.data, education: [...state.data.education, edu] },
-        })),
+        reorderProjects: (startIndex, endIndex) =>
+          set((state) => {
+            const result = Array.from(state.data.projects);
+            const [removed] = result.splice(startIndex, 1);
+            result.splice(endIndex, 0, removed);
+            return { data: { ...state.data, projects: result } };
+          }),
 
-      updateEducation: (id, edu) =>
-        set((state) => ({
-          data: {
-            ...state.data,
-            education: state.data.education.map((e) =>
-              e.id === id ? { ...e, ...edu } : e,
-            ),
-          },
-        })),
+        addEducation: (edu) =>
+          set((state) => ({
+            data: { ...state.data, education: [...state.data.education, edu] },
+          })),
 
-      removeEducation: (id) =>
-        set((state) => ({
-          data: {
-            ...state.data,
-            education: state.data.education.filter((e) => e.id !== id),
-          },
-        })),
+        updateEducation: (id, edu) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              education: state.data.education.map((e) =>
+                e.id === id ? { ...e, ...edu } : e,
+              ),
+            },
+          })),
 
-      reorderEducation: (startIndex, endIndex) =>
-        set((state) => {
-          const result = Array.from(state.data.education);
-          const [removed] = result.splice(startIndex, 1);
-          result.splice(endIndex, 0, removed);
-          return { data: { ...state.data, education: result } };
-        }),
+        removeEducation: (id) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              education: state.data.education.filter((e) => e.id !== id),
+            },
+          })),
 
-      addSkill: (skill) =>
-        set((state) => ({
-          data: { ...state.data, skills: [...state.data.skills, skill] },
-        })),
+        reorderEducation: (startIndex, endIndex) =>
+          set((state) => {
+            const result = Array.from(state.data.education);
+            const [removed] = result.splice(startIndex, 1);
+            result.splice(endIndex, 0, removed);
+            return { data: { ...state.data, education: result } };
+          }),
 
-      removeSkill: (id) =>
-        set((state) => ({
-          data: {
-            ...state.data,
-            skills: state.data.skills.filter((s) => s.id !== id),
-          },
-        })),
+        addSkill: (skill) =>
+          set((state) => ({
+            data: { ...state.data, skills: [...state.data.skills, skill] },
+          })),
 
-      reorderSkills: (startIndex, endIndex) =>
-        set((state) => {
-          const result = Array.from(state.data.skills);
-          const [removed] = result.splice(startIndex, 1);
-          result.splice(endIndex, 0, removed);
-          return { data: { ...state.data, skills: result } };
-        }),
+        removeSkill: (id) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              skills: state.data.skills.filter((s) => s.id !== id),
+            },
+          })),
 
-      addCustomSection: (section) =>
-        set((state) => ({
-          data: {
-            ...state.data,
-            customSections: [...state.data.customSections, section],
-          },
-        })),
+        reorderSkills: (startIndex, endIndex) =>
+          set((state) => {
+            const result = Array.from(state.data.skills);
+            const [removed] = result.splice(startIndex, 1);
+            result.splice(endIndex, 0, removed);
+            return { data: { ...state.data, skills: result } };
+          }),
 
-      updateCustomSection: (id, section) =>
-        set((state) => ({
-          data: {
-            ...state.data,
-            customSections: state.data.customSections.map((s) =>
-              s.id === id ? { ...s, ...section } : s,
-            ),
-          },
-        })),
+        addCustomSection: (section) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              customSections: [...state.data.customSections, section],
+            },
+          })),
 
-      removeCustomSection: (id) =>
-        set((state) => ({
-          data: {
-            ...state.data,
-            customSections: state.data.customSections.filter(
-              (s) => s.id !== id,
-            ),
-          },
-        })),
+        updateCustomSection: (id, section) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              customSections: state.data.customSections.map((s) =>
+                s.id === id ? { ...s, ...section } : s,
+              ),
+            },
+          })),
 
-      setTemplate: (template) => set({ activeTemplate: template }),
+        removeCustomSection: (id) =>
+          set((state) => ({
+            data: {
+              ...state.data,
+              customSections: state.data.customSections.filter(
+                (s) => s.id !== id,
+              ),
+            },
+          })),
 
-      reset: () => set({ data: initialData }),
-    }),
-    {
-      name: "resume-builder-storage", // key in indexedDB
-      storage: createJSONStorage(() => idbStorage),
-    },
-  )
-));
+        setTemplate: (template) => set({ activeTemplate: template }),
+
+        reset: () => set({ data: initialData }),
+      }),
+      {
+        name: "resume-builder-storage", // key in indexedDB
+        storage: createJSONStorage(() => idbStorage),
+      },
+    ),
+  ),
+);

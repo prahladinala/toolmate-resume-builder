@@ -18,8 +18,9 @@ import { ChromeAISetupModal } from "../ChromeAISetupModal";
 import { notify } from "@/lib/toast";
 
 export function JobMatcherForm() {
-  const { data, updateSummary, addSkill } = useResumeStore();
-  const [jdText, setJdText] = useState("");
+  const { data, updateSummary, addSkill, updateTargetJobDescription } =
+    useResumeStore();
+  const [jdText, setJdText] = useState(data.targetJobDescription || "");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<JDMatchResult | null>(null);
   const [showSetup, setShowSetup] = useState(false);
@@ -96,7 +97,10 @@ export function JobMatcherForm() {
           <textarea
             rows={8}
             value={jdText}
-            onChange={(e) => setJdText(e.target.value)}
+            onChange={(e) => {
+              setJdText(e.target.value);
+              updateTargetJobDescription(e.target.value);
+            }}
             placeholder="Paste the target job description, requirements, and responsibilities here..."
             className="w-full p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
           />

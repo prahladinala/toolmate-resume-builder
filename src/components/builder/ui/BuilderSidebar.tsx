@@ -9,6 +9,7 @@ import {
   History,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useResumeStore } from "@/store/useResumeStore";
 
 interface BuilderSidebarProps {
   steps: { id: string; label: string; icon: React.ElementType }[];
@@ -33,6 +34,34 @@ export function BuilderSidebar({
   onOpenImport,
   onOpenHistory,
 }: BuilderSidebarProps) {
+  const { data } = useResumeStore();
+
+  const isStepComplete = (id: string) => {
+    switch (id) {
+      case "personal":
+        return Boolean(
+          data.personalInfo.firstName &&
+          data.personalInfo.lastName &&
+          data.personalInfo.email,
+        );
+      case "summary":
+        return Boolean(data.summary && data.summary.trim().length > 30);
+      case "experience":
+        return Boolean(data.experience && data.experience.length > 0);
+      case "education":
+        return Boolean(data.education && data.education.length > 0);
+      case "skills":
+        return Boolean(data.skills && data.skills.length > 0);
+      case "projects":
+        return Boolean(data.projects && data.projects.length > 0);
+      case "custom":
+        return Boolean(data.customSections && data.customSections.length > 0);
+      case "cover-letter":
+        return Boolean(data.coverLetter && data.coverLetter.trim().length > 50);
+      default:
+        return false;
+    }
+  };
   return (
     <nav className="hidden md:flex w-[88px] h-full flex-col items-center py-8 border-r border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b] shrink-0 justify-between z-30 print:hidden">
       <div className="flex flex-col gap-6 w-full items-center">
@@ -48,25 +77,34 @@ export function BuilderSidebar({
         <div className="w-10 h-[1px] bg-zinc-200 dark:bg-[#27272a] rounded-full" />
 
         <div className="flex flex-col gap-3 w-full px-3">
-          {steps.map((step, idx) => (
-            <button
-              key={step.id}
-              onClick={() => setActiveStep(idx)}
-              className={`group relative flex items-center justify-center h-12 w-full rounded-xl transition-all duration-200 ${
-                activeStep === idx
-                  ? "bg-zinc-200 dark:bg-[#fafafa] text-[#09090b] shadow-sm"
-                  : "text-zinc-500 dark:text-[#a1a1aa] hover:bg-zinc-100 dark:hover:bg-[#27272a] hover:text-zinc-900 dark:hover:text-[#fafafa]"
-              }`}
-              title={step.label}
-            >
-              <step.icon
-                className={`h-5 w-5 transition-transform ${activeStep === idx ? "scale-110" : "group-hover:scale-110"}`}
-              />
-              <span className="absolute left-14 bg-zinc-800 dark:bg-[#27272a] text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap transition-opacity z-50">
-                {step.label}
-              </span>
-            </button>
-          ))}
+          {steps.map((step, idx) => {
+            const completed = isStepComplete(step.id);
+            return (
+              <button
+                key={step.id}
+                onClick={() => setActiveStep(idx)}
+                className={`group relative flex items-center justify-center h-12 w-full rounded-xl transition-all duration-200 ${
+                  activeStep === idx
+                    ? "bg-zinc-200 dark:bg-[#fafafa] text-[#09090b] shadow-sm"
+                    : "text-zinc-500 dark:text-[#a1a1aa] hover:bg-zinc-100 dark:hover:bg-[#27272a] hover:text-zinc-900 dark:hover:text-[#fafafa]"
+                }`}
+                title={step.label}
+              >
+                <step.icon
+                  className={`h-5 w-5 transition-transform ${activeStep === idx ? "scale-110" : "group-hover:scale-110"}`}
+                />
+                {completed && (
+                  <span
+                    className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#09090b]"
+                    title="Section completed"
+                  />
+                )}
+                <span className="absolute left-14 bg-zinc-800 dark:bg-[#27272a] text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap transition-opacity z-50">
+                  {step.label} {completed ? "✓" : ""}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 

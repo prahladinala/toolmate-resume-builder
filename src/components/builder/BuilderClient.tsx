@@ -20,6 +20,7 @@ import {
   Target,
   History,
   Printer,
+  Layers,
 } from "lucide-react";
 import { useStore } from "zustand";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -328,9 +329,22 @@ export function BuilderClient() {
         {/* MIDDLE: Form Panel (Desktop) */}
         <div className="w-[450px] lg:w-[480px] h-full flex flex-col border-r border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b] text-zinc-900 dark:text-[#fafafa] shrink-0 transition-all z-20 print:hidden shadow-2xl">
           <div className="hidden md:flex h-[72px] items-center justify-between px-8 border-b border-zinc-200 dark:border-[#27272a] shrink-0 bg-white dark:bg-[#09090b]">
-            <h2 className="text-xl font-bold tracking-tight">
-              {STEPS[activeStep].label}
-            </h2>
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-bold tracking-tight">
+                {STEPS[activeStep].label}
+              </h2>
+              <button
+                onClick={() => setShowProfiles(true)}
+                className="flex items-center gap-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 px-2.5 py-1 rounded-full border border-zinc-200 dark:border-[#27272a] hover:border-blue-300 dark:hover:border-blue-800 bg-zinc-50/50 dark:bg-zinc-900/50 transition-all cursor-pointer"
+                title="Manage and switch target resume versions"
+              >
+                <Layers className="w-3.5 h-3.5 text-blue-500" />
+                <span className="max-w-[130px] truncate">
+                  {data.personalInfo.title || "Primary Resume"}
+                </span>
+                <span className="text-[10px] text-zinc-400">▾</span>
+              </button>
+            </div>
             {!isOnline && (
               <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-500/20">
                 <WifiOff className="w-3.5 h-3.5" />
@@ -426,7 +440,11 @@ export function BuilderClient() {
           {/* The PDF Preview container */}
           <div className="h-full w-full overflow-y-auto print:h-auto print:overflow-visible p-8 flex justify-center print:!p-0 pb-32 print:pb-0">
             <div className="w-full max-w-[794px] print:max-w-none transition-all duration-300 print:h-auto">
-              <Preview mode={previewMode} onModeChange={setPreviewMode} />
+              <Preview
+                mode={previewMode}
+                onModeChange={setPreviewMode}
+                onNavigateStep={setActiveStep}
+              />
             </div>
           </div>
         </div>

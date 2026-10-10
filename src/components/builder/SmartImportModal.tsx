@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FileText,
   Upload,
@@ -44,6 +44,15 @@ export function SmartImportModal({ isOpen, onClose }: SmartImportModalProps) {
   const [statusMessage, setStatusMessage] = useState("");
   const [linkedinText, setLinkedinText] = useState("");
   const [parsedPreview, setParsedPreview] = useState<ResumeData | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -154,7 +163,15 @@ export function SmartImportModal({ isOpen, onClose }: SmartImportModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="smart-import-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+    >
       <div className="bg-white dark:bg-[#111113] rounded-2xl border border-zinc-200 dark:border-[#27272a] shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="p-5 border-b border-zinc-200 dark:border-[#27272a] flex items-center justify-between bg-zinc-50 dark:bg-[#18181b]/50">
@@ -163,7 +180,10 @@ export function SmartImportModal({ isOpen, onClose }: SmartImportModalProps) {
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-lg text-zinc-900 dark:text-white">
+              <h3
+                id="smart-import-title"
+                className="font-bold text-lg text-zinc-900 dark:text-white"
+              >
                 Smart Resume Importer & Starters
               </h3>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">

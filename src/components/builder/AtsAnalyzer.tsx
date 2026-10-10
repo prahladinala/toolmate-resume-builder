@@ -25,14 +25,22 @@ const InterviewPrepModal = dynamic(
   { ssr: false },
 );
 
-export function AtsAnalyzer() {
+interface AtsAnalyzerProps {
+  onNavigateStep?: (stepIndex: number) => void;
+}
+
+export function AtsAnalyzer({ onNavigateStep }: AtsAnalyzerProps = {}) {
   const { data } = useResumeStore();
   const [isOpen, setIsOpen] = useState(false);
   const [showJDMatcher, setShowJDMatcher] = useState(false);
   const [showInterviewPrep, setShowInterviewPrep] = useState(false);
   const [score, setScore] = useState(100);
   const [feedback, setFeedback] = useState<
-    { type: "error" | "warning" | "success"; text: string }[]
+    {
+      type: "error" | "warning" | "success";
+      text: string;
+      stepIndex?: number;
+    }[]
   >([]);
 
   useEffect(() => {
@@ -40,16 +48,25 @@ export function AtsAnalyzer() {
     const newFeedback: {
       type: "error" | "warning" | "success";
       text: string;
+      stepIndex?: number;
     }[] = [];
 
     // Personal Info Checks
     if (!data.personalInfo.email) {
       newScore -= 10;
-      newFeedback.push({ type: "error", text: "Missing email address." });
+      newFeedback.push({
+        type: "error",
+        text: "Missing email address.",
+        stepIndex: 0,
+      });
     }
     if (!data.personalInfo.phone) {
       newScore -= 5;
-      newFeedback.push({ type: "warning", text: "Missing phone number." });
+      newFeedback.push({
+        type: "warning",
+        text: "Missing phone number.",
+        stepIndex: 0,
+      });
     }
     if (
       !data.personalInfo.linkedin &&
@@ -60,11 +77,13 @@ export function AtsAnalyzer() {
       newFeedback.push({
         type: "warning",
         text: "Add a LinkedIn, GitHub, or Portfolio link.",
+        stepIndex: 0,
       });
     } else {
       newFeedback.push({
         type: "success",
         text: "Good use of professional links.",
+        stepIndex: 0,
       });
     }
 
@@ -74,21 +93,31 @@ export function AtsAnalyzer() {
       newFeedback.push({
         type: "error",
         text: "Professional summary is too short or missing.",
+        stepIndex: 1,
       });
     } else if (data.summary.split(".").length > 5) {
       newScore -= 5;
       newFeedback.push({
         type: "warning",
         text: "Summary is too long (over 4 sentences).",
+        stepIndex: 1,
       });
     } else {
-      newFeedback.push({ type: "success", text: "Summary length is optimal." });
+      newFeedback.push({
+        type: "success",
+        text: "Summary length is optimal.",
+        stepIndex: 1,
+      });
     }
 
     // Experience Checks
     if (!data.experience || data.experience.length === 0) {
       newScore -= 20;
-      newFeedback.push({ type: "error", text: "Missing work experience." });
+      newFeedback.push({
+        type: "error",
+        text: "Missing work experience.",
+        stepIndex: 2,
+      });
     } else {
       let hasMetrics = false;
       let hasParagraphs = false;
@@ -152,6 +181,7 @@ export function AtsAnalyzer() {
         newFeedback.push({
           type: "warning",
           text: `Action verb "${repeatedVerbWarning}" repeated 3+ times. Diversify with synonyms.`,
+          stepIndex: 2,
         });
       }
 
@@ -160,6 +190,7 @@ export function AtsAnalyzer() {
         newFeedback.push({
           type: "warning",
           text: "Passive voice detected (e.g. 'was tasked with'). Use direct active verbs.",
+          stepIndex: 2,
         });
       }
 
@@ -168,11 +199,13 @@ export function AtsAnalyzer() {
         newFeedback.push({
           type: "warning",
           text: "Consider adding numbers/metrics to your experience.",
+          stepIndex: 2,
         });
       } else {
         newFeedback.push({
           type: "success",
           text: "Experience includes strong metrics/numbers.",
+          stepIndex: 2,
         });
       }
 
@@ -181,6 +214,7 @@ export function AtsAnalyzer() {
         newFeedback.push({
           type: "warning",
           text: "Use bullet points instead of paragraphs in experience.",
+          stepIndex: 2,
         });
       }
 
@@ -189,11 +223,13 @@ export function AtsAnalyzer() {
         newFeedback.push({
           type: "warning",
           text: "Start bullets with strong action verbs (e.g. Developed, Managed).",
+          stepIndex: 2,
         });
       } else {
         newFeedback.push({
           type: "success",
           text: "Good use of strong action verbs.",
+          stepIndex: 2,
         });
       }
 
@@ -202,6 +238,7 @@ export function AtsAnalyzer() {
         newFeedback.push({
           type: "warning",
           text: "Avoid personal pronouns (I, me, my) in your resume.",
+          stepIndex: 2,
         });
       }
 
@@ -210,6 +247,7 @@ export function AtsAnalyzer() {
         newFeedback.push({
           type: "warning",
           text: "Remove clichés/buzzwords (e.g. 'team player', 'hard worker').",
+          stepIndex: 2,
         });
       }
 
@@ -218,6 +256,7 @@ export function AtsAnalyzer() {
         newFeedback.push({
           type: "error",
           text: "One or more experience entries are missing start/end dates.",
+          stepIndex: 2,
         });
       }
     }
@@ -225,7 +264,11 @@ export function AtsAnalyzer() {
     // Education Checks
     if (!data.education || data.education.length === 0) {
       newScore -= 10;
-      newFeedback.push({ type: "error", text: "Missing education section." });
+      newFeedback.push({
+        type: "error",
+        text: "Missing education section.",
+        stepIndex: 3,
+      });
     } else {
       let missingDates = false;
       data.education.forEach((edu) => {
@@ -237,6 +280,7 @@ export function AtsAnalyzer() {
         newFeedback.push({
           type: "warning",
           text: "Education is missing start/end dates.",
+          stepIndex: 3,
         });
       }
     }
@@ -252,11 +296,13 @@ export function AtsAnalyzer() {
         newFeedback.push({
           type: "warning",
           text: "Add live links or GitHub repos to your projects.",
+          stepIndex: 5,
         });
       } else {
         newFeedback.push({
           type: "success",
           text: "Projects include external links.",
+          stepIndex: 5,
         });
       }
     }
@@ -264,17 +310,23 @@ export function AtsAnalyzer() {
     // Skills Checks
     if (!data.skills || data.skills.length < 3) {
       newScore -= 10;
-      newFeedback.push({ type: "error", text: "List at least 3 key skills." });
+      newFeedback.push({
+        type: "error",
+        text: "List at least 3 key skills.",
+        stepIndex: 4,
+      });
     } else if (data.skills.length > 15) {
       newScore -= 5;
       newFeedback.push({
         type: "warning",
         text: "Too many skills listed. Keep it focused (under 15).",
+        stepIndex: 4,
       });
     } else {
       newFeedback.push({
         type: "success",
         text: "Optimal number of skills listed.",
+        stepIndex: 4,
       });
     }
 
@@ -303,14 +355,14 @@ export function AtsAnalyzer() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 print:hidden flex flex-col items-end">
+    <div className="hidden md:flex fixed bottom-6 right-6 z-40 print:hidden flex-col items-end">
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="mb-3 w-72 sm:w-80 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl rounded-2xl overflow-hidden flex flex-col max-h-[60vh]"
+            className="mb-3 w-80 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl rounded-2xl overflow-hidden flex flex-col max-h-[60vh]"
           >
             <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50 dark:bg-zinc-900/50">
               <h3 className="font-semibold text-sm flex items-center gap-2">
@@ -325,7 +377,7 @@ export function AtsAnalyzer() {
             </div>
             <div className="p-4 overflow-y-auto space-y-3">
               {feedback.map((fb, i) => (
-                <div key={i} className="flex gap-3 text-sm">
+                <div key={i} className="flex items-start gap-2.5 text-xs">
                   {fb.type === "error" && (
                     <XCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                   )}
@@ -335,9 +387,23 @@ export function AtsAnalyzer() {
                   {fb.type === "success" && (
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                   )}
-                  <span className="leading-tight text-zinc-600 dark:text-zinc-400">
+                  <span className="leading-tight text-zinc-600 dark:text-zinc-400 flex-1">
                     {fb.text}
                   </span>
+                  {fb.stepIndex !== undefined &&
+                    fb.type !== "success" &&
+                    onNavigateStep && (
+                      <button
+                        onClick={() => {
+                          onNavigateStep(fb.stepIndex!);
+                          setIsOpen(false);
+                        }}
+                        className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:underline shrink-0 px-1 py-0.5 rounded hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-colors"
+                        title={`Jump to section to fix this issue`}
+                      >
+                        Fix →
+                      </button>
+                    )}
                 </div>
               ))}
             </div>

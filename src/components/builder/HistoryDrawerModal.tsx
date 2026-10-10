@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useEffect } from "react";
 import { useStore } from "zustand";
 import { useResumeStore } from "@/store/useResumeStore";
 import { History, RotateCw, Trash2, X, CheckCircle, Clock } from "lucide-react";
@@ -20,6 +21,15 @@ export function HistoryDrawerModal({
     useResumeStore.temporal,
   );
   const currentData = useResumeStore((state) => state.data);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -57,7 +67,15 @@ export function HistoryDrawerModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="history-modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+    >
       <div className="bg-white dark:bg-[#111113] rounded-2xl border border-zinc-200 dark:border-[#27272a] shadow-2xl max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="p-5 border-b border-zinc-200 dark:border-[#27272a] flex items-center justify-between bg-zinc-50 dark:bg-[#18181b]/50">
@@ -66,7 +84,10 @@ export function HistoryDrawerModal({
               <History className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-zinc-900 dark:text-white">
+              <h3
+                id="history-modal-title"
+                className="font-bold text-base text-zinc-900 dark:text-white"
+              >
                 Edit History Timeline
               </h3>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
