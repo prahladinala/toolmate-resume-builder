@@ -10,12 +10,14 @@ export async function extractTextFromPdf(file: File): Promise<string> {
   // Dynamically import pdfjs-dist to avoid SSR / node bundling issues
   const pdfjs = await import("pdfjs-dist");
 
-  // Ensure worker is configured via unpkg or CDN
-  if (!pdfjs.GlobalWorkerOptions.workerSrc) {
-    pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version || "6.4.299"}/build/pdf.worker.min.mjs`;
+  // Use local same-origin worker to avoid cross-origin unpkg / CDN module worker restrictions
+  if (typeof window !== "undefined") {
+    pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
   }
 
-  const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
+  const loadingTask = pdfjs.getDocument({
+    data: new Uint8Array(arrayBuffer),
+  });
   const pdfDoc = await loadingTask.promise;
 
   let extractedText = "";
