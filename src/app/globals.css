@@ -129,6 +129,22 @@
   }
 }
 
+/* Screen mode: Dedicated unscaled portal rendered behind the app for html2canvas */
+#print-resume-root.print-resume-portal,
+#print-resume-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 794px;
+  min-height: 1123px;
+  background-color: #ffffff;
+  color: #000000;
+  z-index: -9999;
+  pointer-events: none;
+  visibility: visible;
+  opacity: 1;
+}
+
 @media print {
   @page {
     /* Setting margin to 0 prevents browser from printing URL, Date, Page Numbers */
@@ -138,16 +154,53 @@
 
   body,
   html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100% !important;
     background-color: #ffffff !important;
-    overflow: hidden !important; /* Ensure no extra scrolling pages */
+    color: #000000 !important;
+    overflow: visible !important;
   }
 
-  /* Reset background colors if browser forces white background */
-  * {
+  /* Hide everything in the body except the dedicated print portal */
+  body > *:not(#print-resume-root) {
+    display: none !important;
+  }
+
+  /* Completely suppress floating toasts, dialogs, overlays */
+  [data-sonner-toaster],
+  [role="region"][aria-label*="Notifications"],
+  .sonner-toast,
+  #__next-build-watcher {
+    display: none !important;
+  }
+
+  /* Position #print-resume-root as the single in-flow printed element */
+  #print-resume-root.print-resume-portal,
+  #print-resume-root {
+    display: block !important;
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-sizing: border-box !important;
+    z-index: auto !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    page-break-after: auto !important;
+  }
+
+  #print-resume-root * {
+    visibility: visible !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }

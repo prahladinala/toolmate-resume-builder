@@ -47,6 +47,7 @@ interface MobileAppShellProps {
   onOpenImport: () => void;
   onOpenHistory: () => void;
   handleDownload: () => void;
+  handleDirectPdfDownload?: () => void;
   handleDownloadWord: () => void;
   exportJSON: () => void;
   isOnline: boolean;
@@ -75,6 +76,7 @@ export function MobileAppShell({
   onOpenImport,
   onOpenHistory,
   handleDownload,
+  handleDirectPdfDownload,
   handleDownloadWord,
   exportJSON,
   isOnline,
@@ -385,7 +387,7 @@ export function MobileAppShell({
 
               <div className="flex items-center gap-1.5">
                 <button
-                  onClick={handleDownload}
+                  onClick={handleDirectPdfDownload || handleDownload}
                   className="h-8 px-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1 shadow-sm active:scale-95"
                 >
                   <Download className="w-3.5 h-3.5" /> PDF
@@ -563,7 +565,7 @@ export function MobileAppShell({
             <div className="space-y-3">
               {/* PDF Option */}
               <div
-                onClick={handleDownload}
+                onClick={handleDirectPdfDownload || handleDownload}
                 className="bg-white dark:bg-[#111113] border border-indigo-200 dark:border-indigo-900/40 rounded-2xl p-4 shadow-sm flex items-center justify-between cursor-pointer active:scale-[0.98] transition-transform"
               >
                 <div className="flex items-center gap-3">
@@ -572,13 +574,13 @@ export function MobileAppShell({
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h4 className="font-bold text-sm">Download PDF</h4>
+                      <h4 className="font-bold text-sm">Download PDF File</h4>
                       <span className="text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">
-                        Recommended
+                        Instant Save
                       </span>
                     </div>
                     <p className="text-xs text-zinc-500 mt-0.5">
-                      ATS-compliant vector PDF with selectable text
+                      Direct high-resolution A4 vector PDF saved to your device
                     </p>
                   </div>
                 </div>

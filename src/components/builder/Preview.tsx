@@ -329,16 +329,6 @@ export function Preview({
           </div>
         </div>
       </div>
-
-      {/* Print-only unscaled version */}
-      <div className="hidden print:block w-[210mm] min-h-[297mm] bg-white m-0 p-0">
-        <TemplateEngine
-          data={data}
-          templateId={activeTemplate || "dev-1"}
-          themeConfig={themeConfig}
-          mode={mode}
-        />
-      </div>
     </div>
   );
 }

@@ -19,6 +19,7 @@ import {
   WifiOff,
   Target,
   History,
+  Printer,
 } from "lucide-react";
 import { useStore } from "zustand";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -30,11 +31,13 @@ import { ResumeProfileModal } from "./ResumeProfileModal";
 import { SmartImportModal } from "./SmartImportModal";
 import { HistoryDrawerModal } from "./HistoryDrawerModal";
 import { MobileAppShell } from "./mobile/MobileAppShell";
+import { PrintPortal } from "./PrintPortal";
 import {
   exportToJsonResume,
   importFromJsonResume,
 } from "@/lib/jsonResumeConverter";
 import { downloadDocxResume } from "@/lib/docxResumeGenerator";
+import { downloadDirectPdf } from "@/lib/pdfDownloader";
 
 const Preview = dynamic(
   () => import("@/components/builder/Preview").then((mod) => mod.Preview),
@@ -63,6 +66,7 @@ const STEPS = [
 
 export function BuilderClient() {
   const router = useRouter();
+  const { data } = useResumeStore();
   const [activeStep, setActiveStep] = useState(0);
   const [showProfiles, setShowProfiles] = useState(false);
   const [showImport, setShowImport] = useState(false);
@@ -71,6 +75,7 @@ export function BuilderClient() {
     "resume",
   );
   const [isExportingWord, setIsExportingWord] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [hasHydrated, setHasHydrated] = useState(false);
 
@@ -118,7 +123,7 @@ export function BuilderClient() {
     "mod+p",
     (e) => {
       e.preventDefault();
-      handleDownload();
+      handleDirectPdfDownload();
     },
     { enableOnFormTags: true },
   );
@@ -132,6 +137,22 @@ export function BuilderClient() {
     setTimeout(() => {
       window.print();
     }, 250);
+  };
+
+  const handleDirectPdfDownload = async () => {
+    try {
+      setIsExportingPdf(true);
+      toast.info("Generating PDF Document... 📄", {
+        description: "Rendering high-resolution vector layout.",
+      });
+      await downloadDirectPdf(data);
+      toast.success("PDF Downloaded successfully! 🎉");
+    } catch (err) {
+      console.warn("Direct PDF generation fallback to print dialog:", err);
+      handleDownload();
+    } finally {
+      setIsExportingPdf(false);
+    }
   };
 
   const handleDownloadWord = async () => {
@@ -260,6 +281,7 @@ export function BuilderClient() {
           onOpenImport={() => setShowImport(true)}
           onOpenHistory={() => setShowHistory(true)}
           handleDownload={handleDownload}
+          handleDirectPdfDownload={handleDirectPdfDownload}
           handleDownloadWord={handleDownloadWord}
           exportJSON={exportJSON}
           isOnline={isOnline}
@@ -347,11 +369,24 @@ export function BuilderClient() {
 
             <Button
               onClick={handleDownload}
+              variant="outline"
+              size="lg"
+              className="rounded-full bg-white dark:bg-[#09090b] hover:bg-zinc-50 dark:hover:bg-zinc-800 shadow-md border-zinc-200 dark:border-[#27272a] h-11 px-5 font-semibold text-zinc-700 dark:text-zinc-200"
+              title="Open Browser Print & AirPrint Dialog"
+            >
+              <Printer className="mr-2 h-4 w-4 text-zinc-500" />
+              Print
+            </Button>
+
+            <Button
+              onClick={handleDirectPdfDownload}
+              disabled={isExportingPdf}
               size="lg"
               className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg border-0 h-11 px-6 font-semibold"
-              title="Print or Save as PDF"
+              title="Instant Vector PDF Download"
             >
-              <Download className="mr-2 h-4 w-4" /> Download PDF
+              <Download className="mr-2 h-4 w-4" />
+              {isExportingPdf ? "Generating PDF..." : "Download PDF"}
             </Button>
           </div>
 
@@ -378,6 +413,9 @@ export function BuilderClient() {
         isOpen={showHistory}
         onClose={() => setShowHistory(false)}
       />
+
+      {/* 3. DEDICATED PRINT PORTAL (Direct child of body, 100% immune to overflow-hidden and parent scaling) */}
+      <PrintPortal mode={previewMode} />
     </>
   );
 }
