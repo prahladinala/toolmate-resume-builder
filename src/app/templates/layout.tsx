@@ -26,14 +26,6 @@ export const metadata: Metadata = {
     title: "18+ Free ATS Resume Templates for Developers & Professionals",
     description:
       "Handcrafted ATS-friendly resume templates with single-column, sidebar, and executive layouts. Export to vector PDF and editable Word.",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "ToolMate Resume Templates Gallery",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -51,38 +43,73 @@ export default function TemplatesLayout({
 }) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "ATS-Compliant Resume Templates",
-    description:
-      "A curated collection of developer, designer, corporate, and academic resume templates engineered to pass applicant tracking systems.",
-    itemListElement: [
+    "@graph": [
       {
-        "@type": "ListItem",
-        position: 1,
-        name: "Developer Monospace (Sidebar)",
-        description:
-          "High-density technical layout with left sidebar, monospace typography, and clean skill tags.",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "https://resume.toolmate.co.in",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "ATS Resume Templates",
+            item: "https://resume.toolmate.co.in/templates",
+          },
+        ],
       },
       {
-        "@type": "ListItem",
-        position: 2,
-        name: "Full-Stack Split Header",
+        "@type": "ItemList",
+        name: "18+ Free ATS-Compliant Resume Templates",
         description:
-          "Modern balanced layout with badge section headers and quick-scan contact matrix.",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Academic LaTeX Classic",
-        description:
-          "Prestigious serif layout adhering to academic curriculum vitae conventions with subtle rules.",
-      },
-      {
-        "@type": "ListItem",
-        position: 4,
-        name: "Executive Corporate",
-        description:
-          "Authoritative, polished format designed for leadership, directors, and management roles.",
+          "A curated collection of developer, designer, corporate, and academic resume templates engineered to pass applicant tracking systems.",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Terminal Mono (Developer)",
+            description:
+              "High-density monospace layout for software engineers, featuring terminal aesthetics and clean skill tags.",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Clean Code (Developer)",
+            description:
+              "Clean modern developer format emphasizing system architecture, projects, and tech stack.",
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: "Academic LaTeX Classic",
+            description:
+              "Prestigious serif layout adhering to academic curriculum vitae conventions with subtle rules.",
+          },
+          {
+            "@type": "ListItem",
+            position: 4,
+            name: "Executive Serif (Corporate)",
+            description:
+              "Authoritative, polished format designed for leadership, directors, and management roles.",
+          },
+          {
+            "@type": "ListItem",
+            position: 5,
+            name: "Consulting & Banking",
+            description:
+              "Ultra-clean high-finance format with rigorous margins and quantifiable metric emphasis.",
+          },
+          {
+            "@type": "ListItem",
+            position: 6,
+            name: "Standard Professional (General)",
+            description:
+              "Versatile, universal ATS-optimized format suitable for operations, marketing, and cross-functional roles.",
+          },
+        ],
       },
     ],
   };

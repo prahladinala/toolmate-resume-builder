@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/builder",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -24,14 +28,6 @@ export const metadata: Metadata = {
     title: "Live Resume Builder & ATS Editor | 100% Free & Private",
     description:
       "Real-time resume editor with ATS optimization, live A4 rendering, and instant PDF/Word export. Zero login, 100% local privacy.",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "ToolMate Live Resume Builder",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",

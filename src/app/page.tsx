@@ -44,13 +44,18 @@ export default function Home() {
           "Real-time ATS health score analysis and job description matching",
           "One-click PDF resume and LinkedIn profile importer",
         ],
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: "4.9",
-          reviewCount: "1280",
-          bestRating: "5",
-          worstRating: "1",
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://resume.toolmate.co.in/#website",
+        url: "https://resume.toolmate.co.in",
+        name: "ToolMate Resume Builder",
+        description:
+          "Free, privacy-first ATS resume builder and career preparation tool.",
+        publisher: {
+          "@id": "https://resume.toolmate.co.in/#organization",
         },
+        inLanguage: "en-US",
       },
       {
         "@type": "Organization",

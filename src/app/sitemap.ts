@@ -2,30 +2,25 @@ import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://resume.toolmate.co.in";
-  const now = new Date();
+  // Stable lastModified timestamp corresponding to the latest release
+  const lastReleaseDate = new Date("2026-10-11T00:00:00.000Z");
 
   return [
     {
       url: baseUrl,
-      lastModified: now,
-      changeFrequency: "daily",
+      lastModified: lastReleaseDate,
+      changeFrequency: "weekly",
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/builder`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.95,
-    },
-    {
       url: `${baseUrl}/templates`,
-      lastModified: now,
+      lastModified: lastReleaseDate,
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
       url: `${baseUrl}/interview-prep`,
-      lastModified: now,
+      lastModified: lastReleaseDate,
       changeFrequency: "weekly",
       priority: 0.85,
     },
