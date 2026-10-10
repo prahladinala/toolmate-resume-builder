@@ -183,12 +183,17 @@ export default function TemplatesPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#a855f7]/10 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="text-center mb-16 relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            Choose Your Canvas
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b]/80 backdrop-blur-sm text-xs font-semibold mb-4">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            100% Free • Workday & Greenhouse Tested • Zero Paywalls
+          </div>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+            18+ Free ATS Resume Templates
           </h1>
-          <p className="text-zinc-500 dark:text-[#a1a1aa] text-lg max-w-2xl mx-auto">
-            Expertly designed, purely semantic HTML, and completely free. Select
-            a starting point.
+          <p className="text-zinc-500 dark:text-[#a1a1aa] text-base md:text-lg max-w-2xl mx-auto">
+            Curated developer monospace, modern split-headers, academic LaTeX,
+            and executive layouts. Pure semantic HTML guaranteed to pass
+            automated screening.
           </p>
         </div>
 
@@ -198,13 +203,13 @@ export default function TemplatesPage() {
       {/* Minimal Footer */}
       <footer className="border-t border-zinc-200 dark:border-[#27272a] py-8 mt-auto z-10 bg-white dark:bg-[#09090b]">
         <div className="container mx-auto px-6 max-w-7xl flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-zinc-500 dark:text-[#a1a1aa]">
-          <div>© {new Date().getFullYear()} ResumeBuilder.</div>
+          <div>© {new Date().getFullYear()} ToolMate Resume.</div>
           <div className="flex gap-6">
             <Link
               href="/builder"
               className="hover:text-zinc-900 dark:hover:text-white transition-colors"
             >
-              Builder
+              Resume Builder
             </Link>
             <Link
               href="/templates"
@@ -212,13 +217,19 @@ export default function TemplatesPage() {
             >
               Templates
             </Link>
+            <Link
+              href="/interview-prep"
+              className="hover:text-zinc-900 dark:hover:text-white transition-colors"
+            >
+              Interview Prep
+            </Link>
             <a
-              href="https://github.com"
+              href="https://toolmate.co.in"
               target="_blank"
               rel="noreferrer"
               className="hover:text-zinc-900 dark:hover:text-white transition-colors"
             >
-              GitHub
+              ToolMate Tools
             </a>
           </div>
         </div>

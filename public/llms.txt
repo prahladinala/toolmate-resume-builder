@@ -1,0 +1,27 @@
+# ToolMate Resume Builder (https://resume.toolmate.co.in)
+
+> ToolMate Resume Builder is a free, privacy-first, professional ATS resume builder and career preparation platform. It operates 100% locally in the browser with zero login required, offering real-time vector PDF export, native Word (.docx) export, 18+ ATS-friendly templates, and an interactive AI interview prep generator.
+
+## Core Features
+- **100% Client-Side Privacy**: All data is stored in the user's browser (IndexedDB / LocalStorage). No resume data or personal information is sent to backend servers.
+- **ATS Compliance**: Semantic structure, standard headings, and single/two-column layouts engineered to pass 99%+ Applicant Tracking Systems (Workday, Greenhouse, Lever, Taleo, iCIMS).
+- **Multi-Format Export**:
+  - **Vector A4 PDF**: Client-side pixel-perfect vector PDF generation without browser print dialog dependencies.
+  - **Editable Word (.docx)**: Native Microsoft Word document export replicating template layouts, colors, and typography while remaining fully editable.
+  - **JSON Resume**: Standard JSON Resume schema backup and restore.
+- **18+ Curated Templates**:
+  - Tech & Developer templates (Monospace, timeline, high information density)
+  - Designer templates (Creative accents, typography-led)
+  - Executive & Corporate templates (Classic Serif, formal headers, academic LaTeX styles)
+- **Built-in Career Tools**:
+  - **Job Description Matcher**: Real-time keyword gap analysis against target job postings.
+  - **AI Interview Prep**: Skill-based interview question generator with structured STAR-method answers and runnable code explanations (/interview-prep).
+  - **Smart Importers**: PDF resume text extraction and LinkedIn export importer.
+  - **Action Verb Thesaurus**: One-click weak verb replacement with high-impact power verbs.
+
+## Key URLs
+- Homepage: https://resume.toolmate.co.in
+- Resume Builder & Editor: https://resume.toolmate.co.in/builder
+- Resume Templates Gallery: https://resume.toolmate.co.in/templates
+- Interview Prep & Questions: https://resume.toolmate.co.in/interview-prep
+- Main Developer Hub: https://toolmate.co.in

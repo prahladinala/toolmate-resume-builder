@@ -30,44 +30,71 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   title: {
-    template: "%s | Resume Builder 2026",
-    default: "Resume Builder 2026 - Beautiful, ATS-Friendly Resumes",
+    template: "%s | ToolMate Resume Builder",
+    default:
+      "Free ATS Resume Builder | 100% Private, No Login, PDF & Word Export",
   },
   description:
-    "Build a beautiful, ATS-compatible resume in minutes. A premium, developer-focused resume builder with local privacy and real-time PDF generation.",
+    "Build an ATS-optimized resume in minutes with 100% local privacy. 18+ developer & executive templates, direct vector PDF download, editable Word (.docx) export, and AI interview prep with zero login.",
   keywords: [
-    "resume builder",
-    "ats friendly",
-    "developer resume",
-    "designer resume",
-    "free resume maker",
-    "pdf resume",
+    "free ats resume builder",
+    "ats friendly resume maker",
+    "resume builder without sign up",
+    "privacy first resume builder",
+    "free resume builder no paywall",
+    "developer resume builder",
+    "software engineer resume template",
+    "latex resume template",
+    "word resume template docx",
+    "export resume to word docx",
+    "vector pdf resume download",
+    "ai interview prep questions",
+    "technical interview questions generator",
+    "star method interview answers",
+    "ats resume checker free",
   ],
-  authors: [{ name: "Prahlad Inala" }],
-  robots: "index, follow",
+  authors: [{ name: "Prahlad Inala", url: "https://prahladinala.in" }],
+  creator: "Prahlad Inala",
+  publisher: "ToolMate",
+  category: "Business & Career Software",
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://resume.toolmate.co.in",
-    title: "Resume Builder 2026",
+    siteName: "ToolMate Resume Builder",
+    title:
+      "Free ATS Resume Builder | 100% Private, No Login, PDF & Word Export",
     description:
-      "Create a beautiful, ATS-friendly resume locally in your browser.",
-    siteName: "Resume Builder 2026",
+      "Create high-scoring, ATS-compliant resumes with 18+ templates, vector PDF & editable Word export, and AI interview prep. Completely free & local.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Resume Builder 2026 Preview",
+        alt: "ToolMate Resume Builder - ATS Templates & Career Prep",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Resume Builder 2026",
+    title:
+      "Free ATS Resume Builder | 100% Private, No Login, PDF & Word Export",
     description:
-      "Create a beautiful, ATS-friendly resume locally in your browser.",
+      "Create high-scoring, ATS-compliant resumes with 18+ templates, vector PDF & editable Word export. 100% free and local.",
     creator: "@prahladinala",
+    images: ["/og-image.jpg"],
   },
 };
 
