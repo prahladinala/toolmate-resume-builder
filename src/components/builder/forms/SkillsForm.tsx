@@ -75,7 +75,10 @@ function SortableSkillChip({
 }
 
 export function SkillsForm() {
-  const { data, addSkill, removeSkill, reorderSkills } = useResumeStore();
+  const skills = useResumeStore((state) => state.data.skills);
+  const addSkill = useResumeStore((state) => state.addSkill);
+  const removeSkill = useResumeStore((state) => state.removeSkill);
+  const reorderSkills = useResumeStore((state) => state.reorderSkills);
   const [newSkill, setNewSkill] = useState("");
   const [viewMode, setViewMode] = useState<"flat" | "categorized">("flat");
   const [isCategorizing, setIsCategorizing] = useState(false);
@@ -84,12 +87,12 @@ export function SkillsForm() {
     e.preventDefault();
     if (!newSkill.trim()) return;
 
-    const skills = newSkill
+    const parsedSkills = newSkill
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean);
 
-    skills.forEach((skillName) => {
+    parsedSkills.forEach((skillName) => {
       addSkill({
         id: crypto.randomUUID(),
         name: skillName,
@@ -101,14 +104,14 @@ export function SkillsForm() {
   };
 
   const handleAutoCategorize = async () => {
-    if (data.skills.length === 0) {
+    if (skills.length === 0) {
       toast.error("No skills added yet to categorize.");
       return;
     }
 
     try {
       setIsCategorizing(true);
-      const categorized = await categorizeSkillsList(data.skills);
+      const categorized = await categorizeSkillsList(skills);
 
       useResumeStore.setState((state) => ({
         data: {
@@ -141,21 +144,21 @@ export function SkillsForm() {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (active.id !== over?.id) {
-      const oldIndex = data.skills.findIndex((item) => item.id === active.id);
-      const newIndex = data.skills.findIndex((item) => item.id === over?.id);
+      const oldIndex = skills.findIndex((item) => item.id === active.id);
+      const newIndex = skills.findIndex((item) => item.id === over?.id);
       reorderSkills(oldIndex, newIndex);
     }
   };
 
   // Group skills by category
-  const categorizedGroups = data.skills.reduce(
+  const categorizedGroups = skills.reduce(
     (acc, skill) => {
       const cat = skill.category || "Core Skills";
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(skill);
       return acc;
     },
-    {} as Record<string, typeof data.skills>,
+    {} as Record<string, typeof skills>,
   );
 
   return (
@@ -173,7 +176,7 @@ export function SkillsForm() {
             size="sm"
             variant="outline"
             onClick={handleAutoCategorize}
-            disabled={isCategorizing || data.skills.length === 0}
+            disabled={isCategorizing || skills.length === 0}
             className="rounded-xl border-purple-200 dark:border-purple-900/60 bg-purple-50/50 dark:bg-purple-950/20 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 text-xs font-semibold gap-1.5"
           >
             {isCategorizing ? (
@@ -258,7 +261,7 @@ export function SkillsForm() {
             ]
               .filter(
                 (name) =>
-                  !data.skills.some(
+                  !skills.some(
                     (s) => s.name.toLowerCase() === name.toLowerCase(),
                   ),
               )
@@ -298,18 +301,18 @@ export function SkillsForm() {
             onDragEnd={handleDragEnd}
           >
             <SortableContext
-              items={data.skills.map((s) => s.id)}
+              items={skills.map((s) => s.id)}
               strategy={rectSortingStrategy}
             >
               <div className="flex flex-wrap gap-2">
-                {data.skills.map((skill) => (
+                {skills.map((skill) => (
                   <SortableSkillChip
                     key={skill.id}
                     skill={skill}
                     onRemove={removeSkill}
                   />
                 ))}
-                {data.skills.length === 0 && (
+                {skills.length === 0 && (
                   <div className="w-full text-center p-12 border border-dashed border-zinc-200 dark:border-[#27272a] rounded-2xl text-zinc-500 dark:text-[#a1a1aa] text-sm bg-zinc-50 dark:bg-[#111113]/30">
                     No skills added yet. Add some above!
                   </div>
@@ -354,7 +357,7 @@ export function SkillsForm() {
             ),
           )}
 
-          {data.skills.length === 0 && (
+          {skills.length === 0 && (
             <div className="w-full text-center p-12 border border-dashed border-zinc-200 dark:border-[#27272a] rounded-2xl text-zinc-500 dark:text-[#a1a1aa] text-sm bg-zinc-50 dark:bg-[#111113]/30">
               No skills added yet. Add some above!
             </div>

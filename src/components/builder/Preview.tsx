@@ -103,7 +103,8 @@ export function Preview({
           // Resume is fixed to 794px width.
           setDesktopScale(Math.min(availableWidth / 794, 1));
         } else if (entry.target === resumeRef.current) {
-          setResumeHeight(entry.contentRect.height);
+          const newH = Math.round(entry.contentRect.height);
+          setResumeHeight((prev) => (Math.abs(prev - newH) >= 2 ? newH : prev));
         }
       }
     });

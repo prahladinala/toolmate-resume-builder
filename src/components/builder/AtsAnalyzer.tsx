@@ -44,299 +44,306 @@ export function AtsAnalyzer({ onNavigateStep }: AtsAnalyzerProps = {}) {
   >([]);
 
   useEffect(() => {
-    let newScore = 100;
-    const newFeedback: {
-      type: "error" | "warning" | "success";
-      text: string;
-      stepIndex?: number;
-    }[] = [];
+    const timer = setTimeout(() => {
+      let newScore = 100;
+      const newFeedback: {
+        type: "error" | "warning" | "success";
+        text: string;
+        stepIndex?: number;
+      }[] = [];
 
-    // Personal Info Checks
-    if (!data.personalInfo.email) {
-      newScore -= 10;
-      newFeedback.push({
-        type: "error",
-        text: "Missing email address.",
-        stepIndex: 0,
-      });
-    }
-    if (!data.personalInfo.phone) {
-      newScore -= 5;
-      newFeedback.push({
-        type: "warning",
-        text: "Missing phone number.",
-        stepIndex: 0,
-      });
-    }
-    if (
-      !data.personalInfo.linkedin &&
-      !data.personalInfo.github &&
-      !data.personalInfo.website
-    ) {
-      newScore -= 10;
-      newFeedback.push({
-        type: "warning",
-        text: "Add a LinkedIn, GitHub, or Portfolio link.",
-        stepIndex: 0,
-      });
-    } else {
-      newFeedback.push({
-        type: "success",
-        text: "Good use of professional links.",
-        stepIndex: 0,
-      });
-    }
-
-    // Summary Checks
-    if (!data.summary || data.summary.trim().length < 50) {
-      newScore -= 15;
-      newFeedback.push({
-        type: "error",
-        text: "Professional summary is too short or missing.",
-        stepIndex: 1,
-      });
-    } else if (data.summary.split(".").length > 5) {
-      newScore -= 5;
-      newFeedback.push({
-        type: "warning",
-        text: "Summary is too long (over 4 sentences).",
-        stepIndex: 1,
-      });
-    } else {
-      newFeedback.push({
-        type: "success",
-        text: "Summary length is optimal.",
-        stepIndex: 1,
-      });
-    }
-
-    // Experience Checks
-    if (!data.experience || data.experience.length === 0) {
-      newScore -= 20;
-      newFeedback.push({
-        type: "error",
-        text: "Missing work experience.",
-        stepIndex: 2,
-      });
-    } else {
-      let hasMetrics = false;
-      let hasParagraphs = false;
-      let hasActionVerbs = false;
-      let hasPronouns = false;
-      let hasBuzzwords = false;
-      let missingDates = false;
-
-      const actionVerbs =
-        /\b(led|managed|developed|created|designed|implemented|orchestrated|increased|improved|reduced|optimized|achieved|coordinated)\b/i;
-      const pronouns = /\b(i|me|my|we|our)\b/i;
-      const buzzwords =
-        /\b(hard worker|team player|think outside the box|synergy|detail oriented|go-getter|self-starter)\b/i;
-
-      let repeatedVerbWarning: string | null = null;
-      let hasPassiveVoice = false;
-
-      // Track verb repetitions across all bullets
-      const verbCounts: Record<string, number> = {};
-      const passiveVoiceRegex =
-        /\b(was|were|been|being)\s+(developed|created|assigned|given|tasked|made|asked)\b/i;
-
-      data.experience.forEach((exp) => {
-        if (!exp.startDate || (!exp.endDate && !exp.current)) {
-          missingDates = true;
-        }
-
-        if (exp.description) {
-          if (/\d+%|\d+x|\$\d+/i.test(exp.description)) hasMetrics = true;
-          if (!exp.description.includes("-") && !exp.description.includes("*"))
-            hasParagraphs = true;
-          if (actionVerbs.test(exp.description)) hasActionVerbs = true;
-          if (pronouns.test(exp.description)) hasPronouns = true;
-          if (buzzwords.test(exp.description)) hasBuzzwords = true;
-          if (passiveVoiceRegex.test(exp.description)) hasPassiveVoice = true;
-
-          // Split bullets to find leading verbs
-          const bullets = exp.description.split(/\n+/);
-          bullets.forEach((b) => {
-            const firstWord = b
-              .replace(/^[-*•\d.]+\s*/, "")
-              .trim()
-              .split(/\s+/)[0]
-              ?.toLowerCase();
-            if (
-              firstWord &&
-              firstWord.length > 3 &&
-              actionVerbs.test(firstWord)
-            ) {
-              verbCounts[firstWord] = (verbCounts[firstWord] || 0) + 1;
-              if (verbCounts[firstWord] >= 3) {
-                repeatedVerbWarning = firstWord;
-              }
-            }
-          });
-        }
-      });
-
-      if (repeatedVerbWarning) {
-        newScore -= 5;
-        newFeedback.push({
-          type: "warning",
-          text: `Action verb "${repeatedVerbWarning}" repeated 3+ times. Diversify with synonyms.`,
-          stepIndex: 2,
-        });
-      }
-
-      if (hasPassiveVoice) {
-        newScore -= 5;
-        newFeedback.push({
-          type: "warning",
-          text: "Passive voice detected (e.g. 'was tasked with'). Use direct active verbs.",
-          stepIndex: 2,
-        });
-      }
-
-      if (!hasMetrics) {
-        newScore -= 10;
-        newFeedback.push({
-          type: "warning",
-          text: "Consider adding numbers/metrics to your experience.",
-          stepIndex: 2,
-        });
-      } else {
-        newFeedback.push({
-          type: "success",
-          text: "Experience includes strong metrics/numbers.",
-          stepIndex: 2,
-        });
-      }
-
-      if (hasParagraphs) {
-        newScore -= 10;
-        newFeedback.push({
-          type: "warning",
-          text: "Use bullet points instead of paragraphs in experience.",
-          stepIndex: 2,
-        });
-      }
-
-      if (!hasActionVerbs) {
-        newScore -= 5;
-        newFeedback.push({
-          type: "warning",
-          text: "Start bullets with strong action verbs (e.g. Developed, Managed).",
-          stepIndex: 2,
-        });
-      } else {
-        newFeedback.push({
-          type: "success",
-          text: "Good use of strong action verbs.",
-          stepIndex: 2,
-        });
-      }
-
-      if (hasPronouns) {
-        newScore -= 5;
-        newFeedback.push({
-          type: "warning",
-          text: "Avoid personal pronouns (I, me, my) in your resume.",
-          stepIndex: 2,
-        });
-      }
-
-      if (hasBuzzwords) {
-        newScore -= 5;
-        newFeedback.push({
-          type: "warning",
-          text: "Remove clichés/buzzwords (e.g. 'team player', 'hard worker').",
-          stepIndex: 2,
-        });
-      }
-
-      if (missingDates) {
+      // Personal Info Checks
+      if (!data.personalInfo.email) {
         newScore -= 10;
         newFeedback.push({
           type: "error",
-          text: "One or more experience entries are missing start/end dates.",
-          stepIndex: 2,
+          text: "Missing email address.",
+          stepIndex: 0,
         });
       }
-    }
-
-    // Education Checks
-    if (!data.education || data.education.length === 0) {
-      newScore -= 10;
-      newFeedback.push({
-        type: "error",
-        text: "Missing education section.",
-        stepIndex: 3,
-      });
-    } else {
-      let missingDates = false;
-      data.education.forEach((edu) => {
-        if (!edu.startDate || (!edu.endDate && !edu.current))
-          missingDates = true;
-      });
-      if (missingDates) {
+      if (!data.personalInfo.phone) {
         newScore -= 5;
         newFeedback.push({
           type: "warning",
-          text: "Education is missing start/end dates.",
-          stepIndex: 3,
+          text: "Missing phone number.",
+          stepIndex: 0,
         });
       }
-    }
-
-    // Projects Checks
-    if (data.projects && data.projects.length > 0) {
-      let hasLinks = false;
-      data.projects.forEach((proj) => {
-        if (proj.url || proj.github) hasLinks = true;
-      });
-      if (!hasLinks) {
-        newScore -= 5;
+      if (
+        !data.personalInfo.linkedin &&
+        !data.personalInfo.github &&
+        !data.personalInfo.website
+      ) {
+        newScore -= 10;
         newFeedback.push({
           type: "warning",
-          text: "Add live links or GitHub repos to your projects.",
-          stepIndex: 5,
+          text: "Add a LinkedIn, GitHub, or Portfolio link.",
+          stepIndex: 0,
         });
       } else {
         newFeedback.push({
           type: "success",
-          text: "Projects include external links.",
-          stepIndex: 5,
+          text: "Good use of professional links.",
+          stepIndex: 0,
         });
       }
-    }
 
-    // Skills Checks
-    if (!data.skills || data.skills.length < 3) {
-      newScore -= 10;
-      newFeedback.push({
-        type: "error",
-        text: "List at least 3 key skills.",
-        stepIndex: 4,
-      });
-    } else if (data.skills.length > 15) {
-      newScore -= 5;
-      newFeedback.push({
-        type: "warning",
-        text: "Too many skills listed. Keep it focused (under 15).",
-        stepIndex: 4,
-      });
-    } else {
-      newFeedback.push({
-        type: "success",
-        text: "Optimal number of skills listed.",
-        stepIndex: 4,
-      });
-    }
+      // Summary Checks
+      if (!data.summary || data.summary.trim().length < 50) {
+        newScore -= 15;
+        newFeedback.push({
+          type: "error",
+          text: "Professional summary is too short or missing.",
+          stepIndex: 1,
+        });
+      } else if (data.summary.split(".").length > 5) {
+        newScore -= 5;
+        newFeedback.push({
+          type: "warning",
+          text: "Summary is too long (over 4 sentences).",
+          stepIndex: 1,
+        });
+      } else {
+        newFeedback.push({
+          type: "success",
+          text: "Summary length is optimal.",
+          stepIndex: 1,
+        });
+      }
 
-    setScore(Math.max(0, newScore));
-    setFeedback(
-      newFeedback.sort((a, b) => {
-        const weight = { error: 0, warning: 1, success: 2 };
-        return weight[a.type] - weight[b.type];
-      }),
-    );
+      // Experience Checks
+      if (!data.experience || data.experience.length === 0) {
+        newScore -= 20;
+        newFeedback.push({
+          type: "error",
+          text: "Missing work experience.",
+          stepIndex: 2,
+        });
+      } else {
+        let hasMetrics = false;
+        let hasParagraphs = false;
+        let hasActionVerbs = false;
+        let hasPronouns = false;
+        let hasBuzzwords = false;
+        let missingDates = false;
+
+        const actionVerbs =
+          /\b(led|managed|developed|created|designed|implemented|orchestrated|increased|improved|reduced|optimized|achieved|coordinated)\b/i;
+        const pronouns = /\b(i|me|my|we|our)\b/i;
+        const buzzwords =
+          /\b(hard worker|team player|think outside the box|synergy|detail oriented|go-getter|self-starter)\b/i;
+
+        let repeatedVerbWarning: string | null = null;
+        let hasPassiveVoice = false;
+
+        // Track verb repetitions across all bullets
+        const verbCounts: Record<string, number> = {};
+        const passiveVoiceRegex =
+          /\b(was|were|been|being)\s+(developed|created|assigned|given|tasked|made|asked)\b/i;
+
+        data.experience.forEach((exp) => {
+          if (!exp.startDate || (!exp.endDate && !exp.current)) {
+            missingDates = true;
+          }
+
+          if (exp.description) {
+            if (/\d+%|\d+x|\$\d+/i.test(exp.description)) hasMetrics = true;
+            if (
+              !exp.description.includes("-") &&
+              !exp.description.includes("*")
+            )
+              hasParagraphs = true;
+            if (actionVerbs.test(exp.description)) hasActionVerbs = true;
+            if (pronouns.test(exp.description)) hasPronouns = true;
+            if (buzzwords.test(exp.description)) hasBuzzwords = true;
+            if (passiveVoiceRegex.test(exp.description)) hasPassiveVoice = true;
+
+            // Split bullets to find leading verbs
+            const bullets = exp.description.split(/\n+/);
+            bullets.forEach((b) => {
+              const firstWord = b
+                .replace(/^[-*•\d.]+\s*/, "")
+                .trim()
+                .split(/\s+/)[0]
+                ?.toLowerCase();
+              if (
+                firstWord &&
+                firstWord.length > 3 &&
+                actionVerbs.test(firstWord)
+              ) {
+                verbCounts[firstWord] = (verbCounts[firstWord] || 0) + 1;
+                if (verbCounts[firstWord] >= 3) {
+                  repeatedVerbWarning = firstWord;
+                }
+              }
+            });
+          }
+        });
+
+        if (repeatedVerbWarning) {
+          newScore -= 5;
+          newFeedback.push({
+            type: "warning",
+            text: `Action verb "${repeatedVerbWarning}" repeated 3+ times. Diversify with synonyms.`,
+            stepIndex: 2,
+          });
+        }
+
+        if (hasPassiveVoice) {
+          newScore -= 5;
+          newFeedback.push({
+            type: "warning",
+            text: "Passive voice detected (e.g. 'was tasked with'). Use direct active verbs.",
+            stepIndex: 2,
+          });
+        }
+
+        if (!hasMetrics) {
+          newScore -= 10;
+          newFeedback.push({
+            type: "warning",
+            text: "Consider adding numbers/metrics to your experience.",
+            stepIndex: 2,
+          });
+        } else {
+          newFeedback.push({
+            type: "success",
+            text: "Experience includes strong metrics/numbers.",
+            stepIndex: 2,
+          });
+        }
+
+        if (hasParagraphs) {
+          newScore -= 10;
+          newFeedback.push({
+            type: "warning",
+            text: "Use bullet points instead of paragraphs in experience.",
+            stepIndex: 2,
+          });
+        }
+
+        if (!hasActionVerbs) {
+          newScore -= 5;
+          newFeedback.push({
+            type: "warning",
+            text: "Start bullets with strong action verbs (e.g. Developed, Managed).",
+            stepIndex: 2,
+          });
+        } else {
+          newFeedback.push({
+            type: "success",
+            text: "Good use of strong action verbs.",
+            stepIndex: 2,
+          });
+        }
+
+        if (hasPronouns) {
+          newScore -= 5;
+          newFeedback.push({
+            type: "warning",
+            text: "Avoid personal pronouns (I, me, my) in your resume.",
+            stepIndex: 2,
+          });
+        }
+
+        if (hasBuzzwords) {
+          newScore -= 5;
+          newFeedback.push({
+            type: "warning",
+            text: "Remove clichés/buzzwords (e.g. 'team player', 'hard worker').",
+            stepIndex: 2,
+          });
+        }
+
+        if (missingDates) {
+          newScore -= 10;
+          newFeedback.push({
+            type: "error",
+            text: "One or more experience entries are missing start/end dates.",
+            stepIndex: 2,
+          });
+        }
+      }
+
+      // Education Checks
+      if (!data.education || data.education.length === 0) {
+        newScore -= 10;
+        newFeedback.push({
+          type: "error",
+          text: "Missing education section.",
+          stepIndex: 3,
+        });
+      } else {
+        let missingDates = false;
+        data.education.forEach((edu) => {
+          if (!edu.startDate || (!edu.endDate && !edu.current))
+            missingDates = true;
+        });
+        if (missingDates) {
+          newScore -= 5;
+          newFeedback.push({
+            type: "warning",
+            text: "Education is missing start/end dates.",
+            stepIndex: 3,
+          });
+        }
+      }
+
+      // Projects Checks
+      if (data.projects && data.projects.length > 0) {
+        let hasLinks = false;
+        data.projects.forEach((proj) => {
+          if (proj.url || proj.github) hasLinks = true;
+        });
+        if (!hasLinks) {
+          newScore -= 5;
+          newFeedback.push({
+            type: "warning",
+            text: "Add live links or GitHub repos to your projects.",
+            stepIndex: 5,
+          });
+        } else {
+          newFeedback.push({
+            type: "success",
+            text: "Projects include external links.",
+            stepIndex: 5,
+          });
+        }
+      }
+
+      // Skills Checks
+      if (!data.skills || data.skills.length < 3) {
+        newScore -= 10;
+        newFeedback.push({
+          type: "error",
+          text: "List at least 3 key skills.",
+          stepIndex: 4,
+        });
+      } else if (data.skills.length > 15) {
+        newScore -= 5;
+        newFeedback.push({
+          type: "warning",
+          text: "Too many skills listed. Keep it focused (under 15).",
+          stepIndex: 4,
+        });
+      } else {
+        newFeedback.push({
+          type: "success",
+          text: "Optimal number of skills listed.",
+          stepIndex: 4,
+        });
+      }
+
+      setScore(Math.max(0, newScore));
+      setFeedback(
+        newFeedback.sort((a, b) => {
+          const weight = { error: 0, warning: 1, success: 2 };
+          return weight[a.type] - weight[b.type];
+        }),
+      );
+    }, 150);
+
+    return () => clearTimeout(timer);
   }, [data]);
 
   const handleAutoPolish = async () => {

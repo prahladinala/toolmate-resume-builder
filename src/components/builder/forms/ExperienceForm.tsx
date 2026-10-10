@@ -302,7 +302,8 @@ function SortableExperienceItem({
 }
 
 export function ExperienceForm() {
-  const { data, reorderExperience } = useResumeStore();
+  const experiences = useResumeStore((state) => state.data.experience);
+  const reorderExperience = useResumeStore((state) => state.reorderExperience);
 
   const {
     register,
@@ -312,7 +313,7 @@ export function ExperienceForm() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: { experiences: data.experience },
+    defaultValues: { experiences },
   });
 
   const { fields, append, remove, move, insert } = useFieldArray({

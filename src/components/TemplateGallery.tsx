@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -108,7 +107,6 @@ export function TemplateGallery({
 }: TemplateGalleryProps) {
   const router = useRouter();
   const setTemplate = useResumeStore((state) => state.setTemplate);
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const handleSelect = (templateId: string) => {
     setTemplate(templateId as ResumeTemplate);
@@ -155,8 +153,6 @@ export function TemplateGallery({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
                   className="w-[90vw] h-[75vh] md:h-auto md:w-auto shrink-0 snap-center group relative rounded-[24px] border border-zinc-200 dark:border-[#27272a] bg-zinc-50 dark:bg-[#111113] overflow-hidden hover:border-[#3f3f46] transition-all duration-300 flex flex-col cursor-pointer"
-                  onMouseEnter={() => setHoveredId(template.id)}
-                  onMouseLeave={() => setHoveredId(null)}
                   onClick={() => {
                     if (window.innerWidth < 768) handleSelect(template.id);
                   }}
@@ -178,26 +174,18 @@ export function TemplateGallery({
                       </div>
                     </div>
 
-                    {/* Hover Overlay (Desktop Only) */}
-                    <div className="hidden md:flex">
-                      {hoveredId === template.id && (
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="absolute inset-0 bg-white dark:bg-[#09090b]/80 backdrop-blur-sm flex items-center justify-center p-6"
-                        >
-                          <Button
-                            size="lg"
-                            className="w-full rounded-full bg-[#fafafa] text-[#09090b] hover:bg-[#e4e4e7] h-12 font-semibold cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleSelect(template.id);
-                            }}
-                          >
-                            Select Template
-                          </Button>
-                        </motion.div>
-                      )}
+                    {/* Hover Overlay (Desktop Only - CSS group-hover for zero re-renders) */}
+                    <div className="hidden md:flex absolute inset-0 bg-white/80 dark:bg-[#09090b]/80 backdrop-blur-xs items-center justify-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
+                      <Button
+                        size="lg"
+                        className="w-full rounded-full bg-[#fafafa] text-[#09090b] hover:bg-[#e4e4e7] h-12 font-semibold cursor-pointer shadow-lg"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelect(template.id);
+                        }}
+                      >
+                        Select Template
+                      </Button>
                     </div>
                   </div>
                   <div className="p-4 md:p-6 flex justify-between items-center bg-zinc-50 dark:bg-[#111113] flex-1">

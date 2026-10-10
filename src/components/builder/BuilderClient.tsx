@@ -84,7 +84,7 @@ const STEPS = [
 
 export function BuilderClient() {
   const router = useRouter();
-  const { data } = useResumeStore();
+  const resumeTitle = useResumeStore((state) => state.data.personalInfo.title);
   const [activeStep, setActiveStep] = useState(0);
   const [showProfiles, setShowProfiles] = useState(false);
   const [showImport, setShowImport] = useState(false);
@@ -164,7 +164,8 @@ export function BuilderClient() {
         description: "Rendering high-resolution vector layout.",
       });
       const { downloadDirectPdf } = await import("@/lib/pdfDownloader");
-      await downloadDirectPdf(data);
+      const currentData = useResumeStore.getState().data;
+      await downloadDirectPdf(currentData);
       toast.success("PDF Downloaded successfully! 🎉");
     } catch (err) {
       console.warn("Direct PDF generation fallback to print dialog:", err);
@@ -340,7 +341,7 @@ export function BuilderClient() {
               >
                 <Layers className="w-3.5 h-3.5 text-blue-500" />
                 <span className="max-w-[130px] truncate">
-                  {data.personalInfo.title || "Primary Resume"}
+                  {resumeTitle || "Primary Resume"}
                 </span>
                 <span className="text-[10px] text-zinc-400">▾</span>
               </button>

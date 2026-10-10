@@ -199,7 +199,8 @@ function SortableProjectItem({
 }
 
 export function ProjectsForm() {
-  const { data, reorderProjects } = useResumeStore();
+  const projects = useResumeStore((state) => state.data.projects);
+  const reorderProjects = useResumeStore((state) => state.reorderProjects);
 
   const {
     register,
@@ -210,7 +211,7 @@ export function ProjectsForm() {
   } = useForm({
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
-      projects: data.projects.map((proj) => ({
+      projects: projects.map((proj) => ({
         ...proj,
         technologies: proj.technologies.join(", "),
       })),

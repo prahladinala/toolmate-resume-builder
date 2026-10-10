@@ -10,7 +10,10 @@ import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 
 export function PersonalInfoForm() {
-  const { data, updatePersonalInfo } = useResumeStore();
+  const personalInfo = useResumeStore((state) => state.data.personalInfo);
+  const updatePersonalInfo = useResumeStore(
+    (state) => state.updatePersonalInfo,
+  );
 
   const {
     register,
@@ -19,7 +22,7 @@ export function PersonalInfoForm() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(personalInfoSchema),
-    defaultValues: data.personalInfo,
+    defaultValues: personalInfo,
     mode: "onChange",
   });
 
@@ -68,10 +71,10 @@ export function PersonalInfoForm() {
           canvas.height = height;
           const ctx = canvas.getContext("2d");
           ctx?.drawImage(img, 0, 0, width, height);
-          
+
           // Convert to highly compressed webp (or jpeg) to keep store under 5MB limit
           const compressedBase64 = canvas.toDataURL("image/webp", 0.8);
-          
+
           setValue("photoBase64", compressedBase64, {
             shouldValidate: true,
             shouldDirty: true,
@@ -106,10 +109,10 @@ export function PersonalInfoForm() {
       <div className="space-y-2">
         <Label>Profile Picture</Label>
         <div className="flex items-center gap-4">
-          {data.personalInfo.photoBase64 && (
+          {personalInfo.photoBase64 && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={data.personalInfo.photoBase64}
+              src={personalInfo.photoBase64}
               alt="Profile"
               className="h-16 w-16 rounded-full object-cover border"
             />
@@ -120,7 +123,7 @@ export function PersonalInfoForm() {
             onChange={handleImageUpload}
             className="max-w-xs cursor-pointer"
           />
-          {data.personalInfo.photoBase64 && (
+          {personalInfo.photoBase64 && (
             <Button
               variant="ghost"
               size="sm"

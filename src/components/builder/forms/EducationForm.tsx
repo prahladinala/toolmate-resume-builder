@@ -189,7 +189,8 @@ function SortableEducationItem({
 }
 
 export function EducationForm() {
-  const { data, reorderEducation } = useResumeStore();
+  const educations = useResumeStore((state) => state.data.education);
+  const reorderEducation = useResumeStore((state) => state.reorderEducation);
 
   const {
     register,
@@ -200,7 +201,7 @@ export function EducationForm() {
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      educations: data.education,
+      educations,
     },
   });
 

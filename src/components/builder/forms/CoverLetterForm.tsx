@@ -12,11 +12,12 @@ import { AIHelper } from "../AIHelper";
 import { AICoverLetterHelper } from "../AICoverLetterHelper";
 
 export function CoverLetterForm() {
-  const { data, updateCoverLetter } = useResumeStore();
+  const coverLetter = useResumeStore((state) => state.data.coverLetter);
+  const updateCoverLetter = useResumeStore((state) => state.updateCoverLetter);
 
   const { register, watch, setValue } = useForm({
     resolver: zodResolver(coverLetterSchema),
-    defaultValues: { coverLetter: data.coverLetter || "" },
+    defaultValues: { coverLetter: coverLetter || "" },
   });
 
   useEffect(() => {

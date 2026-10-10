@@ -34,30 +34,44 @@ export function BuilderSidebar({
   onOpenImport,
   onOpenHistory,
 }: BuilderSidebarProps) {
-  const { data } = useResumeStore();
+  const completionSignature = useResumeStore((state) => {
+    const d = state.data;
+    const personal = Boolean(
+      d.personalInfo.firstName &&
+      d.personalInfo.lastName &&
+      d.personalInfo.email,
+    );
+    const summary = Boolean(d.summary && d.summary.trim().length > 30);
+    const experience = d.experience.length > 0;
+    const education = d.education.length > 0;
+    const skills = d.skills.length > 0;
+    const projects = d.projects.length > 0;
+    const custom = d.customSections.length > 0;
+    const coverLetter = Boolean(
+      d.coverLetter && d.coverLetter.trim().length > 50,
+    );
+    return `${personal ? "1" : "0"}:${summary ? "1" : "0"}:${experience ? "1" : "0"}:${education ? "1" : "0"}:${skills ? "1" : "0"}:${projects ? "1" : "0"}:${custom ? "1" : "0"}:${coverLetter ? "1" : "0"}`;
+  });
 
   const isStepComplete = (id: string) => {
+    const [p, s, exp, edu, sk, prj, cust, cl] = completionSignature.split(":");
     switch (id) {
       case "personal":
-        return Boolean(
-          data.personalInfo.firstName &&
-          data.personalInfo.lastName &&
-          data.personalInfo.email,
-        );
+        return p === "1";
       case "summary":
-        return Boolean(data.summary && data.summary.trim().length > 30);
+        return s === "1";
       case "experience":
-        return Boolean(data.experience && data.experience.length > 0);
+        return exp === "1";
       case "education":
-        return Boolean(data.education && data.education.length > 0);
+        return edu === "1";
       case "skills":
-        return Boolean(data.skills && data.skills.length > 0);
+        return sk === "1";
       case "projects":
-        return Boolean(data.projects && data.projects.length > 0);
+        return prj === "1";
       case "custom":
-        return Boolean(data.customSections && data.customSections.length > 0);
+        return cust === "1";
       case "cover-letter":
-        return Boolean(data.coverLetter && data.coverLetter.trim().length > 50);
+        return cl === "1";
       default:
         return false;
     }

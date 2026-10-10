@@ -12,7 +12,8 @@ import { AIHelper } from "../AIHelper";
 import { AISuggestions } from "../AISuggestions";
 
 export function SummaryForm() {
-  const { data, updateSummary } = useResumeStore();
+  const summary = useResumeStore((state) => state.data.summary);
+  const updateSummary = useResumeStore((state) => state.updateSummary);
 
   const {
     register,
@@ -21,7 +22,7 @@ export function SummaryForm() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(summarySchema),
-    defaultValues: { summary: data.summary },
+    defaultValues: { summary },
   });
 
   useEffect(() => {

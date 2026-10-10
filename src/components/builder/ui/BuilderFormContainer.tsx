@@ -36,12 +36,12 @@ export function BuilderFormContainer({
   onOpenImport,
   onOpenProfiles,
 }: BuilderFormContainerProps) {
-  const { data } = useResumeStore();
-
-  const isFreshResume =
-    !data.personalInfo.firstName &&
-    !data.personalInfo.lastName &&
-    data.experience.length === 0;
+  const isFreshResume = useResumeStore(
+    (state) =>
+      !state.data.personalInfo.firstName &&
+      !state.data.personalInfo.lastName &&
+      state.data.experience.length === 0,
+  );
 
   return (
     <div className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth no-scrollbar">
