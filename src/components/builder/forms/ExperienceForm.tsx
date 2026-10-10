@@ -19,6 +19,7 @@ import { AIHelper } from "../AIHelper";
 import { AISuggestions } from "../AISuggestions";
 import { BulletQuantifierModal } from "../BulletQuantifierModal";
 import { AchievementAssistantModal } from "../AchievementAssistantModal";
+import { GuidedExperienceModal } from "../GuidedExperienceModal";
 import { detectWeakActionVerbs, replaceWeakVerb } from "@/lib/actionVerbs";
 import { toast } from "sonner";
 import {
@@ -411,6 +412,8 @@ export function ExperienceForm() {
     }
   };
 
+  const [showGuidedCreator, setShowGuidedCreator] = useState(false);
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex justify-between items-center">
@@ -422,23 +425,33 @@ export function ExperienceForm() {
             Add your relevant work history.
           </p>
         </div>
-        <Button
-          onClick={() =>
-            append({
-              id: crypto.randomUUID(),
-              company: "",
-              role: "",
-              startDate: "",
-              endDate: "",
-              current: false,
-              description: "",
-            })
-          }
-          variant="outline"
-          size="sm"
-        >
-          <Plus className="h-4 w-4 mr-2" /> Add
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => setShowGuidedCreator(true)}
+            variant="outline"
+            size="sm"
+            className="text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-950/40"
+          >
+            <Sparkles className="h-4 w-4 mr-1.5" /> Guided Creator
+          </Button>
+          <Button
+            onClick={() =>
+              append({
+                id: crypto.randomUUID(),
+                company: "",
+                role: "",
+                startDate: "",
+                endDate: "",
+                current: false,
+                description: "",
+              })
+            }
+            variant="outline"
+            size="sm"
+          >
+            <Plus className="h-4 w-4 mr-2" /> Add
+          </Button>
+        </div>
       </div>
 
       <DndContext
@@ -465,13 +478,58 @@ export function ExperienceForm() {
               />
             ))}
             {fields.length === 0 && (
-              <div className="text-center py-12 border border-dashed border-zinc-200 dark:border-[#27272a] rounded-xl text-zinc-500 dark:text-[#a1a1aa]">
-                No experience added yet. Click the Add button above.
+              <div className="text-center py-12 border border-dashed border-zinc-200 dark:border-[#27272a] rounded-xl text-zinc-500 dark:text-[#a1a1aa] space-y-3">
+                <p className="text-sm">No experience added yet.</p>
+                <div className="flex justify-center gap-2">
+                  <Button
+                    onClick={() => setShowGuidedCreator(true)}
+                    size="sm"
+                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    <Sparkles className="w-4 h-4 mr-1.5" />
+                    Use Guided Creator
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      append({
+                        id: crypto.randomUUID(),
+                        company: "",
+                        role: "",
+                        startDate: "",
+                        endDate: "",
+                        current: false,
+                        description: "",
+                      })
+                    }
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Plus className="w-4 h-4 mr-1.5" />
+                    Add Manually
+                  </Button>
+                </div>
               </div>
             )}
           </div>
         </SortableContext>
       </DndContext>
+
+      <GuidedExperienceModal
+        isOpen={showGuidedCreator}
+        onClose={() => setShowGuidedCreator(false)}
+        onApply={(bullets) => {
+          const bulletMarkdown = bullets.map((b) => `- ${b}`).join("\n");
+          append({
+            id: crypto.randomUUID(),
+            company: "",
+            role: "",
+            startDate: "",
+            endDate: "",
+            current: false,
+            description: bulletMarkdown,
+          });
+        }}
+      />
     </div>
   );
 }

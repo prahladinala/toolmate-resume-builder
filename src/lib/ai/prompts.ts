@@ -127,3 +127,81 @@ RULES:
 **Explanation:**
 * Key Improvements: <brief note on how this strengthens the candidate's candidacy>`;
 }
+
+export interface GuidedExperienceContext {
+  targetRole: string;
+  keyResponsibilities: string;
+  technologiesUsed: string;
+  achievementsOrScale?: string;
+  isGraduateOrStudent?: boolean;
+}
+
+export function buildGuidedExperiencePrompt(
+  ctx: GuidedExperienceContext,
+): string {
+  const profileTone = ctx.isGraduateOrStudent
+    ? "Entry-Level / Student: Emphasize coursework foundations, technical curiosity, rapid learning, and hands-on project delivery."
+    : "Experienced Professional: Emphasize end-to-end technical ownership, architectural scale, business impact, and cross-functional leadership.";
+
+  return `You are a Principal Resume Architect helping a candidate turn raw notes into 3 structured, high-impact resume bullet points.
+
+CANDIDATE TARGET ROLE: "${ctx.targetRole}"
+PROFILE LEVEL: ${profileTone}
+
+CANDIDATE NOTES:
+- Core Responsibilities/Tasks: "${ctx.keyResponsibilities}"
+- Technologies & Tools: "${ctx.technologiesUsed}"
+- Impact / Scale / Metrics (if provided): "${ctx.achievementsOrScale || "None provided; focus on qualitative engineering excellence"}"
+
+RULES:
+1. Generate EXACTLY 3 distinct bullet points starting with strong action verbs.
+2. DO NOT invent metrics, company names, or claims not provided in the candidate notes.
+3. Keep each bullet point under 28 words, concise, and ATS-friendly.
+4. Output format:
+
+**Option 1 (Technical Depth):**
+<bullet focusing on tool implementation and architecture>
+
+**Option 2 (Action & Initiative):**
+<bullet focusing on personal ownership and execution>
+
+**Option 3 (Impact & Outcome):**
+<bullet focusing on team or project outcome>
+
+**Explanation:**
+* Why this works: <1 sentence rationale>`;
+}
+
+export interface GuidedSummaryContext {
+  targetRole: string;
+  yearsExperience?: string;
+  primaryStack: string;
+  domainOrCoreStrength: string;
+}
+
+export function buildGuidedSummaryPrompt(ctx: GuidedSummaryContext): string {
+  return `You are an Executive Career Coach crafting a 2-3 sentence Professional Summary.
+
+CANDIDATE PROFILE:
+- Target Role: "${ctx.targetRole}"
+- Experience Level: "${ctx.yearsExperience || "Targeting role"}"
+- Primary Technical Stack: "${ctx.primaryStack}"
+- Core Strengths / Domain: "${ctx.domainOrCoreStrength}"
+
+RULES:
+1. Write EXACTLY 3 alternative professional summaries (2-3 sentences each).
+2. DO NOT fabricate qualifications, degrees, or employers.
+3. Structure as:
+
+**Option 1 (Balanced Professional):**
+<2-3 sentences highlighting role, stack, and domain strength>
+
+**Option 2 (Technical & Hands-On):**
+<2-3 sentences prioritizing frameworks, architecture, and engineering execution>
+
+**Option 3 (Leadership & Vision):**
+<2-3 sentences prioritizing business impact, problem-solving, and cross-functional collaboration>
+
+**Explanation:**
+* Key Differentiator: <1 sentence on recruiter appeal>`;
+}

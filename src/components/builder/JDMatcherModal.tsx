@@ -169,18 +169,23 @@ export function JDMatcherModal({ isOpen, onClose }: JDMatcherModalProps) {
                 <div className="p-5 rounded-2xl bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-200 dark:border-indigo-900/50 flex items-center justify-between">
                   <div>
                     <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                      ATS Match Score
+                      Estimated Keyword Alignment Checklist
                     </span>
                     <h4 className="text-2xl font-black text-zinc-900 dark:text-zinc-100 mt-0.5">
-                      {result.matchScore}% Compatibility
+                      ~{result.matchScore}% Match
                     </h4>
                     <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
                       {result.matchScore >= 80
-                        ? "🎉 High match! Your background strongly aligns with this job posting."
+                        ? "🎉 Strong keyword overlap with this job posting's key requirements."
                         : result.matchScore >= 60
-                          ? "⚡ Moderate match. Adding missing keywords will significantly boost ATS ranking."
-                          : "⚠️ Needs tailoring. Target the missing skills below to pass automated screens."}
+                          ? "⚡ Moderate match checklist. Review the missing keywords below to strengthen relevant bullet points."
+                          : "⚠️ Low keyword overlap. Consider highlighting relevant skills from the checklist below."}
                     </p>
+                    <span className="text-[10px] text-zinc-400 block mt-1">
+                      Note: This is an estimated keyword alignment checklist to
+                      guide your editing—not a guaranteed ATS score or hiring
+                      prediction.
+                    </span>
                   </div>
                   <div className="radial-score flex items-center justify-center w-16 h-16 rounded-full border-4 border-indigo-500 font-black text-lg text-indigo-600 dark:text-indigo-400 shrink-0">
                     {result.matchScore}%

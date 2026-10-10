@@ -6,14 +6,18 @@ import { summarySchema } from "@/lib/validations";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { Sparkles } from "lucide-react";
 import { PowerVerbs } from "../PowerVerbs";
 import { AIHelper } from "../AIHelper";
 import { AISuggestions } from "../AISuggestions";
+import { GuidedSummaryModal } from "../GuidedSummaryModal";
 
 export function SummaryForm() {
   const summary = useResumeStore((state) => state.data.summary);
   const updateSummary = useResumeStore((state) => state.updateSummary);
+  const [showGuidedSummary, setShowGuidedSummary] = useState(false);
 
   const {
     register,
@@ -54,6 +58,17 @@ export function SummaryForm() {
         <div className="flex justify-between items-center">
           <Label htmlFor="summary">Summary</Label>
           <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowGuidedSummary(true)}
+              className="h-8 gap-1.5 text-xs text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-950/40"
+              title="Guided 3-question assistant to draft an executive summary"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+              Guided Creator
+            </Button>
             <AIHelper
               currentText={watch("summary") || ""}
               onUpdate={(improvedText) => setValue("summary", improvedText)}
@@ -80,6 +95,15 @@ export function SummaryForm() {
           {...register("summary")}
         />
         <div id="summary-ai-options" />
+        <GuidedSummaryModal
+          isOpen={showGuidedSummary}
+          onClose={() => setShowGuidedSummary(false)}
+          defaultRole={useResumeStore.getState().data.personalInfo.title}
+          onApply={(generatedSummary) => {
+            setValue("summary", generatedSummary, { shouldValidate: true });
+            updateSummary(generatedSummary);
+          }}
+        />
         <AISuggestions
           currentText={watch("summary") || ""}
           onSelect={(suggestion) => {

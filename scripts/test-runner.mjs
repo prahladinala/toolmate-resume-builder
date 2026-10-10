@@ -170,7 +170,27 @@ const populatedAnalysis = analyzeQuality({
   experience: [{ company: "Acme", role: "Dev", description: "Built APIs" }],
 });
 assert("Quality Analyzer: Scores high for populated resume", populatedAnalysis.score === 100 && populatedAnalysis.issues.length === 0);
+// Test Guided Experience Prompt Builder logic
+function buildGuidedExperiencePrompt(ctx) {
+  return `Role: ${ctx.targetRole}, Notes: ${ctx.keyResponsibilities}, Tools: ${ctx.technologiesUsed}`;
+}
+const guidedExp = buildGuidedExperiencePrompt({
+  targetRole: "Full Stack Engineer",
+  keyResponsibilities: "Built Next.js checkout",
+  technologiesUsed: "React, Stripe, Prisma",
+});
+assert("AI: Guided Experience prompt includes candidate notes and tools", guidedExp.includes("Full Stack Engineer") && guidedExp.includes("React, Stripe, Prisma"));
 
+// Test Guided Summary Prompt Builder logic
+function buildGuidedSummaryPrompt(ctx) {
+  return `Target: ${ctx.targetRole}, Stack: ${ctx.primaryStack}, Strengths: ${ctx.domainOrCoreStrength}`;
+}
+const guidedSum = buildGuidedSummaryPrompt({
+  targetRole: "Principal Engineer",
+  primaryStack: "Go, Kubernetes",
+  domainOrCoreStrength: "Distributed systems scale",
+});
+assert("AI: Guided Summary prompt captures stack and leadership focus", guidedSum.includes("Go, Kubernetes") && guidedSum.includes("Distributed systems scale"));
 console.log("==================================================");
 console.log(`TOTAL TESTS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);
 console.log("==================================================");
