@@ -12,11 +12,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { GripVertical, Plus, Trash2 } from "lucide-react";
-import { useEffect } from "react";
+import { GripVertical, Plus, Trash2, BarChart2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { PowerVerbs } from "../PowerVerbs";
 import { AIHelper } from "../AIHelper";
 import { AISuggestions } from "../AISuggestions";
+import { BulletQuantifierModal } from "../BulletQuantifierModal";
 import {
   DndContext,
   closestCenter,
@@ -57,6 +58,8 @@ function SortableExperienceItem({
     transition,
     isDragging,
   } = useSortable({ id });
+
+  const [showQuantifier, setShowQuantifier] = useState(false);
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -171,6 +174,17 @@ function SortableExperienceItem({
           <div className="flex justify-between items-center">
             <Label>Description (Markdown supported)</Label>
             <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowQuantifier(true)}
+                className="h-8 gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
+                title="Add realistic metrics and percentage impact with Gemini Nano"
+              >
+                <BarChart2 className="w-3.5 h-3.5" />
+                Add Metrics
+              </Button>
               <AIHelper
                 currentText={watch(`experiences.${index}.description`) || ""}
                 onUpdate={(improvedText) =>
@@ -199,6 +213,28 @@ function SortableExperienceItem({
             {...register(`experiences.${index}.description`)}
           />
           <div id={`exp-${index}-ai-options`} />
+          <BulletQuantifierModal
+            isOpen={showQuantifier}
+            onClose={() => setShowQuantifier(false)}
+            currentText={watch(`experiences.${index}.description`) || ""}
+            onApply={(quantifiedText) => {
+              const currentDesc =
+                watch(`experiences.${index}.description`) || "";
+              if (!currentDesc.trim()) {
+                setValue(
+                  `experiences.${index}.description`,
+                  `- ${quantifiedText}`,
+                );
+              } else {
+                setValue(
+                  `experiences.${index}.description`,
+                  currentDesc +
+                    (currentDesc.endsWith("\n") ? "" : "\n") +
+                    `- ${quantifiedText}`,
+                );
+              }
+            }}
+          />
           <AISuggestions
             currentText={watch(`experiences.${index}.description`) || ""}
             onSelect={(suggestion) => {

@@ -201,7 +201,16 @@ export type SectionContextType =
   "summary" | "experience" | "project" | "cover_letter" | "custom" | "general";
 
 export type OptimizationTone =
-  "default" | "metrics" | "action" | "executive" | "concise" | "technical";
+  | "default"
+  | "metrics"
+  | "action"
+  | "executive"
+  | "concise"
+  | "technical"
+  | "entry_level"
+  | "mid_senior"
+  | "staff_principal"
+  | "manager_lead";
 
 export interface AIOptimizeOptions {
   sectionType?: SectionContextType;
@@ -312,6 +321,18 @@ function buildOptimizedPrompt(
   } else if (tone === "technical") {
     toneDirective =
       "\nTONE FOCUS: Emphasize deep technical rigor, systems architecture, design patterns, testing, and modern developer tooling.";
+  } else if (tone === "entry_level") {
+    toneDirective =
+      "\nSENIORITY FOCUS: Entry Level / Associate. Highlight foundational technical skills, eagerness to learn, coursework, collaborative team contributions, and rapid onboarding ability.";
+  } else if (tone === "mid_senior") {
+    toneDirective =
+      "\nSENIORITY FOCUS: Mid-to-Senior Level. Highlight independent ownership, technical problem solving, delivering features end-to-end, and cross-functional collaboration.";
+  } else if (tone === "staff_principal") {
+    toneDirective =
+      "\nSENIORITY FOCUS: Staff / Principal Level. Emphasize multi-system technical architecture, cross-team technical strategy, engineering velocity influence, and long-term tech roadmaps.";
+  } else if (tone === "manager_lead") {
+    toneDirective =
+      "\nSENIORITY FOCUS: Engineering Manager / Team Lead. Emphasize people leadership, mentoring, agile delivery, stakeholder alignment, hiring, and team business impact.";
   }
 
   return `${roleContext}${toneDirective}

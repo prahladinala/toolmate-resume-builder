@@ -18,6 +18,9 @@ import {
   Briefcase,
   Scissors,
   Wrench,
+  GraduationCap,
+  Award,
+  Users,
 } from "lucide-react";
 import type { AIParsedResult } from "@/lib/aiParser";
 import type { SectionContextType, OptimizationTone } from "@/lib/chromeAI";
@@ -45,6 +48,10 @@ const TONE_OPTIONS: {
   { id: "executive", label: "Executive Tone", icon: Briefcase },
   { id: "concise", label: "Ultra-Concise", icon: Scissors },
   { id: "technical", label: "Technical Depth", icon: Wrench },
+  { id: "entry_level", label: "Entry-Level", icon: GraduationCap },
+  { id: "mid_senior", label: "Mid-Senior", icon: Award },
+  { id: "staff_principal", label: "Staff / Principal", icon: Sparkles },
+  { id: "manager_lead", label: "Manager / Lead", icon: Users },
 ];
 
 function getSectionLabel(sectionType?: SectionContextType): string {

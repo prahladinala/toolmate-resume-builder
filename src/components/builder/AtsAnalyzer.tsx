@@ -7,13 +7,18 @@ import {
   AlertTriangle,
   CheckCircle2,
   XCircle,
-  Sparkles,
+  Target,
+  HelpCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { JDMatcherModal } from "./JDMatcherModal";
+import { InterviewPrepModal } from "./InterviewPrepModal";
 
 export function AtsAnalyzer() {
   const { data } = useResumeStore();
   const [isOpen, setIsOpen] = useState(false);
+  const [showJDMatcher, setShowJDMatcher] = useState(false);
+  const [showInterviewPrep, setShowInterviewPrep] = useState(false);
   const [score, setScore] = useState(100);
   const [feedback, setFeedback] = useState<
     { type: "error" | "warning" | "success"; text: string }[]
@@ -265,29 +270,74 @@ export function AtsAnalyzer() {
                 </div>
               ))}
             </div>
-            <div className="p-3 border-t border-zinc-100 dark:border-zinc-800 bg-purple-50/70 dark:bg-purple-950/30 text-xs text-purple-700 dark:text-purple-300 flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 shrink-0 text-purple-600" />
-              <span>
-                Boost ATS Score: Open <strong>Skills</strong> tab to
-                auto-discover missing keywords with Gemini Nano!
-              </span>
+            <div className="p-3 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setShowJDMatcher(true);
+                }}
+                className="w-full py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium flex items-center justify-center gap-2 shadow-sm transition-all"
+              >
+                <Target className="w-3.5 h-3.5" />
+                Match Against Job Description
+              </button>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setShowInterviewPrep(true);
+                }}
+                className="w-full py-2 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-medium flex items-center justify-center gap-2 shadow-sm transition-all"
+              >
+                <HelpCircle className="w-3.5 h-3.5" />
+                Generate Interview Questions
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="h-12 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg flex items-center gap-2 font-medium transition-transform hover:scale-105 active:scale-95"
-      >
-        <Activity className="w-5 h-5" />
-        <span className="hidden sm:inline">ATS Score</span>
-        <span
-          className={`px-2 py-0.5 rounded-full text-xs font-bold bg-white/20`}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setShowJDMatcher(true)}
+          className="h-12 px-4 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg flex items-center gap-2 font-medium text-xs transition-transform hover:scale-105 active:scale-95"
+          title="Paste Job Description to check ATS match & keywords"
         >
-          {score}
-        </span>
-      </button>
+          <Target className="w-4 h-4 text-indigo-500" />
+          <span className="hidden sm:inline">Job Matcher</span>
+        </button>
+
+        <button
+          onClick={() => setShowInterviewPrep(true)}
+          className="h-12 px-4 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg flex items-center gap-2 font-medium text-xs transition-transform hover:scale-105 active:scale-95"
+          title="Generate top 5 interview questions from your resume"
+        >
+          <HelpCircle className="w-4 h-4 text-purple-500" />
+          <span className="hidden sm:inline">Interview Prep</span>
+        </button>
+
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="h-12 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg flex items-center gap-2 font-medium transition-transform hover:scale-105 active:scale-95"
+        >
+          <Activity className="w-5 h-5" />
+          <span className="hidden sm:inline">ATS Score</span>
+          <span
+            className={`px-2 py-0.5 rounded-full text-xs font-bold bg-white/20`}
+          >
+            {score}
+          </span>
+        </button>
+      </div>
+
+      <JDMatcherModal
+        isOpen={showJDMatcher}
+        onClose={() => setShowJDMatcher(false)}
+      />
+
+      <InterviewPrepModal
+        isOpen={showInterviewPrep}
+        onClose={() => setShowInterviewPrep(false)}
+      />
     </div>
   );
 }
