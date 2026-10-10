@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, GripVertical } from "lucide-react";
 import { useEffect } from "react";
+import { toast } from "sonner";
 import { AIHelper } from "../AIHelper";
 import { PowerVerbs } from "../PowerVerbs";
 import {
@@ -50,7 +51,7 @@ function SortableProjectItem({
   index,
   register,
   errors,
-  remove,
+  onRemove,
   watch,
   setValue,
 }: {
@@ -58,7 +59,7 @@ function SortableProjectItem({
   index: number;
   register: any;
   errors: any;
-  remove: any;
+  onRemove: (index: number) => void;
   watch: any;
   setValue: any;
 }) {
@@ -98,7 +99,7 @@ function SortableProjectItem({
           variant="ghost"
           size="icon"
           className="h-8 w-8 text-zinc-500 dark:text-[#a1a1aa] hover:text-red-400"
-          onClick={() => remove(index)}
+          onClick={() => onRemove(index)}
         >
           <Trash2 className="h-4 w-4" />
         </Button>
@@ -216,10 +217,26 @@ export function ProjectsForm() {
     },
   });
 
-  const { fields, append, remove, move } = useFieldArray({
+  const { fields, append, remove, move, insert } = useFieldArray({
     control,
     name: "projects",
   });
+
+  const handleRemove = (index: number) => {
+    const removedItem = fields[index];
+    remove(index);
+    toast("Project removed", {
+      description: removedItem?.name
+        ? removedItem.name
+        : "Item removed from projects",
+      action: {
+        label: "Undo",
+        onClick: () => {
+          insert(index, removedItem);
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -319,7 +336,7 @@ export function ProjectsForm() {
                 index={index}
                 register={register}
                 errors={errors}
-                remove={remove}
+                onRemove={handleRemove}
                 watch={watch}
                 setValue={setValue}
               />

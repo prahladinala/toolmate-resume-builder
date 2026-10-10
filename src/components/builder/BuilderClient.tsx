@@ -339,44 +339,54 @@ export function BuilderClient() {
             )}
           </div>
 
-          <BuilderFormContainer activeStep={activeStep} />
+          <BuilderFormContainer
+            activeStep={activeStep}
+            setActiveStep={setActiveStep}
+            steps={STEPS}
+            onOpenImport={() => setShowImport(true)}
+            onOpenProfiles={() => setShowProfiles(true)}
+          />
         </div>
 
         {/* RIGHT: Live Preview Panel (Desktop) */}
         <div className="flex-1 h-full relative bg-zinc-100 dark:bg-[#111113] print:bg-white print:!m-0 print:!p-0 print:static print:h-auto print:!block">
           {/* DESKTOP TOP ACTIONS (Undo, Redo, History, Word Export, PDF Export) */}
           <div className="hidden md:flex absolute top-8 right-8 z-20 gap-2 sm:gap-3 print:hidden">
-            <Button
-              onClick={() => undo()}
-              disabled={pastStates.length === 0}
-              variant="outline"
-              size="icon"
-              className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11"
-              title="Undo"
-            >
-              <Undo2 className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center bg-white dark:bg-[#09090b] rounded-full border border-zinc-200 dark:border-[#27272a] shadow-sm p-0.5">
+              <Button
+                onClick={() => undo()}
+                disabled={pastStates.length === 0}
+                variant="ghost"
+                size="icon"
+                className="rounded-full h-10 w-10 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                title="Undo (Ctrl+Z)"
+              >
+                <Undo2 className="h-4 w-4" />
+              </Button>
 
-            <Button
-              onClick={() => redo()}
-              disabled={futureStates.length === 0}
-              variant="outline"
-              size="icon"
-              className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11"
-              title="Redo"
-            >
-              <Redo2 className="h-4 w-4" />
-            </Button>
+              <Button
+                onClick={() => redo()}
+                disabled={futureStates.length === 0}
+                variant="ghost"
+                size="icon"
+                className="rounded-full h-10 w-10 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                title="Redo (Ctrl+Y)"
+              >
+                <Redo2 className="h-4 w-4" />
+              </Button>
 
-            <Button
-              onClick={() => setShowHistory(true)}
-              variant="outline"
-              size="icon"
-              className="rounded-full bg-white dark:bg-[#09090b] shadow-sm border-zinc-200 dark:border-[#27272a] h-11 w-11 text-zinc-600 dark:text-zinc-300"
-              title="Session History Timeline"
-            >
-              <History className="h-4 w-4" />
-            </Button>
+              <div className="w-[1px] h-5 bg-zinc-200 dark:bg-zinc-800 mx-0.5" />
+
+              <Button
+                onClick={() => setShowHistory(true)}
+                variant="ghost"
+                size="icon"
+                className="rounded-full h-10 w-10 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                title="Session History Timeline"
+              >
+                <History className="h-4 w-4" />
+              </Button>
+            </div>
 
             <Button
               onClick={handleDownloadWord}

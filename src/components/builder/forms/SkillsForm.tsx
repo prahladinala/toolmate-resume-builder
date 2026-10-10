@@ -232,12 +232,60 @@ export function SkillsForm() {
             />
             <Button
               type="submit"
-              className="px-6 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors"
+              className="px-6 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors shrink-0"
             >
               <Plus className="w-4 h-4 md:mr-2" />
               <span className="hidden md:inline">Add</span>
             </Button>
           </div>
+
+          {/* Quick-Add Popular Skills (Zero-typing UX) */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-1.5">
+            <span className="text-[11px] font-semibold text-zinc-400 mr-1">
+              Popular:
+            </span>
+            {[
+              "React",
+              "TypeScript",
+              "Next.js",
+              "Node.js",
+              "Python",
+              "Docker",
+              "PostgreSQL",
+              "AWS",
+              "Git",
+              "Tailwind CSS",
+            ]
+              .filter(
+                (name) =>
+                  !data.skills.some(
+                    (s) => s.name.toLowerCase() === name.toLowerCase(),
+                  ),
+              )
+              .slice(0, 7)
+              .map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => {
+                    addSkill({
+                      id: crypto.randomUUID(),
+                      name,
+                      category: "Core Skills",
+                    });
+                    toast.success(`Added ${name}!`);
+                  }}
+                  className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:border-indigo-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                >
+                  + {name}
+                </button>
+              ))}
+          </div>
+
+          <p className="text-[11px] text-zinc-400 dark:text-zinc-500">
+            💡 Tip: Paste a comma-separated list (e.g. React, Docker, Python) to
+            add multiple skills at once.
+          </p>
         </div>
       </form>
 

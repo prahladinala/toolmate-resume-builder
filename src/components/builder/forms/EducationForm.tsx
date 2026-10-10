@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2, GripVertical } from "lucide-react";
 import { useEffect } from "react";
+import { toast } from "sonner";
 import {
   DndContext,
   closestCenter,
@@ -39,11 +40,20 @@ function SortableEducationItem({
   index,
   register,
   errors,
-  remove,
+  onRemove,
   watch,
   setValue,
   fields,
-}: { id: string; index: number; register: unknown; errors: unknown; remove: unknown; watch: unknown; setValue: unknown; fields: unknown[] }) {
+}: {
+  id: string;
+  index: number;
+  register: unknown;
+  errors: unknown;
+  onRemove: (index: number) => void;
+  watch: unknown;
+  setValue: unknown;
+  fields: unknown[];
+}) {
   const {
     attributes,
     listeners,
@@ -85,7 +95,7 @@ function SortableEducationItem({
           variant="ghost"
           size="icon"
           className="h-8 w-8 text-zinc-500 dark:text-[#a1a1aa] hover:text-red-400"
-          onClick={() => (remove as (index: number) => void)(index)}
+          onClick={() => onRemove(index)}
         >
           <Trash2 className="h-4 w-4" />
         </Button>
@@ -147,11 +157,15 @@ function SortableEducationItem({
               if (checked) {
                 fields.forEach((_: unknown, i: number) => {
                   if (i !== index) {
-                    setV(`educations.${i}.current`, false, { shouldValidate: true });
+                    setV(`educations.${i}.current`, false, {
+                      shouldValidate: true,
+                    });
                   }
                 });
               }
-              setV(`educations.${index}.current`, checked as boolean, { shouldValidate: true });
+              setV(`educations.${index}.current`, checked as boolean, {
+                shouldValidate: true,
+              });
             }}
           />
           <Label
@@ -190,10 +204,26 @@ export function EducationForm() {
     },
   });
 
-  const { fields, append, remove, move } = useFieldArray({
+  const { fields, append, remove, move, insert } = useFieldArray({
     control,
     name: "educations",
   });
+
+  const handleRemove = (index: number) => {
+    const removedItem = fields[index];
+    remove(index);
+    toast("Education entry removed", {
+      description: removedItem?.institution
+        ? `${removedItem.institution}${removedItem.degree ? ` · ${removedItem.degree}` : ""}`
+        : "Item removed from education",
+      action: {
+        label: "Undo",
+        onClick: () => {
+          insert(index, removedItem);
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     const subscription = watch((value) => {
@@ -271,7 +301,7 @@ export function EducationForm() {
                 index={index}
                 register={register}
                 errors={errors}
-                remove={remove}
+                onRemove={handleRemove}
                 watch={watch}
                 setValue={setValue}
                 fields={fields}

@@ -19,6 +19,7 @@ import { AIHelper } from "../AIHelper";
 import { AISuggestions } from "../AISuggestions";
 import { BulletQuantifierModal } from "../BulletQuantifierModal";
 import { detectWeakActionVerbs, replaceWeakVerb } from "@/lib/actionVerbs";
+import { toast } from "sonner";
 import {
   DndContext,
   closestCenter,
@@ -45,7 +46,7 @@ function SortableExperienceItem({
   index,
   register,
   errors,
-  remove,
+  onRemove,
   watch,
   setValue,
   fields,
@@ -89,7 +90,7 @@ function SortableExperienceItem({
           variant="ghost"
           size="icon"
           className="h-8 w-8 text-zinc-500 dark:text-[#a1a1aa] hover:text-red-400"
-          onClick={() => remove(index)}
+          onClick={() => onRemove(index)}
         >
           <Trash2 className="h-4 w-4" />
         </Button>
@@ -314,10 +315,26 @@ export function ExperienceForm() {
     defaultValues: { experiences: data.experience },
   });
 
-  const { fields, append, remove, move } = useFieldArray({
+  const { fields, append, remove, move, insert } = useFieldArray({
     control,
     name: "experiences",
   });
+
+  const handleRemove = (index: number) => {
+    const removedItem = fields[index];
+    remove(index);
+    toast("Experience removed", {
+      description: removedItem?.company
+        ? `${removedItem.company}${removedItem.role ? ` · ${removedItem.role}` : ""}`
+        : "Item removed from experience",
+      action: {
+        label: "Undo",
+        onClick: () => {
+          insert(index, removedItem);
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -404,7 +421,7 @@ export function ExperienceForm() {
                 index={index}
                 register={register}
                 errors={errors}
-                remove={remove}
+                onRemove={handleRemove}
                 watch={watch}
                 setValue={setValue}
                 fields={fields}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { TemplateGallery } from "@/components/TemplateGallery";
+import { Sparkles } from "lucide-react";
 
 const categories = [
   { id: "developers", label: "Developers" },
@@ -183,9 +184,17 @@ export default function TemplatesPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#a855f7]/10 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="text-center mb-16 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b]/80 backdrop-blur-sm text-xs font-semibold mb-4">
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-200 dark:border-[#27272a] bg-white dark:bg-[#09090b]/80 backdrop-blur-sm text-xs font-semibold mb-4 shadow-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            100% Free • Workday & Greenhouse Tested • Zero Paywalls
+            <span>100% Free • Workday & Greenhouse Tested • Zero Paywalls</span>
+            <span className="hidden sm:inline text-zinc-300 dark:text-zinc-750">
+              |
+            </span>
+            <span className="text-purple-600 dark:text-purple-400 font-medium flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5" />
+              Your resume content is automatically preserved across all
+              templates
+            </span>
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
             18+ Free ATS Resume Templates
