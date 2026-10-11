@@ -420,13 +420,17 @@ export default function Home() {
                       <td className="p-4 sm:p-5 font-medium text-slate-900 dark:text-zinc-200">
                         {row.feat}
                       </td>
-                      <td className="p-4 sm:p-5 font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50/30 dark:bg-emerald-950/10 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                        {row.toolmate}
+                      <td className="p-4 sm:p-5 font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50/30 dark:bg-emerald-950/10">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                          <span>{row.toolmate}</span>
+                        </div>
                       </td>
-                      <td className="p-4 sm:p-5 text-slate-500 flex items-center gap-1.5">
-                        <XCircle className="w-4 h-4 text-rose-500 shrink-0" />
-                        {row.others}
+                      <td className="p-4 sm:p-5 text-slate-500">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                          <span>{row.others}</span>
+                        </div>
                       </td>
                     </tr>
                   ))}
