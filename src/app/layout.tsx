@@ -78,6 +78,15 @@ export const metadata: Metadata = {
       "Free ATS Resume Builder | 100% Private, No Login, PDF & Word Export",
     description:
       "Create high-scoring, ATS-compliant resumes with 18+ templates, vector PDF & editable Word export, and AI interview prep. Completely free & local.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "ToolMate Resume Builder - Free ATS Resume Maker",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -86,6 +95,7 @@ export const metadata: Metadata = {
     description:
       "Create high-scoring, ATS-compliant resumes with 18+ templates, vector PDF & editable Word export. 100% free and local.",
     creator: "@prahladinala",
+    images: ["/opengraph-image"],
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,

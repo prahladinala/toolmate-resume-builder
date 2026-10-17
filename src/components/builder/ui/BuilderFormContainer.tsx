@@ -1,16 +1,67 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
 import { PersonalInfoForm } from "@/components/builder/forms/PersonalInfoForm";
 import { SummaryForm } from "@/components/builder/forms/SummaryForm";
 import { ExperienceForm } from "@/components/builder/forms/ExperienceForm";
 import { SkillsForm } from "@/components/builder/forms/SkillsForm";
 import { ProjectsForm } from "@/components/builder/forms/ProjectsForm";
 import { EducationForm } from "@/components/builder/forms/EducationForm";
-import { StyleForm } from "@/components/builder/forms/StyleForm";
-import { CustomSectionForm } from "@/components/builder/forms/CustomSectionForm";
-import { CoverLetterForm } from "@/components/builder/forms/CoverLetterForm";
-import { JobMatcherForm } from "@/components/builder/forms/JobMatcherForm";
+
+const StyleForm = dynamic(
+  () =>
+    import("@/components/builder/forms/StyleForm").then((mod) => mod.StyleForm),
+  {
+    loading: () => (
+      <div className="py-12 flex items-center justify-center text-sm text-zinc-500">
+        Loading style settings...
+      </div>
+    ),
+  },
+);
+
+const CustomSectionForm = dynamic(
+  () =>
+    import("@/components/builder/forms/CustomSectionForm").then(
+      (mod) => mod.CustomSectionForm,
+    ),
+  {
+    loading: () => (
+      <div className="py-12 flex items-center justify-center text-sm text-zinc-500">
+        Loading custom section editor...
+      </div>
+    ),
+  },
+);
+
+const CoverLetterForm = dynamic(
+  () =>
+    import("@/components/builder/forms/CoverLetterForm").then(
+      (mod) => mod.CoverLetterForm,
+    ),
+  {
+    loading: () => (
+      <div className="py-12 flex items-center justify-center text-sm text-zinc-500">
+        Loading cover letter generator...
+      </div>
+    ),
+  },
+);
+
+const JobMatcherForm = dynamic(
+  () =>
+    import("@/components/builder/forms/JobMatcherForm").then(
+      (mod) => mod.JobMatcherForm,
+    ),
+  {
+    loading: () => (
+      <div className="py-12 flex items-center justify-center text-sm text-zinc-500">
+        Loading target job description scanner...
+      </div>
+    ),
+  },
+);
 import { useResumeStore } from "@/store/useResumeStore";
 import { Button } from "@/components/ui/button";
 import {

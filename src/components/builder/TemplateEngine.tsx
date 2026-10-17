@@ -14,7 +14,6 @@ import {
   User,
   Star,
 } from "lucide-react";
-import ReactMarkdown from "react-markdown";
 
 type LayoutType =
   | "left-sidebar"
@@ -851,9 +850,9 @@ export const TemplateEngine = memo(function TemplateEngine({
       case "cover-letter":
         return (
           <section key="cover-letter" className={`${sectionSpacing}`}>
-            <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert">
+            <div className="leading-relaxed text-sm">
               {data.coverLetter ? (
-                <ReactMarkdown>{data.coverLetter}</ReactMarkdown>
+                parseMarkdown(data.coverLetter)
               ) : (
                 <p className="text-muted-foreground italic">
                   Your cover letter is empty. Go to the Cover Letter step to
@@ -870,8 +869,8 @@ export const TemplateEngine = memo(function TemplateEngine({
             className={`${sectionSpacing} print:break-inside-avoid`}
           >
             {renderSectionHeader("Summary")}
-            <div className="leading-relaxed text-sm markdown-container prose prose-sm max-w-none dark:prose-invert">
-              <ReactMarkdown>{summary}</ReactMarkdown>
+            <div className="leading-relaxed text-sm">
+              {parseMarkdown(summary)}
             </div>
           </section>
         ) : null;
